@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Util\Seeder;
+namespace App\Utils\Seeders;
 
 use App\Enum\PermissionsEnum;
 use App\Enum\UserRolesEnum;

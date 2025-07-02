@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Util\Seeder\RoleAndPermissionSeederUtil;
+use App\Utils\Seeders\RoleAndPermissionSeederUtil;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

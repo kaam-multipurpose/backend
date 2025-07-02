@@ -123,4 +123,19 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default User Password for Testing/Seeding
+    |--------------------------------------------------------------------------
+    |
+    | This value defines the default password used for creating users in
+    | development, testing, or seeding environments. It's primarily used
+    | by the `TEST_USER_PASSWORD` constant in the test suite.
+    |
+    | It should be set via the `DEFAULT_USER_PASSWORD` environment variable.
+    | If the environment variable is not set, 'password' will be used as the default.
+    |
+    */
+
+    'default_user_password' => env('DEFAULT_USER_PASSWORD', 'password'),
 ];

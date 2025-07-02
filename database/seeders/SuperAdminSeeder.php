@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Util\Seeder\SuperAdminSeederUtil;
+use App\Utils\Seeders\SuperAdminSeederUtil;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
