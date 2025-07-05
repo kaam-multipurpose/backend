@@ -9,7 +9,9 @@ class LoginTest extends TestCase
 {
     public function test_user_can_login(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN, ["email" => $this->faker->unique()->safeEmail()]);
+        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN, [
+            'email' => $this->faker->unique()->safeEmail(),
+        ]);
 
         $response = $this->postJson('/api/login', [
             'email' => $user->email,
@@ -19,10 +21,9 @@ class LoginTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             'success' => true,
-            "message" => "Logged in successfully.",
+            'message' => 'Logged in successfully.',
         ]);
     }
-
 
     public function test_user_cannot_login_with_non_existent_email(): void
     {
@@ -75,5 +76,4 @@ class LoginTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['password']);
     }
-
 }
