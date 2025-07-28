@@ -106,7 +106,7 @@ class CategoryService implements CategoryServiceContract
 
     //    public function getPaginatedCategoryProducts(Category $category): LengthAwarePaginator
     //    {
-    //        // TODO: Implement getPaginatedCategoryProducts() method.
+    //
     //    }
 
     /**
