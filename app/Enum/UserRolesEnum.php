@@ -47,6 +47,8 @@ enum UserRolesEnum: string implements EnumContract
                 PermissionsEnum::VIEW_INVENTORY,
                 PermissionsEnum::MOVE_PRODUCT,
             ],
+            self::SUPER_ADMIN => PermissionsEnum::cases(),
+            
             default => []
         };
     }

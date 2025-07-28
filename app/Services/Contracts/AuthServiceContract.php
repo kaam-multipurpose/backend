@@ -5,11 +5,9 @@ namespace App\Services\Contracts;
 use App\Dto\LoginDto;
 use Illuminate\Validation\ValidationException;
 
-interface AuthServiceContract
+interface AuthServiceContract extends GenericServiceContract
 {
-
     /**
-     * @param LoginDto $loginDto
      * @throws ValidationException
      */
     public function login(LoginDto $loginDto);

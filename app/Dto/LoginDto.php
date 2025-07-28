@@ -3,21 +3,16 @@
 namespace App\Dto;
 
 use App\Dto\Contract\DtoContract;
-use Illuminate\Http\Request;
 
 final readonly class LoginDto implements DtoContract
 {
+    public function __construct(public string $email, public string $password) {}
 
-    public function __construct(public string $email, public string $password)
-    {
-
-    }
-
-    public static function fromRequest(Request $request): self
+    public static function fromValidated(array $data): self
     {
         return new self(
-            email: $request->input('email'),
-            password: $request->input('password'),
+            email: $data['email'],
+            password: $data['password'],
         );
     }
 

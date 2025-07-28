@@ -7,7 +7,7 @@ use App\Models\User;
 
 trait CreateTestUser
 {
-    public function createUser(UserRolesEnum $userRole, array $attributes): User
+    public function createUser(UserRolesEnum $userRole, array $attributes = []): User
     {
         $user = User::factory()->create($attributes);
         $user->assignRole($userRole->value);

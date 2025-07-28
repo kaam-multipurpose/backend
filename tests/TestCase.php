@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Database\Seeders\CategorySeeder;
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -10,15 +11,15 @@ use Tests\Traits\CreateTestUser;
 
 abstract class TestCase extends BaseTestCase
 {
-    use  RefreshDatabase, WithFaker, CreateTestUser;
+    use CreateTestUser, RefreshDatabase, WithFaker;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(RoleAndPermissionSeeder::class);
+        $this->seed([RoleAndPermissionSeeder::class, CategorySeeder::class]);
 
-        if (!defined('TEST_USER_PASSWORD')) {
+        if (! defined('TEST_USER_PASSWORD')) {
             define('TEST_USER_PASSWORD', config('app.default_user_password'));
         }
 
