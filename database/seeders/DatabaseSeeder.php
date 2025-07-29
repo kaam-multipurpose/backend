@@ -6,6 +6,7 @@ use App\Models\User;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,17 +15,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $env = config("app.env");
 
-        //        User::factory()->create([
-        //            'name' => 'Test User',
-        //            'email' => 'test@example.com',
-        //        ]);
-        $this->call([
+        $seeder = [
             RoleAndPermissionSeeder::class,
-            SuperAdminSeeder::class,
-            UserSeeder::class,
-            CategorySeeder::class,
-        ]);
+        ];
+        if ($env !== 'testing') {
+            $seeder[] = SuperAdminSeeder::class;
+        }
+
+        $level = match ($env) {
+            "local", "testing" => [
+                UserSeeder::class,
+                CategorySeeder::class,
+            ],
+            default => []
+        };
+        $this->call(array_merge($seeder, $level));
     }
 }

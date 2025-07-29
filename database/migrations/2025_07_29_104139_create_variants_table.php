@@ -1,5 +1,6 @@
 <?php
 
+use App\Enum\ProductVariantsTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -10,14 +11,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('variants', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->string('name', 50);
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->string('slug', 50)->unique();
-            $table->string('variant_type')->nullable();
+            $table->string('slug', 50);
+            $table->unsignedInteger("cost_price");
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('variants');
     }
 };

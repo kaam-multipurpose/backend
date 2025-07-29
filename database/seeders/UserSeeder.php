@@ -14,14 +14,12 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $count = 0;
-        User::factory(2)->create()->each(function ($user) use (&$count) {
-            $roles = [
-                UserRolesEnum::ADMIN->value,
-                UserRolesEnum::SALES_REP->value,
-            ];
-            $user->syncRoles($roles[$count]);
-            ++$count;
+        $roles = [
+            UserRolesEnum::ADMIN->value,
+            UserRolesEnum::SALES_REP->value,
+        ];
+        User::factory(2)->create()->each(function ($user, $index) use ($roles) {
+            $user->syncRoles($roles[$index]);
         });
     }
 }
