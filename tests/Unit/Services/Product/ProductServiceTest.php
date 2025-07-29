@@ -3,6 +3,7 @@
 namespace Services\Product;
 
 use App\Dto\CreateProductDto;
+use App\Enum\ProductUnitsEnum;
 use App\Enum\ProductVariantsTypeEnum;
 use App\Exceptions\ProductServiceException;
 use App\Models\Category;
@@ -24,6 +25,30 @@ class ProductServiceTest extends TestCase
         $data = [
             'name' => 'new product name',
             'category_id' => $category->id,
+            'variant_type' => ProductVariantsTypeEnum::COLOR->value,
+            "units" => [
+                [
+                    'name' => ProductUnitsEnum::PIECE->value,
+                    'conversionRate' => 1,
+                    'percentage' => 25,
+                    'isBase' => true,
+                    'isMax' => false,
+                ],
+                [
+                    'name' => ProductUnitsEnum::DOZEN->value,
+                    'conversionRate' => 12,
+                    'percentage' => 12,
+                    'isBase' => false,
+                    'isMax' => false,
+                ],
+                [
+                    'name' => ProductUnitsEnum::PACKET->value,
+                    'conversionRate' => 36,
+                    'percentage' => 15,
+                    'isBase' => false,
+                    'isMax' => true,
+                ],
+            ],
             "variants" => [
                 [
                     'name' => 'Red Medium',
@@ -34,7 +59,6 @@ class ProductServiceTest extends TestCase
                     'cost_price' => 42000,
                 ],
             ],
-            'variant_type' => ProductVariantsTypeEnum::COLOR->value,
         ];
 
         $createProductDto = CreateProductDto::fromValidated($data);
@@ -61,6 +85,22 @@ class ProductServiceTest extends TestCase
             'name' => 'new product name',
             'category_id' => $category->id,
             'cost_price' => 40000,
+            "units" => [
+                [
+                    'name' => ProductUnitsEnum::PIECE->value,
+                    'conversionRate' => 1,
+                    'percentage' => 25,
+                    'isBase' => true,
+                    'isMax' => false,
+                ],
+                [
+                    'name' => ProductUnitsEnum::DOZEN->value,
+                    'conversionRate' => 12,
+                    'percentage' => 12,
+                    'isBase' => false,
+                    'isMax' => true,
+                ],
+            ],
         ];
 
         $createProductDto = CreateProductDto::fromValidated($data);
@@ -68,7 +108,7 @@ class ProductServiceTest extends TestCase
         $productService = app()->make(ProductServiceContract::class);
 
         $response = $productService->createProduct($createProductDto);
-        
+
         print_r($response->jsonSerialize());
 
         $this->assertInstanceOf(Product::class, $response);

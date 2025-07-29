@@ -9,6 +9,7 @@ use App\Exceptions\VariantServiceException;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Services\Contracts\ProductServiceContract;
+use App\Services\Contracts\ProductUnitServiceContract;
 use App\Services\Contracts\VariantServiceContract;
 use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Trait\HasAuthenticatedUser;
@@ -20,8 +21,9 @@ class ProductService implements ProductServiceContract
     use HasAuthenticatedUser, HasLogger;
 
     public function __construct(
-        protected LoggerContract         $logger,
-        protected VariantServiceContract $variantService
+        protected LoggerContract             $logger,
+        protected VariantServiceContract     $variantService,
+        protected ProductUnitServiceContract $productUnitService
     )
     {
     }
@@ -39,6 +41,15 @@ class ProductService implements ProductServiceContract
             $this->log("info", "Creating product");
             $newProduct = Product::create($createProductDto->toArray());
 
+            $this->productUnitService->createProductUnits(
+                $createProductDto->units,
+                $newProduct
+            );
+
+            $this->log("info", "Successfully Created units", [
+                "product_id" => $newProduct->id,
+            ]);
+
             if (!empty($createProductDto->variants)) {
                 $this->createManyVariants($createProductDto->variants, $newProduct);
                 $this->log("info", "Successfully Created bulk variants", [
@@ -55,7 +66,7 @@ class ProductService implements ProductServiceContract
                 ]);
             }
             DB::commit();
-            return $newProduct->load('variants');
+            return $newProduct;
         } catch (\Throwable $e) {
             DB::rollBack();
             $this->log("error", "fail to create product");
@@ -67,6 +78,9 @@ class ProductService implements ProductServiceContract
     }
 
     /**
+     * @param CreateVariantDto[] $variantsDto
+     * @param Product $product
+     * @return bool
      * @throws VariantServiceException
      */
     private function createManyVariants(array $variantsDto, Product $product): bool

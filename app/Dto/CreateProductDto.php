@@ -10,13 +10,15 @@ final readonly class CreateProductDto implements DtoContract
     /**
      * @param string $name
      * @param int $categoryId
+     * @param CreateProductUnitDto[] $units
      * @param int|null $costPrice
-     * @param array<CreateVariantDto> $variants
+     * @param CreateVariantDto[] $variants
      * @param ProductVariantsTypeEnum|null $variantType
      */
     public function __construct(
         public string                   $name,
         public int                      $categoryId,
+        public array                    $units,
         public ?int                     $costPrice = null,
         public ?array                   $variants = null,
         public ?ProductVariantsTypeEnum $variantType = null,
@@ -30,6 +32,9 @@ final readonly class CreateProductDto implements DtoContract
         return new self(
             name: $data['name'],
             categoryId: $data['category_id'],
+            units: array_map(
+                fn(array $unit) => CreateProductUnitDto::fromValidated($unit), $data['units'] ?? []
+            ),
             costPrice: $data['cost_price'] ?? null,
             variants: array_map(
                 fn(array $variant) => CreateVariantDto::fromValidated($variant),

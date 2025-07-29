@@ -47,4 +47,9 @@ class Product extends Model
     {
         return $this->hasMany(Variant::class);
     }
+
+    public function units(): HasMany
+    {
+        return $this->hasMany(ProductUnit::class);
+    }
 }

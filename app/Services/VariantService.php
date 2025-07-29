@@ -10,12 +10,10 @@ use App\Services\Contracts\VariantServiceContract;
 use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class VariantService implements Contracts\VariantServiceContract
+class VariantService implements VariantServiceContract
 {
     use HasAuthenticatedUser, HasLogger;
 

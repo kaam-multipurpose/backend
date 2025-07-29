@@ -11,4 +11,5 @@ enum ProductVariantsTypeEnum: string implements EnumContract
 
     case SIZE = "size";
     case COLOR = "colour";
+    case TYPE = "type";
 }
