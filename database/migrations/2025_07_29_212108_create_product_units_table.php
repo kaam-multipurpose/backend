@@ -19,6 +19,10 @@ return new class extends Migration {
             $table->boolean('is_base')->default(false);
             $table->boolean('is_max')->default(false);
             $table->timestamps();
+
+            $table->index('product_id');
+            $table->index('is_base');
+            $table->index('is_max');
         });
     }
 

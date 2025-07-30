@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Enum\UserRolesEnum;
 use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Logger\Logger;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Model::automaticallyEagerLoadRelationships();
         Gate::before(function ($user) {
             return $user->hasRole(UserRolesEnum::SUPER_ADMIN->value) ? true : null;
         });

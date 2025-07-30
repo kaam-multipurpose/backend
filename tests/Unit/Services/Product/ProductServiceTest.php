@@ -29,24 +29,24 @@ class ProductServiceTest extends TestCase
             "units" => [
                 [
                     'name' => ProductUnitsEnum::PIECE->value,
-                    'conversionRate' => 1,
+                    'conversion_rate' => 1,
                     'percentage' => 25,
-                    'isBase' => true,
-                    'isMax' => false,
+                    'is_base' => true,
+                    'is_max' => false,
                 ],
                 [
                     'name' => ProductUnitsEnum::DOZEN->value,
-                    'conversionRate' => 12,
+                    'conversion_rate' => 12,
                     'percentage' => 12,
-                    'isBase' => false,
-                    'isMax' => false,
+                    'is_base' => false,
+                    'is_max' => false,
                 ],
                 [
                     'name' => ProductUnitsEnum::PACKET->value,
-                    'conversionRate' => 36,
+                    'conversion_rate' => 36,
                     'percentage' => 15,
-                    'isBase' => false,
-                    'isMax' => true,
+                    'is_base' => false,
+                    'is_max' => true,
                 ],
             ],
             "variants" => [
@@ -67,8 +67,6 @@ class ProductServiceTest extends TestCase
 
         $response = $productService->createProduct($createProductDto);
 
-        print_r($response->jsonSerialize());
-
         $this->assertInstanceOf(Product::class, $response);
         $this->assertDatabaseHas("products", $createProductDto->toArray());
         $this->assertNotEmpty($response->slug);
@@ -88,17 +86,17 @@ class ProductServiceTest extends TestCase
             "units" => [
                 [
                     'name' => ProductUnitsEnum::PIECE->value,
-                    'conversionRate' => 1,
+                    'conversion_rate' => 1,
                     'percentage' => 25,
-                    'isBase' => true,
-                    'isMax' => false,
+                    'is_base' => true,
+                    'is_max' => false,
                 ],
                 [
                     'name' => ProductUnitsEnum::DOZEN->value,
-                    'conversionRate' => 12,
+                    'conversion_rate' => 12,
                     'percentage' => 12,
-                    'isBase' => false,
-                    'isMax' => true,
+                    'is_base' => false,
+                    'is_max' => true,
                 ],
             ],
         ];
@@ -109,12 +107,9 @@ class ProductServiceTest extends TestCase
 
         $response = $productService->createProduct($createProductDto);
 
-        print_r($response->jsonSerialize());
-
         $this->assertInstanceOf(Product::class, $response);
         $this->assertDatabaseHas("products", $createProductDto->toArray());
         $this->assertNotEmpty($response->slug);
         $this->assertNotEmpty($response->variants);
-
     }
 }

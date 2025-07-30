@@ -3,7 +3,6 @@
 namespace App\Dto;
 
 use App\Dto\Contract\DtoContract;
-use App\Enum\ProductVariantsTypeEnum;
 
 final readonly class CreateProductUnitDto implements DtoContract
 {
@@ -24,10 +23,10 @@ final readonly class CreateProductUnitDto implements DtoContract
 
         return new self(
             name: $data['name'],
-            conversionRate: $data['conversionRate'],
+            conversionRate: $data['conversion_rate'],
             multiplier: $multiplier,
-            isBase: $data['isBase'] ?? null,
-            isMax: $data['isMax'] ?? null,
+            isBase: $data['is_base'] ?? null,
+            isMax: $data['is_max'] ?? null,
         );
     }
 

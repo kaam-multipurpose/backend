@@ -9,9 +9,11 @@ use App\Services\Contracts\CategoryServiceContract;
 use App\Services\Contracts\ProductServiceContract;
 use App\Services\Contracts\ProductUnitServiceContract;
 use App\Services\Contracts\VariantServiceContract;
+use App\Services\Contracts\VariantUnitPriceServiceContract;
 use App\Services\ProductService;
 use App\Services\ProductUnitService;
 use App\Services\VariantService;
+use App\Services\VariantUnitPriceService;
 use Illuminate\Support\ServiceProvider;
 
 class ServicesServiceProvider extends ServiceProvider
@@ -26,6 +28,7 @@ class ServicesServiceProvider extends ServiceProvider
         $this->app->bind(ProductServiceContract::class, ProductService::class);
         $this->app->bind(VariantServiceContract::class, VariantService::class);
         $this->app->bind(ProductUnitServiceContract::class, ProductUnitService::class);
+        $this->app->bind(VariantUnitPriceServiceContract::class, VariantUnitPriceService::class);
     }
 
     /**

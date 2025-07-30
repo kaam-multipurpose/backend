@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Enum\ProductUnitsEnum;
+use App\Models\Product;
+use App\Models\ProductUnit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductUnit>
+ * @extends Factory<ProductUnit>
  */
 class ProductUnitFactory extends Factory
 {
@@ -17,7 +20,12 @@ class ProductUnitFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "name" => fake()->randomElement(ProductUnitsEnum::values()),
+            "product_id" => Product::inRandomOrder()->first() ?? Product::factory()->create(),
+            "is_base" => fake()->boolean,
+            "is_max" => fake()->boolean,
+            "conversion_rate" => fake()->numberBetween(1, 100),
+            "multiplier" => fake()->randomFloat(2, 0.1, 10.0),
         ];
     }
 }

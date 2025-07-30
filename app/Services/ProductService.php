@@ -11,6 +11,7 @@ use App\Models\Variant;
 use App\Services\Contracts\ProductServiceContract;
 use App\Services\Contracts\ProductUnitServiceContract;
 use App\Services\Contracts\VariantServiceContract;
+use App\Services\Contracts\VariantUnitPriceServiceContract;
 use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
@@ -21,9 +22,10 @@ class ProductService implements ProductServiceContract
     use HasAuthenticatedUser, HasLogger;
 
     public function __construct(
-        protected LoggerContract             $logger,
-        protected VariantServiceContract     $variantService,
-        protected ProductUnitServiceContract $productUnitService
+        protected LoggerContract                  $logger,
+        protected VariantServiceContract          $variantService,
+        protected ProductUnitServiceContract      $productUnitService,
+        protected VariantUnitPriceServiceContract $variantUnitPriceService
     )
     {
     }
@@ -61,15 +63,21 @@ class ProductService implements ProductServiceContract
                     costPrice: $createProductDto->costPrice,
                 );
                 $this->createVariant($variantDto, $newProduct);
-                $this->log("info", "Successfully Create variants", [
+                $this->log("info", "Successfully Created variants", [
                     "product_id" => $newProduct->id,
                 ]);
             }
+
+            $hydratedProduct = $this->hydrateProductRelations($newProduct);
+            $this->variantUnitPriceService->createPrice($hydratedProduct);
+            $this->log("info", "Successfully Created Price", [
+                "product_id" => $newProduct->id,
+            ]);
             DB::commit();
-            return $newProduct;
+            return $hydratedProduct;
         } catch (\Throwable $e) {
             DB::rollBack();
-            $this->log("error", "fail to create product");
+            $this->log("error", "failed to create product");
             throw new ProductServiceException(
                 "Unable to create product.",
                 $e
@@ -96,4 +104,10 @@ class ProductService implements ProductServiceContract
     {
         return $this->variantService->createVariant($createVariantDto, $product);
     }
+
+    private function hydrateProductRelations(Product $product): Product
+    {
+        return $product->load(['variants', 'units']);
+    }
+
 }

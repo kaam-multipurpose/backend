@@ -7,6 +7,7 @@ use Database\Factories\ProductUnitFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductUnit extends Model
 {
@@ -28,8 +29,23 @@ class ProductUnit extends Model
         "name" => ProductUnitsEnum::class,
     ];
 
+    public function scopeBase($query)
+    {
+        return $query->where('is_base', true);
+    }
+
+    public function scopeMax($query)
+    {
+        return $query->where('is_max', true);
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function variantUnitPrices(): HasMany
+    {
+        return $this->hasMany(VariantUnitPrice::class);
     }
 }

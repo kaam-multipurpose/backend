@@ -3,13 +3,12 @@
 namespace App\Dto;
 
 use App\Dto\Contract\DtoContract;
-use App\Enum\ProductVariantsTypeEnum;
 
 final readonly class CreateVariantDto implements DtoContract
 {
     public function __construct(
         public string $name,
-        public int    $costPrice,
+        public float  $costPrice,
     )
     {
 

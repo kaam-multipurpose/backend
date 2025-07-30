@@ -11,7 +11,6 @@ use App\Services\Contracts\ProductUnitServiceContract;
 use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
-use Illuminate\Support\Facades\Log;
 
 class ProductUnitService implements ProductUnitServiceContract
 {
@@ -41,7 +40,6 @@ class ProductUnitService implements ProductUnitServiceContract
             }, $createProductUnitDto);
             return ProductUnit::insert($units);
         } catch (\Throwable $e) {
-            Log::error($e->getMessage());
             $this->log("error", "Failed to create product units", [
                 "product_id" => $product->id,
             ]);

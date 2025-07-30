@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use Illuminate\Database\Seeder;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,17 +18,19 @@ class DatabaseSeeder extends Seeder
         $seeder = [
             RoleAndPermissionSeeder::class,
         ];
-        if ($env !== 'testing') {
-            $seeder[] = SuperAdminSeeder::class;
-        }
 
         $level = match ($env) {
             "local", "testing" => [
                 UserSeeder::class,
                 CategorySeeder::class,
+                ProductSeeder::class,
             ],
             default => []
         };
-        $this->call(array_merge($seeder, $level));
+        $this->call(array_merge(
+            $seeder,
+            $env != "testing" ? [SuperAdminSeeder::class] : [],
+            $level
+        ));
     }
 }
