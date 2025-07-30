@@ -52,7 +52,7 @@ class ProductService implements ProductServiceContract
                 "product_id" => $newProduct->id,
             ]);
 
-            if (!empty($createProductDto->variants)) {
+            if ($createProductDto->hasVariants) {
                 $this->createManyVariants($createProductDto->variants, $newProduct);
                 $this->log("info", "Successfully Created bulk variants", [
                     "product_id" => $newProduct->id,

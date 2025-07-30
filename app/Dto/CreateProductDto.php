@@ -19,6 +19,7 @@ final readonly class CreateProductDto implements DtoContract
         public string                   $name,
         public int                      $categoryId,
         public array                    $units,
+        public bool                     $hasVariants,
         public ?int                     $costPrice = null,
         public ?array                   $variants = null,
         public ?ProductVariantsTypeEnum $variantType = null,
@@ -35,6 +36,7 @@ final readonly class CreateProductDto implements DtoContract
             units: array_map(
                 fn(array $unit) => CreateProductUnitDto::fromValidated($unit), $data['units'] ?? []
             ),
+            hasVariants: $data['has_variants'],
             costPrice: $data['cost_price'] ?? null,
             variants: array_map(
                 fn(array $variant) => CreateVariantDto::fromValidated($variant),
@@ -49,7 +51,7 @@ final readonly class CreateProductDto implements DtoContract
         return [
             'name' => $this->name,
             'category_id' => $this->categoryId,
-            'variant_type' => $this->variantType,
+            'variant_type' => $this->variantType
         ];
     }
 }

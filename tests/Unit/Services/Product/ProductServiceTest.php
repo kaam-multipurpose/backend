@@ -26,6 +26,7 @@ class ProductServiceTest extends TestCase
             'name' => 'new product name',
             'category_id' => $category->id,
             'variant_type' => ProductVariantsTypeEnum::COLOR->value,
+            'has_variants' => true,
             "units" => [
                 [
                     'name' => ProductUnitsEnum::PIECE->value,
@@ -83,6 +84,7 @@ class ProductServiceTest extends TestCase
             'name' => 'new product name',
             'category_id' => $category->id,
             'cost_price' => 40000,
+            'has_variants' => false,
             "units" => [
                 [
                     'name' => ProductUnitsEnum::PIECE->value,

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enum\PermissionsEnum;
 use App\Enum\ProductUnitsEnum;
+use App\Enum\ProductVariantsTypeEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -29,7 +30,8 @@ class CreateProductRequest extends FormRequest
             "name" => ["required", "string"],
             "category_id" => ["required", "integer", "exists:categories,id"],
             "has_variants" => ["required", "boolean"],
-            "cost_price" => ["required_if:has_variants,false", "numeric"],
+            "variant_type" => ["required_if:has_variants,true", "prohibited_if:has_variants,false", Rule::enum(ProductVariantsTypeEnum::class)],
+            "cost_price" => ["required_if:has_variants,false", "prohibited_if:has_variants,true", "numeric"],
         ], $this->productUnitRules(), $this->variantRules());
     }
 
@@ -50,9 +52,9 @@ class CreateProductRequest extends FormRequest
     {
         return [
             "variants" => ["required_if:has_variants,true", "array", "min:2"],
-            "variants.*" => ["required_with:variants", "array"],
-            "variants.*.name" => ["required_with:variants", "string"],
-            "variants.*.cost_price" => ["required_with:variants", "numeric"],
+            "variants.*" => ["required_if:has_variants,true", "array"],
+            "variants.*.name" => ["required_if:has_variants,true", "string"],
+            "variants.*.cost_price" => ["required_if:has_variants,true", "numeric"],
         ];
     }
 
@@ -66,7 +68,10 @@ class CreateProductRequest extends FormRequest
             'category_id.exists' => 'Selected category does not exist in the system.',
             'has_variants.required' => 'Please specify if the product has variants.',
             'has_variants.boolean' => 'The variants flag must be true or false.',
+            'variant_type.required_if' => 'Please select a variant type when variants are enabled.',
+            'variant_type.prohibited_if' => 'You should not provide a variant type when the product has no variants.',
             'cost_price.required_if' => 'Cost price is required when the product has no variants.',
+            'cost_price.prohibited_if' => 'Cost price should not be set when the product includes variants.',
             'cost_price.numeric' => 'Cost price must be a number.',
 
             // Product units
@@ -87,9 +92,9 @@ class CreateProductRequest extends FormRequest
             'variants.required_if' => 'Variants are required when "has_variants" is true.',
             'variants.array' => 'Variants must be submitted as an array.',
             'variants.*.required_with' => 'Each variant must contain the required details.',
-            'variants.*.name.required_with' => 'Please provide a name for each variant.',
+            'variants.*.name.required_if' => 'Please provide a name for each variant.',
             'variants.*.name.string' => 'Variant name must be a text value.',
-            'variants.*.cost_price.required_with' => 'Please provide cost price for each variant.',
+            'variants.*.cost_price.required_if' => 'Please provide cost price for each variant.',
             'variants.*.cost_price.numeric' => 'Cost price for variants must be numeric.',
         ];
     }
