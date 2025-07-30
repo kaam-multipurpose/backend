@@ -57,6 +57,7 @@ class AddProductTest extends TestCase
 
         $this->actingAs($user, "sanctum");
         $response = $this->postJson("/api/product", $item);
+        print_r($response->json());
         $response->assertStatus(201);
     }
 }

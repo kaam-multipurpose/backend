@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
         $level = match ($env) {
             "local", "testing" => [
                 UserSeeder::class,
-                CategorySeeder::class,
                 ProductSeeder::class,
             ],
             default => []

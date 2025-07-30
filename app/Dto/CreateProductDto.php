@@ -11,6 +11,7 @@ final readonly class CreateProductDto implements DtoContract
      * @param string $name
      * @param int $categoryId
      * @param CreateProductUnitDto[] $units
+     * @param bool $hasVariants
      * @param int|null $costPrice
      * @param CreateVariantDto[] $variants
      * @param ProductVariantsTypeEnum|null $variantType
@@ -51,7 +52,8 @@ final readonly class CreateProductDto implements DtoContract
         return [
             'name' => $this->name,
             'category_id' => $this->categoryId,
-            'variant_type' => $this->variantType
+            'variant_type' => $this->variantType,
+            'has_variants' => $this->hasVariants,
         ];
     }
 }

@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
         $product = [
             "name" => $this->name,
             "slug" => $this->slug,
+            "has_variants" => $this->has_variants,
             "variant_type" => $this->variant_type
         ];
         if ($this->isMax) {

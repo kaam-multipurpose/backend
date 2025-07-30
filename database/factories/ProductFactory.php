@@ -20,7 +20,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->words(2, true),
+            'name' => fake()->words(1, true),
             'category_id' => Category::inRandomOrder()->first()?->id ?? Category::factory()->create()->id,
             'variant_type' => fake()->randomElement(ProductVariantsTypeEnum::values()),
         ];

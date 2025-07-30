@@ -19,7 +19,8 @@ class Product extends Model
         'name',
         'slug',
         "category_id",
-        "variant_type"
+        "variant_type",
+        "has_variants",
     ];
 
     protected $casts = [

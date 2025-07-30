@@ -12,6 +12,6 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        ProductSeederUtil::run(10, true);
+        ProductSeederUtil::run(3, 5, true);
     }
 }

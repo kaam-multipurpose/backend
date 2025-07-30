@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->string('slug', 50)->unique();
             $table->string('variant_type')->nullable();
+            $table->boolean('has_variants')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
