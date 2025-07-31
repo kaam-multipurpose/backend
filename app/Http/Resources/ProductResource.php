@@ -20,6 +20,7 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         $product = [
+            'id' => $this->id,
             "name" => $this->name,
             "slug" => $this->slug,
             "has_variants" => $this->has_variants,
@@ -27,7 +28,7 @@ class ProductResource extends JsonResource
         ];
         if ($this->isMax) {
             $product += [
-                "units" => ProductUnitResource::collection($this->units),
+                "units" => ProductUnitResource::collection($this->productUnits),
                 "variants" => VariantResource::collection($this->variants)
             ];
         }

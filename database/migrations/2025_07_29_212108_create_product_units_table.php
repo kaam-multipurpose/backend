@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('product_units', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 30);
+            $table->foreignId('unit_id')->constrained('units')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->integer('conversion_rate');
             $table->float('multiplier');

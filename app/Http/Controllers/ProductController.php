@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dto\CreateProductDto;
+use App\Exceptions\ProductServiceException;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Services\Contracts\ProductServiceContract;
@@ -23,10 +24,19 @@ class ProductController extends Controller
     {
     }
 
+    /**
+     * @throws ProductServiceException
+     */
     public function createProduct(CreateProductRequest $createProductRequest): JsonResponse
     {
         $product = $this->productService->createProduct(CreateProductDto::fromValidated($createProductRequest->validated()));
+
         $this->log("info", "Product created Successfully");
-        return ApiResponse::success(new ProductResource($product), "Product created successfully.", 201);
+
+        return ApiResponse::success(
+            new ProductResource($product, true),
+            "Product created successfully.",
+            201
+        );
     }
 }

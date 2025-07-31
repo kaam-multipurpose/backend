@@ -51,4 +51,11 @@ enum PermissionsEnum: string implements EnumContract
      * */
     case ASSIGN_PERMISSIONS = "assign permissions";
 
+    /*
+    * Unit Permission
+    * */
+    case ADD_UNIT = "add unit";
+    case VIEW_UNIT = "view unit";
+    case EDIT_UNIT = "edit unit";
+    case DELETE_UNIT = "delete unit";
 }

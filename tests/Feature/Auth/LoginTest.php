@@ -9,9 +9,7 @@ class LoginTest extends TestCase
 {
     public function test_user_can_login(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN, [
-            'email' => $this->faker->unique()->safeEmail(),
-        ]);
+        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
 
         $response = $this->postJson('/api/login', [
             'email' => $user->email,
@@ -27,25 +25,24 @@ class LoginTest extends TestCase
 
     public function test_user_cannot_login_with_non_existent_email(): void
     {
-        $response = $this->postJson('/api/login', [
-            'email' => 'nonexistent@example.com',
-            'password' => TEST_USER_PASSWORD,
-        ]);
-
+        $response = $this->postJson('/api/login', $this->LoginPayload());
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['global']);
     }
 
-    public function test_user_cannot_login_with_incorrect_password(): void
+    protected function LoginPayload(): array
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN, [
-            'email' => $this->faker->unique()->safeEmail,
-        ]);
+        return [
+            'email' => fake()->safeEmail(),
+            'password' => TEST_USER_PASSWORD,
+        ];
+    }
 
-        $response = $this->postJson('/api/login', [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
+    public function test_user_cannot_login_with_incorrect_details(): void
+    {
+        $this->createUser(UserRolesEnum::SUPER_ADMIN);
+
+        $response = $this->postJson('/api/login', $this->LoginPayload());
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['global']);
@@ -65,9 +62,7 @@ class LoginTest extends TestCase
 
     public function test_login_fails_if_password_is_missing(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN, [
-            'email' => $this->faker->unique()->safeEmail,
-        ]);
+        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
 
         $response = $this->postJson('/api/login', [
             'email' => $user->email,

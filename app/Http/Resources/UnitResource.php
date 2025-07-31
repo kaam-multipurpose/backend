@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class VariantUnitPriceResource extends JsonResource
+class UnitResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,7 @@ class VariantUnitPriceResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            "unit" => new UnitResource($this->productUnit->unit)->name,
-            "selling_price" => $this->selling_price
+            "name" => $this->name
         ];
     }
 }

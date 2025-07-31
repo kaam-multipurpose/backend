@@ -107,7 +107,7 @@ class ProductService implements ProductServiceContract
 
     private function hydrateProductRelations(Product $product): Product
     {
-        return $product->load(['variants', 'units']);
+        return $product->load(['variants', 'productUnits']);
     }
 
 }

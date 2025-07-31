@@ -4,47 +4,42 @@ namespace Tests\Feature\Categories;
 
 use App\Enum\UserRolesEnum;
 use App\Models\Category;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class DeleteCategoriesTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     public function test_user_with_delete_permission_can_delete_category(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
         $category = Category::factory()->create();
 
-        $this->actingAs($user, "sanctum");
+        $this->deleteCategoryAs(UserRolesEnum::SUPER_ADMIN, $category->slug)
+            ->assertStatus(200);
 
-        $response = $this->deleteJson('api/category/' . $category->slug);
+        $this->assertSoftDeleted('categories', ['slug' => $category->slug]);
+    }
 
-        $response->assertStatus(200);
+    protected function deleteCategoryAs(UserRolesEnum $role, string $slug): TestResponse
+    {
+        $user = $this->createUser($role);
+        $this->actingAs($user, 'sanctum');
+
+        return $this->deleteJson("/api/category/{$slug}");
     }
 
     public function test_user_without_delete_permission_cannot_delete_category(): void
     {
-        $user = $this->createUser(UserRolesEnum::SALES_REP);
         $category = Category::factory()->create();
 
-        $this->actingAs($user, "sanctum");
+        $this->deleteCategoryAs(UserRolesEnum::SALES_REP, $category->slug)
+            ->assertForbidden();
 
-        $response = $this->deleteJson('api/category/' . $category->slug);
-
-        $response->assertForbidden();
+        $this->assertDatabaseHas('categories', ['slug' => $category->slug]);
     }
 
-    public function test_user_cannot_delete_invalid_category(): void
+    public function test_user_cannot_delete_non_existent_category(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
-
-        $this->actingAs($user, "sanctum");
-
-        $response = $this->deleteJson('api/category/new');
-
-        $response->assertNotFound();
+        $this->deleteCategoryAs(UserRolesEnum::SUPER_ADMIN, 'non-existent-slug')
+            ->assertNotFound();
     }
 }

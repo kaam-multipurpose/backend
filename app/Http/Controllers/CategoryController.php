@@ -34,7 +34,7 @@ class CategoryController extends Controller
     public function createCategory(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string',
+            'name' => ['required', 'string'],
         ]);
 
         $dto = CreateCategoryDto::fromValidated($validated);

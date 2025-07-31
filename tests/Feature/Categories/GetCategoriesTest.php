@@ -3,32 +3,28 @@
 namespace Tests\Feature\Categories;
 
 use App\Enum\UserRolesEnum;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class GetCategoriesTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_super_admin_get_all_categories(): void
+    public function test_super_admin_can_get_all_categories(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
-
-        $this->actingAs($user, 'sanctum');
-
-        $response = $this->get('/api/category');
-
-        $response->assertStatus(200);
+        $this->getCategories('')
+            ->assertStatus(200);
     }
 
-    public function test_super_admin_get_all_categories_paginated(): void
+    protected function getCategories(string $endpoint, UserRolesEnum $role = UserRolesEnum::SUPER_ADMIN): TestResponse
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
-
+        $user = $this->createUser($role);
         $this->actingAs($user, 'sanctum');
 
-        $response = $this->get('/api/category/paginated');
+        return $this->get("/api/category{$endpoint}");
+    }
 
-        $response->assertStatus(200);
+    public function test_super_admin_can_get_paginated_categories(): void
+    {
+        $this->getCategories('/paginated')
+            ->assertStatus(200);
     }
 }

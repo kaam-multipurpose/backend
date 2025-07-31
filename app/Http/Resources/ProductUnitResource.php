@@ -15,7 +15,8 @@ class ProductUnitResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "name" => $this->name,
+            'id' => $this->id,
+            "name" => new UnitResource($this->unit)->name,
             "multiplier" => $this->multiplier,
             "conversion_rate" => $this->conversion_rate,
             "is_base" => $this->is_base,

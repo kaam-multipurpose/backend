@@ -7,70 +7,49 @@ use Tests\TestCase;
 
 class AddCategoriesTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
+    protected string $categoryName = 'Paper';
+
     public function test_super_admin_can_add_category(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
+        $this->postCategory(UserRolesEnum::SUPER_ADMIN)
+            ->assertStatus(201);
 
+        $this->assertDatabaseHas('categories', ['name' => $this->categoryName]);
+    }
+
+    protected function postCategory(UserRolesEnum $role, array $data = []): \Illuminate\Testing\TestResponse
+    {
+        $user = $this->createUser($role);
         $this->actingAs($user, 'sanctum');
 
-        $request = $this->postJson('/api/category', [
-            'name' => 'Paper',
-        ]);
-
-        $this->assertDatabaseHas('categories', [
-            'name' => 'Paper',
-        ]);
-
+        return $this->postJson('/api/category', array_merge([
+            'name' => $this->categoryName,
+        ], $data));
     }
 
     public function test_sales_rep_cannot_add_category(): void
     {
-        $user = $this->createUser(UserRolesEnum::SALES_REP);
+        $this->postCategory(UserRolesEnum::SALES_REP)
+            ->assertForbidden();
 
-        $this->actingAs($user, 'sanctum');
-
-        $response = $this->postJson('/api/category', [
-            'name' => 'Paper',
-        ]);
-
-        $response->assertForbidden();
-
-        $this->assertDatabaseMissing('categories', [
-            'name' => 'Paper',
-        ]);
-
+        $this->assertDatabaseMissing('categories', ['name' => $this->categoryName]);
     }
 
     public function test_admin_can_add_category(): void
     {
-        $user = $this->createUser(UserRolesEnum::ADMIN);
+        $this->postCategory(UserRolesEnum::ADMIN)
+            ->assertStatus(201);
 
-        $this->actingAs($user, 'sanctum');
-
-        $request = $this->postJson('/api/category', [
-            'name' => 'Paper',
-        ]);
-
-        $this->assertDatabaseHas('categories', [
-            'name' => 'Paper',
-        ]);
-
+        $this->assertDatabaseHas('categories', ['name' => $this->categoryName]);
     }
 
     public function test_cannot_add_empty_category_name(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
-
-        $this->actingAs($user, 'sanctum');
-
-        $response = $this->postJson('/api/category', [
+        $response = $this->postCategory(UserRolesEnum::SUPER_ADMIN, [
             'name' => '',
         ]);
 
-        $response->assertStatus(422);
-
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors('name');
     }
 }

@@ -6,8 +6,10 @@ use App\Exceptions\Handlers\AuthenticationExceptionHandler;
 use App\Exceptions\Handlers\CategoryServiceExceptionHandler;
 use App\Exceptions\Handlers\NotFoundHttpExceptionHandler;
 use App\Exceptions\Handlers\ProductServiceExceptionHandler;
+use App\Exceptions\Handlers\UnitServiceExceptionHandler;
 use App\Exceptions\Handlers\ValidationExceptionHandler;
 use App\Exceptions\ProductServiceException;
+use App\Exceptions\UnitServiceException;
 use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Logger\Dto\LoggerContextDto;
 use App\Utils\Response\ApiResponse;
@@ -38,6 +40,9 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->renderable(function (ProductServiceException $exception): JsonResponse {
             return ProductServiceExceptionHandler::handle($exception);
+        });
+        $exceptions->renderable(function (UnitServiceException $exception): JsonResponse {
+            return UnitServiceExceptionHandler::handle($exception);
         });
         $exceptions->renderable(function (AccessDeniedHttpException $exception): JsonResponse {
             return AccessDeniedExceptionHandler::handle($exception);

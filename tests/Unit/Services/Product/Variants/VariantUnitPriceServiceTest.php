@@ -1,8 +1,9 @@
 <?php
 
-namespace Services\Product\Variants;
+namespace Tests\Unit\Services\Product\Variants;
 
 use App\Exceptions\VariantUnitPriceServiceException;
+use App\Models\Product;
 use App\Services\Contracts\VariantUnitPriceServiceContract;
 use App\Utils\Seeders\ProductSeederUtil;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -10,27 +11,36 @@ use Tests\TestCase;
 
 class VariantUnitPriceServiceTest extends TestCase
 {
+    protected VariantUnitPriceServiceContract $priceService;
+
     /**
-     * A basic unit test example.
      * @throws BindingResolutionException
      * @throws VariantUnitPriceServiceException
      */
-    public function test_system_can_set_price_for_variant(): void
+    public function test_it_can_set_prices_for_product_variants(): void
     {
-        $product = ProductSeederUtil::run()->first();
+        $product = ProductSeederUtil::run()->first()?->load(['variants', 'productUnits']);
 
-        $priceService = app()->make(VariantUnitPriceServiceContract::class);
-        $response = $priceService->createPrice($product->load(['variants', "units"]));
+        $this->assertInstanceOf(Product::class, $product);
+        $this->assertNotEmpty($product->variants);
+        $this->assertNotEmpty($product->productUnits);
 
-        $this->assertTrue($response);
+        $result = $this->priceService->createPrice($product);
+
+        $this->assertTrue($result);
 
         $variant = $product->variants->first();
-        $unit = $product->units->first();
+        $unit = $product->productUnits->first();
 
         $this->assertDatabaseHas('variant_unit_prices', [
             'variant_id' => $variant->id,
             'product_unit_id' => $unit->id,
         ]);
+    }
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->priceService = $this->app->make(VariantUnitPriceServiceContract::class);
     }
 }

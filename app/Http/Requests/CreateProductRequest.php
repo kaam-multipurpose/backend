@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Enum\PermissionsEnum;
-use App\Enum\ProductUnitsEnum;
 use App\Enum\ProductVariantsTypeEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -40,7 +39,7 @@ class CreateProductRequest extends FormRequest
         return [
             "units" => ["required", "array", "min:1"],
             "units.*" => ["required", "array", "min:4", "max:6"],
-            "units.*.name" => ["required", Rule::enum(ProductUnitsEnum::class)],
+            "units.*.unit_id" => ["required", "integer", "exists:units,id"],
             "units.*.conversion_rate" => ["required", "integer"],
             "units.*.percentage" => ["required", "integer"],
             "units.*.is_base" => ["boolean"],

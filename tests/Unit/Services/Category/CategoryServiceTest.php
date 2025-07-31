@@ -4,43 +4,48 @@ namespace Tests\Unit\Services\Category;
 
 use App\Dto\CreateCategoryDto;
 use App\Dto\GetPaginatedCategoriesDto;
+use App\Exceptions\CategoryServiceException;
 use App\Models\Category;
 use App\Services\Contracts\CategoryServiceContract;
 use Tests\TestCase;
 
 class CategoryServiceTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @throws \Exception
-     */
-    public function test_system_can_add_category(): void
-    {
-        $categoryDto = new CreateCategoryDto('my category');
-        $mockerCategory = $this->app->make(CategoryServiceContract::class);
-        $mockerCategory->createCategory($categoryDto);
+    protected CategoryServiceContract $categoryService;
 
-        $this->assertDatabaseHas('categories', $categoryDto->toArray());
+    /**
+     * @throws CategoryServiceException
+     */
+    public function test_it_can_add_a_category(): void
+    {
+        $dto = new CreateCategoryDto('my category');
+
+        $this->categoryService->createCategory($dto);
+
+        $this->assertDatabaseHas('categories', $dto->toArray());
     }
 
     /**
-     * @throws \Exception
+     * @throws CategoryServiceException
      */
-    public function test_system_can_get_paginated_category(): void
+    public function test_it_can_fetch_paginated_categories(): void
     {
         Category::factory(20)->create();
-        $paginatedCategoryDto = new GetPaginatedCategoriesDto;
 
-        $mockerCategory = $this->app->make(CategoryServiceContract::class);
-        $result = $mockerCategory->getPaginatedCategories($paginatedCategoryDto);
+        $dto = new GetPaginatedCategoriesDto(); // Defaults assumed
 
-        // Assert pagination properties
-        $this->assertEquals(5, $result->perPage());
-        $this->assertEquals(1, $result->currentPage());
+        $result = $this->categoryService->getPaginatedCategories($dto);
 
-        // Optional: assert that 5 items are returned
-        $this->assertCount(5, $result->items());
+        $this->assertSame(5, $result->perPage());
+        $this->assertSame(1, $result->currentPage());
+        $this->assertCount(5, $result->items()); // Optional but nice
+    }
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Resolve the service from the container once
+        $this->categoryService = $this->app->make(CategoryServiceContract::class);
     }
 }

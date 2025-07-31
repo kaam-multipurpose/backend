@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Enum\ProductUnitsEnum;
 use App\Models\Product;
 use App\Models\ProductUnit;
+use App\Models\Unit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +20,7 @@ class ProductUnitFactory extends Factory
     public function definition(): array
     {
         return [
-            "name" => fake()->randomElement(ProductUnitsEnum::values()),
+            "unit_id" => Unit::inRandomOrder()->first() ?? Unit::factory()->create(),
             "product_id" => Product::inRandomOrder()->first() ?? Product::factory()->create(),
             "is_base" => fake()->boolean,
             "is_max" => fake()->boolean,

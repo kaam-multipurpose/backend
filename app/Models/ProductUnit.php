@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enum\ProductUnitsEnum;
 use Database\Factories\ProductUnitFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +14,7 @@ class ProductUnit extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'unit_id',
         "multiplier",
         "conversion_rate",
         "is_base",
@@ -26,7 +25,6 @@ class ProductUnit extends Model
         "is_base" => "boolean",
         "is_max" => "boolean",
         "multiplier" => "float",
-        "name" => ProductUnitsEnum::class,
     ];
 
     public function scopeBase($query)
@@ -47,5 +45,10 @@ class ProductUnit extends Model
     public function variantUnitPrices(): HasMany
     {
         return $this->hasMany(VariantUnitPrice::class);
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

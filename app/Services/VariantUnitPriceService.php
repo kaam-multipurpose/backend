@@ -30,7 +30,7 @@ class VariantUnitPriceService implements VariantUnitPriceServiceContract
                 "product_id" => $product->id,
             ]);
             $variants = $product->variants;
-            $units = $product->units;
+            $units = $product->productUnits;
 
 
             $toSave = $variants->flatMap(function ($variant) use ($units) {

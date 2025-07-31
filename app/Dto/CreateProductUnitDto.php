@@ -7,7 +7,7 @@ use App\Dto\Contract\DtoContract;
 final readonly class CreateProductUnitDto implements DtoContract
 {
     public function __construct(
-        public string  $name,
+        public int     $unitId,
         public int     $conversionRate,
         public float   $multiplier,
         public ?bool   $isBase = null,
@@ -22,7 +22,7 @@ final readonly class CreateProductUnitDto implements DtoContract
         $multiplier = 1 + ($data['percentage'] / 100);
 
         return new self(
-            name: $data['name'],
+            unitId: $data['unit_id'],
             conversionRate: $data['conversion_rate'],
             multiplier: $multiplier,
             isBase: $data['is_base'] ?? null,
@@ -33,7 +33,7 @@ final readonly class CreateProductUnitDto implements DtoContract
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
+            'unit_id' => $this->unitId,
             'conversion_rate' => $this->conversionRate,
             'multiplier' => $this->multiplier,
             'is_base' => $this->isBase,

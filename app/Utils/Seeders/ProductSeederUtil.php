@@ -2,13 +2,14 @@
 
 namespace App\Utils\Seeders;
 
-use App\Enum\ProductUnitsEnum;
 use App\Enum\ProductVariantsTypeEnum;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductUnit;
+use App\Models\Unit;
 use App\Models\Variant;
 use App\Models\VariantUnitPrice;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 
 class ProductSeederUtil
@@ -16,15 +17,17 @@ class ProductSeederUtil
     public static function run(int $categoryCount = 1, int $productCount = 1, bool $withPrice = false): Collection
     {
         $products = collect();
+        $units = Unit::factory(6)->create();
+
         Category::factory($categoryCount)
-            ->create()->each(function (Category $category, $count) use ($withPrice, $productCount, $products) {
-                self::seedProduct($category, $withPrice, $productCount, $products, $count);
+            ->create()->each(function (Category $category, $count) use ($withPrice, $productCount, $products, $units) {
+                self::seedProduct($category, $withPrice, $productCount, $products, $count, $units);
             });
 
         return $products;
     }
 
-    private static function seedProduct(Category $category, bool $withPrice, int $productCount, Collection $products, $count): void
+    private static function seedProduct(Category $category, bool $withPrice, int $productCount, Collection $products, $count, $units): void
     {
         $hasVariants = $count % 2 === 0;
         $variantType = $hasVariants
@@ -36,7 +39,7 @@ class ProductSeederUtil
                 "category_id" => $category->id,
                 "has_variants" => $hasVariants,
                 "variant_type" => $variantType,
-            ])->each(function (Product $product) use ($withPrice, $products, $hasVariants) {
+            ])->each(function (Product $product) use ($withPrice, $products, $hasVariants, $units) {
                 $products->push($product);
 
                 if ($hasVariants == 0) {
@@ -50,7 +53,7 @@ class ProductSeederUtil
                     ]);
                 }
 
-                self::seedProductUnits($product);
+                self::seedProductUnits($product, $units);
 
                 if ($withPrice) {
                     self::seedVariantsPrice($product);
@@ -59,23 +62,25 @@ class ProductSeederUtil
             });
     }
 
-    private static function seedProductUnits(Product $product): void
+    private static function seedProductUnits(Product $product, EloquentCollection $units): void
     {
-        $unitCounts = rand(2, count(ProductVariantsTypeEnum::values()));
-        $usedNames = [];
+        $unitCounts = rand(2, $units->count());
+        $usedUnitIds = [];
 
         for ($i = 0; $i < $unitCounts; $i++) {
-            $availableNames = array_diff(ProductUnitsEnum::values(), $usedNames);
-            $unitName = fake()->randomElement($availableNames);
-            $usedNames[] = $unitName;
+            $availableUnitIds = $units->pluck('id')->diff($usedUnitIds)->values();
+            $useUnitId = $availableUnitIds->random();
+
+            $usedUnitIds[] = $useUnitId;
 
             $isMax = $i >= $unitCounts - 1;
             $isBase = $i == 0;
+
             ProductUnit::factory()->create([
-                "name" => $unitName,
-                "product_id" => $product->id,
-                "is_base" => $isBase,
-                "is_max" => $isMax,
+                'unit_id' => $useUnitId,
+                'product_id' => $product->id,
+                'is_base' => $isBase,
+                'is_max' => $isMax,
             ]);
         }
     }
@@ -83,7 +88,7 @@ class ProductSeederUtil
     private static function seedVariantsPrice(Product $product): void
     {
         $variants = $product->variants();
-        $units = $product->units();
+        $units = $product->productUnits();
 
         $variants->each(function ($variant) use ($units) {
             $units->each(function ($unit) use ($variant) {

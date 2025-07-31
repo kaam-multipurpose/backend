@@ -11,7 +11,6 @@ use App\Utils\Response\ApiResponse;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -36,7 +35,7 @@ class AuthController extends Controller
             'user' => new UserResource($response['user']),
         ];
 
-        $this->log("info", "Login Successful", [
+        $this->log("info", "Login Successfully", [
             "email" => $data["user"]->email,
             "user_id" => $data["user"]->id,
             "role" => optional($response['user']->roles->first())->name,
