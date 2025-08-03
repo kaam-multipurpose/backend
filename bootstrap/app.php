@@ -34,16 +34,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-
-        $exceptions->renderable(function (CategoryServiceException $exception): JsonResponse {
-            return CategoryServiceExceptionHandler::handle($exception);
-        });
-        $exceptions->renderable(function (ProductServiceException $exception): JsonResponse {
-            return ProductServiceExceptionHandler::handle($exception);
-        });
-        $exceptions->renderable(function (UnitServiceException $exception): JsonResponse {
-            return UnitServiceExceptionHandler::handle($exception);
-        });
         $exceptions->renderable(function (AccessDeniedHttpException $exception): JsonResponse {
             return AccessDeniedExceptionHandler::handle($exception);
         });

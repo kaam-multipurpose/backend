@@ -17,15 +17,13 @@ class DatabaseSeeder extends Seeder
 
         $seeder = match ($env) {
             "local" => [
-                UserSeeder::class,
-                ProductSeeder::class,
                 RoleAndPermissionSeeder::class,
+                UserSeeder::class,
                 SuperAdminSeeder::class
             ],
             "testing" => [
-                UserSeeder::class,
-                ProductSeeder::class,
                 RoleAndPermissionSeeder::class,
+                UserSeeder::class,
             ],
             default => []
         };
