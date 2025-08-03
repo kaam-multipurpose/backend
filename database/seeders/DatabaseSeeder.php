@@ -15,21 +15,20 @@ class DatabaseSeeder extends Seeder
     {
         $env = config("app.env");
 
-        $seeder = [
-            RoleAndPermissionSeeder::class,
-        ];
-
-        $level = match ($env) {
-            "local", "testing" => [
+        $seeder = match ($env) {
+            "local" => [
                 UserSeeder::class,
                 ProductSeeder::class,
+                RoleAndPermissionSeeder::class,
+                SuperAdminSeeder::class
+            ],
+            "testing" => [
+                UserSeeder::class,
+                ProductSeeder::class,
+                RoleAndPermissionSeeder::class,
             ],
             default => []
         };
-        $this->call(array_merge(
-            $seeder,
-            $env != "testing" ? [SuperAdminSeeder::class] : [],
-            $level
-        ));
+        $this->call($seeder);
     }
 }
