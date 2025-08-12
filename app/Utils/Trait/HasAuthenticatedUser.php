@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\Auth;
 
 trait HasAuthenticatedUser
 {
-    protected ?Authenticatable $loggedInUser;
+    protected static ?Authenticatable $loggedInUser;
 
-    public function getLoggedInUser(): ?Authenticatable
+    public static function getLoggedInUser(): ?Authenticatable
     {
-        return $this->loggedInUser ?? Auth::user();
+        return self::$loggedInUser ?? Auth::user();
     }
 
-    public function setLoggedInUser(Authenticatable $user): void
+    public static function setLoggedInUser(Authenticatable $user): void
     {
-        $this->loggedInUser = $user;
+        self::$loggedInUser = $user;
     }
 }

@@ -2,18 +2,17 @@
 
 namespace App\Exceptions\Handlers;
 
-use App\Exceptions\CategoryServiceException;
-use App\Utils\Response\ApiResponse;
+use App\Exceptions\Handlers\Trait\HasHandlerRender;
+use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class NotFoundHttpExceptionHandler
 {
-    use HasLogger;
+    use HasLogger, HasAuthenticatedUser, HasHandlerRender;
 
     public static function handle(NotFoundHttpException $exception): JsonResponse
     {
@@ -21,20 +20,9 @@ class NotFoundHttpExceptionHandler
 
         if ($original instanceof ModelNotFoundException) {
             $model = class_basename($original->getModel());
-
-            self::logException($exception, "{$model} model not found");
-
-            return ApiResponse::error(
-                "{$model} not found",
-                status: Response::HTTP_NOT_FOUND
-            );
+            return self::render($exception, "{$model} model not found", Response::HTTP_NOT_FOUND);
         }
 
-        self::logException($exception, "'Unknown resource");
-
-        return ApiResponse::error(
-            'Unknown Resource',
-            status: Response::HTTP_NOT_FOUND
-        );
+        return self::render($exception, "Unknown resource", Response::HTTP_NOT_FOUND);
     }
 }

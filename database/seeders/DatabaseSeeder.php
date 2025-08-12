@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
             ],
             "testing" => [
                 RoleAndPermissionSeeder::class,
-                UserSeeder::class,
             ],
             default => []
         };

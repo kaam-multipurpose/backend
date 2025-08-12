@@ -2,17 +2,16 @@
 
 namespace App\Exceptions\Handlers;
 
-use App\Exceptions\CategoryServiceException;
 use App\Utils\Response\ApiResponse;
+use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class ValidationExceptionHandler
 {
-    use HasLogger;
+    use HasLogger, HasAuthenticatedUser;
 
     public static function handle(ValidationException $exception): JsonResponse
     {

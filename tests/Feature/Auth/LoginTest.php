@@ -23,11 +23,16 @@ class LoginTest extends TestCase
         ]);
     }
 
-    public function test_user_cannot_login_with_non_existent_email(): void
+    public function test_user_cannot_login_with_incorrect_details(): void
     {
         $response = $this->postJson('/api/login', $this->LoginPayload());
+
+        dump($response->json());
+
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['global']);
+
+        $this->assertGuest();
     }
 
     protected function LoginPayload(): array
@@ -36,18 +41,6 @@ class LoginTest extends TestCase
             'email' => fake()->safeEmail(),
             'password' => TEST_USER_PASSWORD,
         ];
-    }
-
-    public function test_user_cannot_login_with_incorrect_details(): void
-    {
-        $this->createUser(UserRolesEnum::SUPER_ADMIN);
-
-        $response = $this->postJson('/api/login', $this->LoginPayload());
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['global']);
-
-        $this->assertGuest();
     }
 
     public function test_login_fails_if_email_is_missing(): void

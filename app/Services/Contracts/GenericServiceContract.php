@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 interface GenericServiceContract
 {
-    public function getLoggedInUser(): ?Authenticatable;
+    public static function getLoggedInUser(): ?Authenticatable;
 
-    public function setLoggedInUser(Authenticatable $user): void;
+    public static function setLoggedInUser(Authenticatable $user): void;
 }

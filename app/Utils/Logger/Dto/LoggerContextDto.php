@@ -37,9 +37,16 @@ final readonly class LoggerContextDto
         );
     }
 
-    public static function fromException(\Throwable $e, array $extra = []): self
+    public static function fromException(\Throwable $e, ?Authenticatable $user = null, array $extra = []): self
     {
         return new self(
+            userId: $user?->id,
+            email: $user?->email,
+            role: $user
+                ? (method_exists($user, 'getRoleNames')
+                    ? $user->getRoleNames()->first()
+                    : 'user')
+                : 'guest',
             exceptionClass: get_class($e),
             trace: $e->getTraceAsString(),
             extra: array_merge(['message' => $e->getMessage()], $extra)
