@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -138,4 +138,31 @@ return [
     */
 
     'default_user_password' => env('DEFAULT_USER_PASSWORD', 'password'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Super Admin User for Seeding
+    |--------------------------------------------------------------------------
+    |
+    | This configuration defines the default Super Admin user that will be
+    | created during database seeding. It is intended for development,
+    | testing, or initial setup environments.
+    |
+    | Each value can be overridden via environment variables:
+    | - SUPER_ADMIN_EMAIL
+    | - SUPER_ADMIN_FIRSTNAME
+    | - SUPER_ADMIN_LASTNAME
+    | - SUPER_ADMIN_PHONE_NUMBER
+    |
+    | These values are used by the SuperAdminSeederUtil to ensure a consistent
+    | and idempotent creation of the Super Admin account.
+    |
+    */
+
+    'super_admin' => [
+        "email" => env("SUPER_ADMIN_EMAIL", "test@test.com"),
+        "first_name" => env("SUPER_ADMIN_FIRSTNAME", "Test"),
+        "last_name" => env("SUPER_ADMIN_LASTNAME", "Test"),
+        "phone_number" => env("SUPER_ADMIN_PHONE_NUMBER", "08123456789"),
+    ]
 ];

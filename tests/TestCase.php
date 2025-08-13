@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use App\Enum\UserRolesEnum;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -11,11 +13,19 @@ abstract class TestCase extends BaseTestCase
 {
     use CreateTestUser, RefreshDatabase, WithFaker;
 
+    protected Authenticatable $superAdminUser;
+    protected Authenticatable $adminUser;
+    protected Authenticatable $salesRepUser;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->seed();
+
+        $this->superAdminUser = $this->createUser(UserRolesEnum::SUPER_ADMIN);
+        $this->adminUser = $this->createUser(UserRolesEnum::ADMIN);
+        $this->salesRepUser = $this->createUser(UserRolesEnum::SALES_REP);
 
         if (!defined('TEST_USER_PASSWORD')) {
             define('TEST_USER_PASSWORD', config('app.default_user_password'));

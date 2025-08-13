@@ -4,6 +4,8 @@ namespace App\Utils\Seeders;
 
 use App\Enum\PermissionsEnum;
 use App\Enum\UserRolesEnum;
+use App\Utils\Logger\Dto\LoggerContextDto;
+use App\Utils\Logger\Logger;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -23,21 +25,27 @@ class RoleAndPermissionSeederUtil
 
     protected static function syncEnumToModel(array $enumValues, string $modelClass): void
     {
-        $existingNames = $modelClass::pluck('name')->toArray();
+        try {
+            $existingNames = $modelClass::pluck('name')->toArray();
 
-        $missing = array_diff($enumValues, $existingNames);
+            $missing = array_diff($enumValues, $existingNames);
 
-        if (!empty($missing)) {
-            $now = now();
+            if (!empty($missing)) {
+                $now = now();
 
-            $rows = collect($missing)->map(fn($value) => [
-                'name' => $value,
-                'guard_name' => 'web',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ])->toArray();
+                $rows = collect($missing)->map(fn($value) => [
+                    'name' => $value,
+                    'guard_name' => 'web',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ])->toArray();
 
-            $modelClass::insert($rows);
+                $modelClass::insert($rows);
+            }
+        } catch (\Throwable $e) {
+            Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
+                "info" => "When syncing enum to model {$modelClass}"
+            ]));
         }
     }
 
@@ -48,13 +56,21 @@ class RoleAndPermissionSeederUtil
 
     public static function assignPermissionToRole(): void
     {
-        $definedRoles = array_filter(UserRolesEnum::cases(), fn(UserRolesEnum $role) => $role !== UserRolesEnum::SUPER_ADMIN);
+        $currentRole = "";
+        try {
+            $definedRoles = array_filter(UserRolesEnum::cases(), fn(UserRolesEnum $role) => $role !== UserRolesEnum::SUPER_ADMIN);
 
-        collect($definedRoles)->each(function (UserRolesEnum $roleEnum) {
-            $role = Role::where(['name' => $roleEnum->value])->first();
-            $permissions = array_map(fn($p) => $p->value, $roleEnum->permissions());
-            $role->syncPermissions($permissions);
-        });
+            collect($definedRoles)->each(function (UserRolesEnum $roleEnum) use (&$currentRole) {
+                $role = Role::where(['name' => $roleEnum->value])->first();
+                $currentRole = $role;
+                $permissions = array_map(fn($p) => $p->value, $roleEnum->permissions());
+                $role->syncPermissions($permissions);
+            });
+        } catch (\Throwable $e) {
+            Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
+                "info" => "When assigning permission to role {$currentRole}"
+            ]));
+        }
     }
 
 }

@@ -3,15 +3,13 @@
 namespace App\Exceptions\Handlers;
 
 use App\Exceptions\Handlers\Trait\HasHandlerRender;
-use App\Utils\Trait\HasAuthenticatedUser;
-use App\Utils\Trait\HasLogger;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticationExceptionHandler
 {
-    use HasLogger, HasAuthenticatedUser, HasHandlerRender;
+    use HasHandlerRender;
 
     public static function handle(AuthenticationException $exception): JsonResponse
     {

@@ -9,9 +9,9 @@ enum UserRolesEnum: string implements EnumContract
 {
     use EnumTrait;
 
+    case SUPER_ADMIN = 'super admin';
     case ADMIN = 'admin';
     case SALES_REP = 'sales rep';
-    case SUPER_ADMIN = 'super admin';
 
     public function permissions(): array
     {
@@ -48,7 +48,7 @@ enum UserRolesEnum: string implements EnumContract
                 PermissionsEnum::MOVE_PRODUCT,
             ],
             self::SUPER_ADMIN => PermissionsEnum::cases(),
-            
+
             default => []
         };
     }

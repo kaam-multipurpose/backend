@@ -9,10 +9,8 @@ class LoginTest extends TestCase
 {
     public function test_user_can_login(): void
     {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
-
         $response = $this->postJson('/api/login', [
-            'email' => $user->email,
+            'email' => $this->superAdminUser->email,
             'password' => TEST_USER_PASSWORD,
         ]);
 
