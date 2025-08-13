@@ -19,11 +19,12 @@ class AuthService implements AuthServiceContract
     }
 
     /**
-     * @throws ValidationException
+     * @param LoginDto $loginDto
+     * @return array
      */
     public function login(LoginDto $loginDto): array
     {
-        $this->logInfo("Attempt to login", [
+        self::logInfo("Attempt to login", [
             'email' => $loginDto->email,
         ]);
 
@@ -31,7 +32,7 @@ class AuthService implements AuthServiceContract
 
         if (!$user || !Hash::check($loginDto->password, $user->password)) {
 
-            $this->logWarning('Login attempt failed', [
+            self::logWarning('Login attempt failed', [
                 "email" => $loginDto->email,
             ]);
 

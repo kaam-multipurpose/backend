@@ -27,8 +27,6 @@ class LoginTest extends TestCase
     {
         $response = $this->postJson('/api/login', $this->LoginPayload());
 
-        dump($response->json());
-
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['global']);
 

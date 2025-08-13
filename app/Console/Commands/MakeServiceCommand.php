@@ -62,7 +62,7 @@ class MakeServiceCommand extends Command
 
         namespace App\Services\Contracts;
 
-        interface {$name}ServiceContract extends GenericServiceContract
+        interface {$name}ServiceContract
         {
             // Define your contract methods here
         }
@@ -76,7 +76,6 @@ class MakeServiceCommand extends Command
         namespace App\Services;
 
         use App\Services\Contracts\\{$name}ServiceContract;
-        use App\Utils\Logger\Contract\LoggerContract;
         use App\Utils\Trait\HasAuthenticatedUser;
         use App\Utils\Trait\HasLogger;
 
@@ -84,9 +83,7 @@ class MakeServiceCommand extends Command
         {
             use HasAuthenticatedUser, HasLogger;
 
-            public function __construct(
-                protected LoggerContract     \$logger,
-             ){}
+            public function __construct(){}
 
              // Your service logic goes here
 

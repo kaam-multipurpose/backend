@@ -34,7 +34,7 @@ class AuthController extends Controller
             'user' => new UserResource($response['user']),
         ];
 
-        $this->logInfo("Login Successful", [
+        self::logInfo("Login Successful", [
             "email" => $data["user"]->email,
             "user_id" => $data["user"]->id,
             "role" => $response['user']->roles->first()?->name,

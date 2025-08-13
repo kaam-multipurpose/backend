@@ -2,19 +2,19 @@
 
 namespace App\Utils\Trait;
 
-use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Logger\Dto\LoggerContextDto;
+use App\Utils\Logger\Logger;
 
 trait HasLogger
 {
     protected static function logException(\Throwable $exception, string $message, $extra = []): void
     {
-        app(LoggerContract::class)->error($message, LoggerContextDto::fromException($exception, self::getLoggedInUser(), $extra));
+        Logger::error($message, LoggerContextDto::fromException($exception, self::getLoggedInUser(), $extra));
     }
 
-    protected function logInfo(string $message, array $extra = []): void
+    protected static function logInfo(string $message, array $extra = []): void
     {
-        app(LoggerContract::class)->info($message, self::extractUser($extra));
+        Logger::info($message, self::extractUser($extra));
     }
 
     private static function extractUser(array $extra = []): LoggerContextDto
@@ -23,14 +23,14 @@ trait HasLogger
         return LoggerContextDto::fromUser($user, $extra);
     }
 
-    protected function logError(string $message, array $extra = []): void
+    protected static function logError(string $message, array $extra = []): void
     {
-        app(LoggerContract::class)->error($message, self::extractUser($extra));
+        Logger::error($message, self::extractUser($extra));
     }
 
-    protected function logWarning(string $message, array $extra = []): void
+    protected static function logWarning(string $message, array $extra = []): void
     {
-        app(LoggerContract::class)->warning($message, self::extractUser($extra));
+        Logger::warning($message, self::extractUser($extra));
     }
 
 }

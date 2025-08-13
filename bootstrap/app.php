@@ -1,17 +1,11 @@
 <?php
 
-use App\Exceptions\CategoryServiceException;
 use App\Exceptions\Handlers\AccessDeniedExceptionHandler;
 use App\Exceptions\Handlers\AuthenticationExceptionHandler;
-use App\Exceptions\Handlers\CategoryServiceExceptionHandler;
 use App\Exceptions\Handlers\NotFoundHttpExceptionHandler;
-use App\Exceptions\Handlers\ProductServiceExceptionHandler;
-use App\Exceptions\Handlers\UnitServiceExceptionHandler;
 use App\Exceptions\Handlers\ValidationExceptionHandler;
-use App\Exceptions\ProductServiceException;
-use App\Exceptions\UnitServiceException;
-use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Logger\Dto\LoggerContextDto;
+use App\Utils\Logger\Logger;
 use App\Utils\Response\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
@@ -47,7 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
             return NotFoundHttpExceptionHandler::handle($exception);
         });
         $exceptions->renderable(function (\Throwable $exception): JsonResponse {
-            app(LoggerContract::class)->error('Unexpected Error', LoggerContextDto::fromException($exception));
+            Logger::error('Unexpected Error', LoggerContextDto::fromException($exception));
 
             return ApiResponse::error(
                 'Something went wrong',

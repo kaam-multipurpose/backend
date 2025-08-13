@@ -5,7 +5,7 @@ namespace App\Services\Contracts;
 use App\Dto\LoginDto;
 use Illuminate\Validation\ValidationException;
 
-interface AuthServiceContract extends GenericServiceContract
+interface AuthServiceContract
 {
     /**
      * @throws ValidationException

@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Enum\UserRolesEnum;
 use App\Utils\Logger\Contract\LoggerContract;
-use App\Utils\Logger\Logger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -16,7 +15,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(LoggerContract::class, Logger::class);
     }
 
     /**

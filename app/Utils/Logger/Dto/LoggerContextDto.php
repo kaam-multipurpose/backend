@@ -20,37 +20,37 @@ final readonly class LoggerContextDto
 
     public static function fromUser(?Authenticatable $user = null, array $extra = []): self
     {
-        return self::createInstance($user, $extra);
+        return self::build(self::extractUserInfo($user), $extra);
     }
 
-    protected static function createInstance(?Authenticatable $user, $extra = []): self
+    private static function build(array $userInfo, array $extra = [], ?\Throwable $e = null): self
     {
         return new self(
-            userId: $user?->id,
-            email: $user?->email,
-            role: $user
+            userId: $userInfo['userId'],
+            email: $userInfo['email'],
+            role: $userInfo['role'],
+            exceptionClass: $e ? get_class($e) : null,
+            trace: $e?->getTraceAsString(),
+            extra: $e ? array_merge(['message' => $e->getMessage()], $extra) : $extra
+        );
+    }
+
+    private static function extractUserInfo(?Authenticatable $user): array
+    {
+        return [
+            'userId' => $user?->id,
+            'email' => $user?->email,
+            'role' => $user
                 ? (method_exists($user, 'getRoleNames')
                     ? $user->getRoleNames()->first()
                     : 'user')
                 : 'guest',
-            extra: $extra
-        );
+        ];
     }
 
     public static function fromException(\Throwable $e, ?Authenticatable $user = null, array $extra = []): self
     {
-        return new self(
-            userId: $user?->id,
-            email: $user?->email,
-            role: $user
-                ? (method_exists($user, 'getRoleNames')
-                    ? $user->getRoleNames()->first()
-                    : 'user')
-                : 'guest',
-            exceptionClass: get_class($e),
-            trace: $e->getTraceAsString(),
-            extra: array_merge(['message' => $e->getMessage()], $extra)
-        );
+        return self::build(self::extractUserInfo($user), $extra, $e);
     }
 
     public function toArray(): array

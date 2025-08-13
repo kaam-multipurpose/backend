@@ -2,30 +2,29 @@
 
 namespace App\Utils\Logger;
 
-use App\Utils\Logger\Contract\LoggerContract;
 use App\Utils\Logger\Dto\LoggerContextDto;
 use Illuminate\Support\Facades\Log;
 
 
-class Logger implements LoggerContract
+class Logger
 {
-    public function info(string $message, ?LoggerContextDto $extraDto = null): void
+    public static function info(string $message, ?LoggerContextDto $extraDto = null): void
     {
-        Log::info($message, $this->buildContext($extraDto));
+        Log::info($message, self::buildContext($extraDto));
     }
 
-    protected function buildContext(?LoggerContextDto $contextDto): array
+    protected static function buildContext(?LoggerContextDto $contextDto): array
     {
         return $contextDto ? $contextDto->toArray() : ['user' => 'system'];
     }
 
-    public function error(string $message, ?LoggerContextDto $extraDto = null): void
+    public static function error(string $message, ?LoggerContextDto $extraDto = null): void
     {
-        Log::error($message, $this->buildContext($extraDto));
+        Log::error($message, self::buildContext($extraDto));
     }
 
-    public function warning(string $message, ?LoggerContextDto $extraDto = null): void
+    public static function warning(string $message, ?LoggerContextDto $extraDto = null): void
     {
-        Log::warning($message, $this->buildContext($extraDto));
+        Log::warning($message, self::buildContext($extraDto));
     }
 }
