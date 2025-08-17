@@ -14,10 +14,15 @@ class LoginTest extends TestCase
             'password' => TEST_USER_PASSWORD,
         ]);
 
-        $response->assertStatus(200);
         $response->assertJson([
             'success' => true,
             'message' => 'Logged in successfully.',
+        ]);
+        $this->assertDatabaseHas('personal_access_tokens', [
+            'tokenable_id' => $this->superAdminUser->id,
+        ]);
+        $this->assertDatabaseHas('refresh_tokens', [
+            'user_id' => $this->superAdminUser->id,
         ]);
     }
 

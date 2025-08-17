@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
         $seeder = match ($env) {
             "local" => [
                 RoleAndPermissionSeeder::class,
+                SuperAdminSeeder::class,
                 UserSeeder::class,
-                SuperAdminSeeder::class
             ],
             "testing" => [
                 RoleAndPermissionSeeder::class,

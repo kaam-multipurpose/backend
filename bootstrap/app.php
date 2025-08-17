@@ -3,6 +3,7 @@
 use App\Exceptions\Handlers\AccessDeniedExceptionHandler;
 use App\Exceptions\Handlers\AuthenticationExceptionHandler;
 use App\Exceptions\Handlers\NotFoundHttpExceptionHandler;
+use App\Exceptions\Handlers\ThrottleRequestsExceptionHandler;
 use App\Exceptions\Handlers\ValidationExceptionHandler;
 use App\Utils\Logger\Dto\LoggerContextDto;
 use App\Utils\Logger\Logger;
@@ -11,6 +12,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->renderable(function (AccessDeniedHttpException $exception): JsonResponse {
             return AccessDeniedExceptionHandler::handle($exception);
+        });
+        $exceptions->renderable(function (ThrottleRequestsException $exception): JsonResponse {
+            return ThrottleRequestsExceptionHandler::handle($exception);
         });
         $exceptions->renderable(function (AuthenticationException $exception): JsonResponse {
             return AuthenticationExceptionHandler::handle($exception);
