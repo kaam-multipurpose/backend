@@ -23,6 +23,30 @@ class RoleAndPermissionSeederUtil
         self::syncEnumToModel(UserRolesEnum::values(), Role::class);
     }
 
+    public static function seedPermission(): void
+    {
+        self::syncEnumToModel(PermissionsEnum::values(), Permission::class);
+    }
+
+    public static function assignPermissionToRole(): void
+    {
+        $currentRole = '';
+        try {
+            $definedRoles = array_filter(UserRolesEnum::cases(), fn (UserRolesEnum $role) => $role !== UserRolesEnum::SUPER_ADMIN);
+
+            collect($definedRoles)->each(function (UserRolesEnum $roleEnum) use (&$currentRole): void {
+                $role = Role::where(['name' => $roleEnum->value])->first();
+                $currentRole = $role;
+                $permissions = array_map(fn ($p) => $p->value, $roleEnum->permissions());
+                $role->syncPermissions($permissions);
+            });
+        } catch (\Throwable $e) {
+            Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
+                'info' => "When assigning permission to role {$currentRole}",
+            ]));
+        }
+    }
+
     protected static function syncEnumToModel(array $enumValues, string $modelClass): void
     {
         try {
@@ -30,10 +54,10 @@ class RoleAndPermissionSeederUtil
 
             $missing = array_diff($enumValues, $existingNames);
 
-            if (!empty($missing)) {
+            if (! empty($missing)) {
                 $now = now();
 
-                $rows = collect($missing)->map(fn($value) => [
+                $rows = collect($missing)->map(fn ($value) => [
                     'name' => $value,
                     'guard_name' => 'web',
                     'created_at' => $now,
@@ -44,33 +68,8 @@ class RoleAndPermissionSeederUtil
             }
         } catch (\Throwable $e) {
             Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
-                "info" => "When syncing enum to model {$modelClass}"
+                'info' => "When syncing enum to model {$modelClass}",
             ]));
         }
     }
-
-    public static function seedPermission(): void
-    {
-        self::syncEnumToModel(PermissionsEnum::values(), Permission::class);
-    }
-
-    public static function assignPermissionToRole(): void
-    {
-        $currentRole = "";
-        try {
-            $definedRoles = array_filter(UserRolesEnum::cases(), fn(UserRolesEnum $role) => $role !== UserRolesEnum::SUPER_ADMIN);
-
-            collect($definedRoles)->each(function (UserRolesEnum $roleEnum) use (&$currentRole) {
-                $role = Role::where(['name' => $roleEnum->value])->first();
-                $currentRole = $role;
-                $permissions = array_map(fn($p) => $p->value, $roleEnum->permissions());
-                $role->syncPermissions($permissions);
-            });
-        } catch (\Throwable $e) {
-            Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
-                "info" => "When assigning permission to role {$currentRole}"
-            ]));
-        }
-    }
-
 }

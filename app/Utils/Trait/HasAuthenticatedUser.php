@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 trait HasAuthenticatedUser
 {
-    protected static ?Authenticatable $loggedInUser;
+    private static ?Authenticatable $loggedInUser;
 
     public static function getLoggedInUser(): ?Authenticatable
     {

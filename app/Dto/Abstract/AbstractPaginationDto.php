@@ -10,15 +10,15 @@ abstract readonly class AbstractPaginationDto
 
     public int $row;
 
-    public static function defaultKeys(): array
-    {
-        return PaginationEnum::values();
-    }
-
-    public function hydrateDefault(array $array): void
+    public function __construct(?array $array)
     {
         $this->page = $array['page'] ?? 1;
         $this->row = $array['row'] ?? 5;
+    }
+
+    public static function defaultKeys(): array
+    {
+        return PaginationEnum::values();
     }
 
     public function defaultToArray(): array

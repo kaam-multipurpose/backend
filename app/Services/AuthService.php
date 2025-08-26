@@ -18,26 +18,21 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthService implements AuthServiceContract
 {
-    use HasAuthenticatedUser, HasLogger;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
-    /**
-     * @param LoginDto $loginDto
-     * @return LoginServiceResponseDto
-     */
     public function login(LoginDto $loginDto): LoginServiceResponseDto
     {
-        self::logInfo("Attempt to login", [
+        self::logInfo('Attempt to login', [
             'email' => $loginDto->email,
         ]);
 
-        if (!Auth::Attempt($loginDto->toArray())) {
+        if (! Auth::Attempt($loginDto->toArray())) {
 
             self::logWarning('Login attempt failed', [
-                "email" => $loginDto->email,
+                'email' => $loginDto->email,
             ]);
 
             throw ValidationException::withMessages([
@@ -54,8 +49,8 @@ class AuthService implements AuthServiceContract
             return $this->generateTokens($user);
 
         } catch (\Throwable $e) {
-            self::logException($e, "Unable to login", [
-                "email" => $loginDto->email,
+            self::logException($e, 'Unable to login', [
+                'email' => $loginDto->email,
             ]);
             throw ValidationException::withMessages([
                 'global' => ['Unable to login'],
@@ -64,42 +59,61 @@ class AuthService implements AuthServiceContract
     }
 
     /**
-     * @param string $refreshToken
-     * @return LoginServiceResponseDto
      * @throws AuthenticationException
      */
     public function refreshToken(string $refreshToken): LoginServiceResponseDto
     {
         try {
-            self::logInfo("Attempt to refresh token");
+            self::logInfo('Attempt to refresh token');
 
-            $refreshRecord = RefreshToken::where("token", $refreshToken)
+            $refreshRecord = RefreshToken::where('token', $refreshToken)
                 ->where('expires_at', '>', now())
                 ->with('user')
                 ->first();
 
-            if (!$refreshRecord || !$refreshRecord->user) {
-                throw new AccessDeniedHttpException("Invalid refresh token");
+            if (! $refreshRecord || ! $refreshRecord->user) {
+                throw new AccessDeniedHttpException('Invalid refresh token');
             }
 
+            /** @var User $user */
             $user = $refreshRecord->user;
+
             $user->tokens()->delete();
             $user->refreshToken()->delete();
 
             return $this->generateTokens($user);
 
         } catch (\Throwable $e) {
-            self::logException($e, "Unable to refresh token");
+            self::logException($e, 'Unable to refresh token');
             throw ValidationException::withMessages([
-                "global" => ["Unable to refresh token"]
+                'global' => ['Unable to refresh token'],
             ]);
         }
     }
 
-    /**
-     * @param Authenticatable|User $user
-     * @return LoginServiceResponseDto
-     */
+    public function logout(): array
+    {
+
+        try {
+            self::logInfo('Attempt to logout');
+
+            /** @var User $user */
+            $user = self::getLoggedInUser();
+
+            $user->tokens()->delete();
+            $user->refreshToken()->delete();
+
+            return [
+                'email' => $user->email,
+            ];
+        } catch (\Throwable $e) {
+            self::logException($e, 'Unable to logout');
+            throw ValidationException::withMessages([
+                'global' => ['unable to logout'],
+            ]);
+        }
+    }
+
     private function generateTokens(Authenticatable|User $user): LoginServiceResponseDto
     {
         $expiresAt = now()->addHours(2);
@@ -113,32 +127,9 @@ class AuthService implements AuthServiceContract
             'expires_at' => $refreshTokenExpiresAt,
         ]);
 
-        return new LoginServiceResponseDto()
+        return (new LoginServiceResponseDto)
             ->withUser($user)
             ->withToken($token, $expiresAt)
             ->withRefreshToken($refreshToken, $refreshTokenExpiresAt);
-    }
-
-    /**
-     * @return array
-     */
-    public function logout(): array
-    {
-
-        try {
-            self::logInfo("Attempt to logout");
-
-            $user = self::getLoggedInUser();
-            $user->tokens()->delete();
-            $user->refreshToken()->delete();
-            return [
-                "email" => $user->email,
-            ];
-        } catch (\Throwable $e) {
-            self::logException($e, "Unable to logout");
-            throw ValidationException::withMessages([
-                "global" => ["unable to logout"]
-            ]);
-        }
     }
 }

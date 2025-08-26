@@ -9,16 +9,16 @@ final readonly class GetPaginatedCategoriesDto extends AbstractPaginationDto imp
 {
     public function __construct(
         protected ?array $defaultPaginationProps = [],
-        public ?string   $search = null,
-    )
-    {
-        $this->hydrateDefault($defaultPaginationProps);
+        public ?string $search = null,
+    ) {
+        parent::__construct($defaultPaginationProps);
     }
 
     public static function fromValidated(array $data): self
     {
-        $default = array_filter($data,
-            fn($item) => in_array($item, self::defaultKeys()),
+        $default = array_filter(
+            $data,
+            fn ($item) => in_array($item, self::defaultKeys()),
             ARRAY_FILTER_USE_KEY
         );
 

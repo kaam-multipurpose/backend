@@ -13,6 +13,6 @@ class AuthenticationExceptionHandler
 
     public static function handle(AuthenticationException $exception): JsonResponse
     {
-        return self::render($exception, "Authentication Failed", Response::HTTP_UNAUTHORIZED);
+        return self::render($exception, 'Authentication Failed', Response::HTTP_UNAUTHORIZED);
     }
 }

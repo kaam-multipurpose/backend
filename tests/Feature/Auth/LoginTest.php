@@ -36,14 +36,6 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
-    protected function LoginPayload(): array
-    {
-        return [
-            'email' => fake()->safeEmail(),
-            'password' => TEST_USER_PASSWORD,
-        ];
-    }
-
     public function test_login_fails_if_email_is_missing(): void
     {
         $response = $this->postJson('/api/login', [
@@ -64,5 +56,13 @@ class LoginTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['password']);
+    }
+
+    protected function LoginPayload(): array
+    {
+        return [
+            'email' => fake()->safeEmail(),
+            'password' => TEST_USER_PASSWORD,
+        ];
     }
 }

@@ -16,6 +16,9 @@ final readonly class LoginDto implements DtoContract
         );
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function toArray(): array
     {
         return [

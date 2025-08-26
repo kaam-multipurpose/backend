@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ValidationExceptionHandler
 {
-    use HasLogger, HasAuthenticatedUser;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     public static function handle(ValidationException $exception): JsonResponse
     {

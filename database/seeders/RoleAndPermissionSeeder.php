@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Utils\Seeders\RoleAndPermissionSeederUtil;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RoleAndPermissionSeeder extends Seeder

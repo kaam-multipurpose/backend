@@ -9,12 +9,13 @@ use Illuminate\Http\JsonResponse;
 
 trait HasHandlerRender
 {
-    use HasLogger, HasAuthenticatedUser;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     public static function render(\Throwable $exception, string $message, int $status): JsonResponse
     {
         self::logException($exception, $message);
+
         return ApiResponse::error($exception->getMessage(), status: $status);
     }
-
 }

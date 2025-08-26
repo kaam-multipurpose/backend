@@ -18,9 +18,10 @@ class NotFoundHttpExceptionHandler
 
         if ($original instanceof ModelNotFoundException) {
             $model = class_basename($original->getModel());
+
             return self::render($exception, "{$model} model not found", Response::HTTP_NOT_FOUND);
         }
 
-        return self::render($exception, "Unknown resource", Response::HTTP_NOT_FOUND);
+        return self::render($exception, 'Unknown resource', Response::HTTP_NOT_FOUND);
     }
 }

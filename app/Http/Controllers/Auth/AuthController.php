@@ -20,15 +20,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
 {
-    use HasAuthenticatedUser, HasLogger;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
-    public function __construct(protected AuthServiceContract $authService)
-    {
-    }
+    public function __construct(protected AuthServiceContract $authService) {}
 
     /**
-     * @param LoginRequest $request
-     * @return JsonResponse
      * @throws AuthenticationException
      */
     public function login(LoginRequest $request): JsonResponse
@@ -39,13 +36,13 @@ class AuthController extends Controller
 
         $data = [
             'user' => new UserResource($response->user),
-            "expires_at" => $response->expiresAt,
+            'expires_at' => $response->expiresAt,
         ];
 
-        self::logInfo("Login Successful", [
-            "email" => $data["user"]->email,
-            "user_id" => $data["user"]->id,
-            "role" => $response->user->roles->first()?->name,
+        self::logInfo('Login Successful', [
+            'email' => $data['user']['email'],
+            'user_id' => $data['user']['id'],
+            'role' => $response->user->roles->first()?->name,
         ]);
 
         return ApiResponse::success($data, 'Logged in successfully.')
@@ -53,47 +50,24 @@ class AuthController extends Controller
             ->withCookie($this->rotateRefreshToken($response));
     }
 
-    private function withAuthHeader(string $token): array
-    {
-        return [
-            "Authorization" => $token,
-            'Access-Control-Expose-Headers' => 'Authorization'
-        ];
-    }
-
     /**
-     * @param LoginServiceResponseDto $dto
-     * @return SymPyCookie
-     */
-    private function rotateRefreshToken(LoginServiceResponseDto $dto): SymPyCookie
-    {
-        return Cookie::make(
-            "refresh_token",
-            value: $dto->refreshToken,
-            minutes: now()->diffInMinutes($dto->refreshTokenExpiresAt),
-        );
-    }
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
      * @throws AuthenticationException
      */
     public function refreshToken(Request $request): JsonResponse
     {
         $refreshToken = $request->cookie('refresh_token');
 
-        if (!$refreshToken) {
-            throw new NotFoundHttpException("Refresh token not found");
+        if (! $refreshToken) {
+            throw new NotFoundHttpException('Refresh token not found');
         }
 
         $response = $this->authService->refreshToken($refreshToken);
 
         self::setLoggedInUser($response->user);
-        self::logInfo("Token Refreshed Successfully");
+        self::logInfo('Token Refreshed Successfully');
 
         return ApiResponse::success([
-            "expires_at" => $response->expiresAt,
+            'expires_at' => $response->expiresAt,
         ])->withHeaders($this->withAuthHeader($response->token))
             ->withCookie($this->rotateRefreshToken($response));
     }
@@ -102,8 +76,26 @@ class AuthController extends Controller
     {
         $this->authService->logout();
 
-        self::logInfo("Logged out successfully");
-        return ApiResponse::success(message: "Logged out successfully.")
+        self::logInfo('Logged out successfully');
+
+        return ApiResponse::success(message: 'Logged out successfully.')
             ->withCookie(Cookie::forget('refresh_token'));
+    }
+
+    private function withAuthHeader(string $token): array
+    {
+        return [
+            'Authorization' => $token,
+            'Access-Control-Expose-Headers' => 'Authorization',
+        ];
+    }
+
+    private function rotateRefreshToken(LoginServiceResponseDto $dto): SymPyCookie
+    {
+        return Cookie::make(
+            'refresh_token',
+            value: $dto->refreshToken,
+            minutes: (int) now()->diffInMinutes($dto->refreshTokenExpiresAt),
+        );
     }
 }

@@ -17,12 +17,6 @@ trait HasLogger
         Logger::info($message, self::extractUser($extra));
     }
 
-    private static function extractUser(array $extra = []): LoggerContextDto
-    {
-        $user = self::getLoggedInUser();
-        return LoggerContextDto::fromUser($user, $extra);
-    }
-
     protected static function logError(string $message, array $extra = []): void
     {
         Logger::error($message, self::extractUser($extra));
@@ -33,4 +27,10 @@ trait HasLogger
         Logger::warning($message, self::extractUser($extra));
     }
 
+    private static function extractUser(array $extra = []): LoggerContextDto
+    {
+        $user = self::getLoggedInUser();
+
+        return LoggerContextDto::fromUser($user, $extra);
+    }
 }

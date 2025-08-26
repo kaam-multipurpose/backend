@@ -13,6 +13,6 @@ class ThrottleRequestsExceptionHandler
 
     public static function handle(ThrottleRequestsException $exception): JsonResponse
     {
-        return self::render($exception, "Too Many Attempts", status: Response::HTTP_TOO_MANY_REQUESTS);
+        return self::render($exception, 'Too Many Attempts', status: Response::HTTP_TOO_MANY_REQUESTS);
     }
 }

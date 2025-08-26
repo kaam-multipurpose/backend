@@ -11,10 +11,14 @@ use Tests\Traits\CreateTestUser;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreateTestUser, RefreshDatabase, WithFaker;
+    use CreateTestUser;
+    use RefreshDatabase;
+    use WithFaker;
 
     protected Authenticatable $superAdminUser;
+
     protected Authenticatable $adminUser;
+
     protected Authenticatable $salesRepUser;
 
     protected function setUp(): void
@@ -27,7 +31,7 @@ abstract class TestCase extends BaseTestCase
         $this->adminUser = $this->createUser(UserRolesEnum::ADMIN);
         $this->salesRepUser = $this->createUser(UserRolesEnum::SALES_REP);
 
-        if (!defined('TEST_USER_PASSWORD')) {
+        if (! defined('TEST_USER_PASSWORD')) {
             define('TEST_USER_PASSWORD', config('app.default_user_password'));
         }
 

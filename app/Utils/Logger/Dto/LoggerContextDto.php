@@ -7,20 +7,23 @@ use Illuminate\Contracts\Auth\Authenticatable;
 final readonly class LoggerContextDto
 {
     public function __construct(
-        public ?int    $userId = null,
+        public ?int $userId = null,
         public ?string $email = null,
         public ?string $role = null,
         public ?string $exceptionClass = null,
         public ?string $trace = null,
+        public array $extra = [],
         public ?string $endpoint = null,
-        public array   $extra = []
-    )
-    {
-    }
+    ) {}
 
     public static function fromUser(?Authenticatable $user = null, array $extra = []): self
     {
         return self::build(self::extractUserInfo($user), $extra);
+    }
+
+    public static function fromException(\Throwable $e, ?Authenticatable $user = null, array $extra = []): self
+    {
+        return self::build(self::extractUserInfo($user), $extra, $e);
     }
 
     private static function build(array $userInfo, array $extra = [], ?\Throwable $e = null): self
@@ -29,9 +32,9 @@ final readonly class LoggerContextDto
             userId: $userInfo['userId'],
             email: $userInfo['email'],
             role: $userInfo['role'],
-            exceptionClass: $e ? get_class($e) : null,
+            exceptionClass: $e ? $e::class : null,
             trace: $e?->getTraceAsString(),
-            extra: $e ? array_merge(['message' => $e->getMessage()], $extra) : $extra
+            extra: $e ? array_merge(['message' => $e->getMessage()], $extra) : $extra,
         );
     }
 
@@ -41,16 +44,9 @@ final readonly class LoggerContextDto
             'userId' => $user?->id,
             'email' => $user?->email,
             'role' => $user
-                ? (method_exists($user, 'getRoleNames')
                     ? $user->getRoleNames()->first()
-                    : 'user')
                 : 'guest',
         ];
-    }
-
-    public static function fromException(\Throwable $e, ?Authenticatable $user = null, array $extra = []): self
-    {
-        return self::build(self::extractUserInfo($user), $extra, $e);
     }
 
     public function toArray(): array
@@ -60,8 +56,7 @@ final readonly class LoggerContextDto
             'email' => $this->email,
             'role' => $this->role,
             'exception' => $this->exceptionClass,
-            'trace' => $this->trace,
             'endpoint' => $this->endpoint,
-        ], $this->extra);
+        ], $this->extra,[$this->trace]);
     }
 }

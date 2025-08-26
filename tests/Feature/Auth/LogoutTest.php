@@ -12,7 +12,7 @@ class LogoutTest extends TestCase
     public function test_user_can_logout_successfully(): void
     {
 
-        $this->actingAs($this->salesRepUser, "sanctum");
+        $this->actingAs($this->salesRepUser, 'sanctum');
 
         // Call logout with token and cookie
         $logoutResponse = $this->deleteJson('/api/logout');

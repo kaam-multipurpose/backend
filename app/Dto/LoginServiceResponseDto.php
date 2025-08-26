@@ -12,12 +12,11 @@ final readonly class LoginServiceResponseDto
      */
     public function __construct(
         public ?Authenticatable $user = null,
-        public ?string          $token = null,
-        public ?Carbon          $expiresAt = null,
-        public ?string          $refreshToken = null,
-        public ?Carbon          $refreshTokenExpiresAt = null,
-    )
-    {
+        public ?string $token = null,
+        public ?Carbon $expiresAt = null,
+        public ?string $refreshToken = null,
+        public ?Carbon $refreshTokenExpiresAt = null,
+    ) {
         //
     }
 
@@ -25,22 +24,29 @@ final readonly class LoginServiceResponseDto
     {
         $currentData = $this->toArray();
         $currentData['user'] = $user;
+
         return new self(
             ...$currentData,
         );
     }
 
     /**
-     * @return array
+     * @return array{
+     *     user: Authenticatable|null,
+     *     token: string|null,
+     *     expiresAt: Carbon|null,
+     *     refreshToken: string|null,
+     *     refreshTokenExpiresAt: Carbon|null
+     * }
      */
     public function toArray(): array
     {
         return [
-            "user" => $this->user,
-            "token" => $this->token,
-            "expiresAt" => $this->expiresAt,
-            "refreshToken" => $this->refreshToken,
-            "refreshTokenExpiresAt" => $this->refreshTokenExpiresAt,
+            'user' => $this->user,
+            'token' => $this->token,
+            'expiresAt' => $this->expiresAt,
+            'refreshToken' => $this->refreshToken,
+            'refreshTokenExpiresAt' => $this->refreshTokenExpiresAt,
         ];
     }
 
@@ -49,6 +55,7 @@ final readonly class LoginServiceResponseDto
         $currentData = $this->toArray();
         $currentData['token'] = $token;
         $currentData['expiresAt'] = $expiresAt;
+
         return new self(
             ...$currentData,
         );

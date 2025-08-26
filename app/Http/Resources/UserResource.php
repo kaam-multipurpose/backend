@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Enum\PermissionsEnum;
 use App\Enum\UserRolesEnum;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,15 +17,19 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $role = optional($this->roles->first());
+
+        /** @var User $user */
+        $user = $this->resource;
+
+        $role = $this->roles?->first();
 
         return [
-            'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'email' => $this->email,
-            'phone_number' => $this->phone_number,
-            'permissions' => ($role->name == UserRolesEnum::SUPER_ADMIN->value) ? PermissionsEnum::values() : optional($role->permissions)->pluck('name')->toArray(),
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'phone_number' => $user->phone_number,
+            'permissions' => ($role->name == UserRolesEnum::SUPER_ADMIN->value) ? PermissionsEnum::values() : $role->permissions?->pluck('name')->toArray(),
         ];
     }
 }

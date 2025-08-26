@@ -13,15 +13,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $env = config("app.env");
+        $env = config('app.env');
 
         $seeder = match ($env) {
-            "local" => [
+            'local' => [
                 RoleAndPermissionSeeder::class,
                 SuperAdminSeeder::class,
                 UserSeeder::class,
             ],
-            "testing" => [
+            'testing' => [
                 RoleAndPermissionSeeder::class,
             ],
             default => []

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'controller' => AuthController::class,
-], function () {
+], function (): void {
     Route::post('/login', 'login')->name('login');
     Route::delete('/logout', 'logout')->name('logout')
         ->middleware('auth:sanctum');

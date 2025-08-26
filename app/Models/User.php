@@ -26,12 +26,17 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- *
  */
 class User extends Authenticatable
 {
+    use HasApiTokens;
+
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, softDeletes;
+    use HasFactory;
+
+    use HasRoles;
+    use Notifiable;
+    use softDeletes;
 
     /**
      * The attributes that are mass assignable.

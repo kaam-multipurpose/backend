@@ -30,7 +30,7 @@ class SuperAdminSeederUtil
             $createUser->syncRoles(UserRolesEnum::SUPER_ADMIN->value);
         } catch (\Throwable $e) {
             Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
-                "info" => "When seeding super admin"
+                'info' => 'When seeding super admin',
             ]));
         }
     }

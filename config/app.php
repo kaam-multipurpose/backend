@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => (bool)env('APP_DEBUG', false),
+    'debug' => (bool) env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -66,7 +66,7 @@ return [
     */
 
     'timezone' => 'Africa/Lagos',
-//    'timezone' => 'UTC',
+    //    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -102,7 +102,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
+            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
 
@@ -161,9 +161,9 @@ return [
     */
 
     'super_admin' => [
-        "email" => env("SUPER_ADMIN_EMAIL", "test@test.com"),
-        "first_name" => env("SUPER_ADMIN_FIRSTNAME", "Test"),
-        "last_name" => env("SUPER_ADMIN_LASTNAME", "Test"),
-        "phone_number" => env("SUPER_ADMIN_PHONE_NUMBER", "08123456789"),
-    ]
+        'email' => env('SUPER_ADMIN_EMAIL', 'test@test.com'),
+        'first_name' => env('SUPER_ADMIN_FIRSTNAME', 'Test'),
+        'last_name' => env('SUPER_ADMIN_LASTNAME', 'Test'),
+        'phone_number' => env('SUPER_ADMIN_PHONE_NUMBER', '08123456789'),
+    ],
 ];

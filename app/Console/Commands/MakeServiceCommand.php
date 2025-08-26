@@ -21,7 +21,6 @@ class MakeServiceCommand extends Command
      */
     protected $description = 'Create a service class and its corresponding interface';
 
-
     /**
      * Execute the console command.
      */
@@ -33,12 +32,12 @@ class MakeServiceCommand extends Command
         $contractPath = app_path("Services/Contracts/{$name}ServiceContract.php");
 
         // Create Contracts directory if not exists
-        if (!File::exists(app_path('Services/Contracts'))) {
+        if (! File::exists(app_path('Services/Contracts'))) {
             File::makeDirectory(app_path('Services/Contracts'), 0755, true);
         }
 
         // Create Interface file
-        if (!File::exists($contractPath)) {
+        if (! File::exists($contractPath)) {
             File::put($contractPath, $this->contractStub($name));
             $this->info("Created: {$contractPath}");
         } else {
@@ -46,7 +45,7 @@ class MakeServiceCommand extends Command
         }
 
         // Create Service file
-        if (!File::exists($servicePath)) {
+        if (! File::exists($servicePath)) {
             File::put($servicePath, $this->serviceStub($name));
             $this->info("Created: {$servicePath}");
         } else {
@@ -90,5 +89,4 @@ class MakeServiceCommand extends Command
         }
         PHP;
     }
-
 }
