@@ -1,68 +1,58 @@
 <?php
 
-namespace Tests\Feature\Auth;
-
 use App\Enum\UserRolesEnum;
-use Tests\TestCase;
 
-class LoginTest extends TestCase
+test('user can login', function () {
+    $response = $this->postJson('/api/login', [
+        'email' => $this->superAdminUser->email,
+        'password' => TEST_USER_PASSWORD,
+    ]);
+
+    $response->assertJson([
+        'success' => true,
+        'message' => 'Logged in successfully.',
+    ]);
+    $this->assertDatabaseHas('personal_access_tokens', [
+        'tokenable_id' => $this->superAdminUser->id,
+    ]);
+    $this->assertDatabaseHas('refresh_tokens', [
+        'user_id' => $this->superAdminUser->id,
+    ]);
+});
+
+test('user cannot login with incorrect details', function () {
+    $response = $this->postJson('/api/login', loginPayload());
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['global']);
+
+    $this->assertGuest();
+});
+
+test('login fails if email is missing', function () {
+    $response = $this->postJson('/api/login', [
+        'password' => TEST_USER_PASSWORD,
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['email']);
+});
+
+test('login fails if password is missing', function () {
+    $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
+
+    $response = $this->postJson('/api/login', [
+        'email' => $user->email,
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['password']);
+});
+
+function loginPayload(): array
 {
-    public function test_user_can_login(): void
-    {
-        $response = $this->postJson('/api/login', [
-            'email' => $this->superAdminUser->email,
-            'password' => TEST_USER_PASSWORD,
-        ]);
-
-        $response->assertJson([
-            'success' => true,
-            'message' => 'Logged in successfully.',
-        ]);
-        $this->assertDatabaseHas('personal_access_tokens', [
-            'tokenable_id' => $this->superAdminUser->id,
-        ]);
-        $this->assertDatabaseHas('refresh_tokens', [
-            'user_id' => $this->superAdminUser->id,
-        ]);
-    }
-
-    public function test_user_cannot_login_with_incorrect_details(): void
-    {
-        $response = $this->postJson('/api/login', $this->LoginPayload());
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['global']);
-
-        $this->assertGuest();
-    }
-
-    public function test_login_fails_if_email_is_missing(): void
-    {
-        $response = $this->postJson('/api/login', [
-            'password' => TEST_USER_PASSWORD,
-        ]);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email']);
-    }
-
-    public function test_login_fails_if_password_is_missing(): void
-    {
-        $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
-
-        $response = $this->postJson('/api/login', [
-            'email' => $user->email,
-        ]);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['password']);
-    }
-
-    protected function LoginPayload(): array
-    {
-        return [
-            'email' => fake()->safeEmail(),
-            'password' => TEST_USER_PASSWORD,
-        ];
-    }
+    return [
+        'email' => fake()->safeEmail(),
+        'password' => TEST_USER_PASSWORD,
+    ];
 }

@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "kaam/backend",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": [
@@ -23,8 +23,9 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-drift": "^4.0",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.5.3",
         "rector/rector": "^2.1"
     },
     "autoload": {
@@ -49,7 +50,9 @@
         ],
         "pint": "pint",
         "phpstan": "phpstan analyse",
+        "pest": "pest",
         "rector": "rector",
+        "rector:process": "@rector process",
         "rector:dry": "@rector --dry-run",
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

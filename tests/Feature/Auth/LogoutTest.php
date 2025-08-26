@@ -1,36 +1,21 @@
 <?php
 
-namespace Tests\Feature\Auth;
+test('user can logout successfully', function () {
+    $this->actingAs($this->salesRepUser, 'sanctum');
 
-use Tests\TestCase;
+    $logoutResponse = $this->deleteJson('/api/logout');
 
-class LogoutTest extends TestCase
-{
-    /**
-     * A basic feature test example.
-     */
-    public function test_user_can_logout_successfully(): void
-    {
+    $logoutResponse->assertStatus(200);
+    $logoutResponse->assertJson([
+        'success' => true,
+        'message' => 'Logged out successfully.',
+    ]);
 
-        $this->actingAs($this->salesRepUser, 'sanctum');
+    $this->assertDatabaseMissing('personal_access_tokens', [
+        'tokenable_id' => $this->salesRepUser->id,
+    ]);
 
-        // Call logout with token and cookie
-        $logoutResponse = $this->deleteJson('/api/logout');
-
-        $logoutResponse->assertStatus(200);
-        $logoutResponse->assertJson([
-            'success' => true,
-            'message' => 'Logged out successfully.',
-        ]);
-
-        // Assert tokens are deleted
-        $this->assertDatabaseMissing('personal_access_tokens', [
-            'tokenable_id' => $this->salesRepUser->id,
-        ]);
-
-        $this->assertDatabaseMissing('refresh_tokens', [
-            'user_id' => $this->salesRepUser->id,
-        ]);
-
-    }
-}
+    $this->assertDatabaseMissing('refresh_tokens', [
+        'user_id' => $this->salesRepUser->id,
+    ]);
+});

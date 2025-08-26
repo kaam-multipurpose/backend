@@ -20,7 +20,7 @@ try {
         // uncomment to reach your current PHP version
         ->withPhpSets(php82: true)
         ->withTypeCoverageLevel(2)
-        ->withDeadCodeLevel(2)
+        ->withDeadCodeLevel(1)
         ->withCodeQualityLevel(2);
 } catch (InvalidConfigurationException $e) {
     Log::error("Unable to rector load configuration: {$e->getMessage()}",[

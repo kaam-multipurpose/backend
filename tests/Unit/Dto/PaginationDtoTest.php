@@ -1,51 +1,40 @@
 <?php
 
-namespace Tests\Unit\Dto;
-
 use App\Dto\GetPaginatedCategoriesDto;
-use Tests\TestCase;
 
-class PaginationDtoTest extends TestCase
-{
-    public function test_default_values_are_set_when_none_provided(): void
-    {
-        $dto = new GetPaginatedCategoriesDto([]);
-        $this->assertSame(1, $dto->page);
-        $this->assertSame(5, $dto->row);
-    }
+test('default values are set when none provided', function () {
+    $dto = new GetPaginatedCategoriesDto([]);
+    expect($dto->page)->toBe(1)
+        ->and($dto->row)->toBe(5);
+});
 
-    public function test_custom_values_are_respected(): void
-    {
-        $dto = new GetPaginatedCategoriesDto(['page' => 2, 'row' => 10]);
-        $this->assertSame(2, $dto->page);
-        $this->assertSame(10, $dto->row);
-    }
+test('custom values are respected', function () {
+    $dto = new GetPaginatedCategoriesDto(['page' => 2, 'row' => 10]);
+    expect($dto->page)->toBe(2)
+        ->and($dto->row)->toBe(10);
+});
 
-    public function test_from_validated_sets_defaults(): void
-    {
-        $dto = GetPaginatedCategoriesDto::fromValidated([]);
-        $this->assertSame(1, $dto->page);
-        $this->assertSame(5, $dto->row);
-    }
+test('from validated sets defaults', function () {
+    $dto = GetPaginatedCategoriesDto::fromValidated([]);
+    expect($dto->page)->toBe(1)
+        ->and($dto->row)->toBe(5);
+});
 
-    public function test_from_validated_sets_custom_values(): void
-    {
-        $dto = GetPaginatedCategoriesDto::fromValidated(['page' => 4, 'row' => 25]);
-        $this->assertSame(4, $dto->page);
-        $this->assertSame(25, $dto->row);
-    }
+test('from validated sets custom values', function () {
+    $dto = GetPaginatedCategoriesDto::fromValidated(['page' => 4, 'row' => 25]);
+    expect($dto->page)->toBe(4)
+        ->and($dto->row)->toBe(25);
+});
 
-    public function test_search_is_included_in_output(): void
-    {
-        $dto = GetPaginatedCategoriesDto::fromValidated(['search' => 'notebooks']);
-        $this->assertSame('notebooks', $dto->search);
+test('search is included in output', function () {
+    $dto = GetPaginatedCategoriesDto::fromValidated(['search' => 'notebooks']);
+    expect($dto->search)->toBe('notebooks');
 
-        $expected = [
-            'search' => 'notebooks',
-            'page' => 1,
-            'row' => 5,
-        ];
+    $expected = [
+        'search' => 'notebooks',
+        'page' => 1,
+        'row' => 5,
+    ];
 
-        $this->assertSame($expected, $dto->toArray());
-    }
-}
+    expect($dto->toArray())->toBe($expected);
+});
