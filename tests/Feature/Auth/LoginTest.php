@@ -2,7 +2,14 @@
 
 use App\Enum\UserRolesEnum;
 
-test('user can login', function () {
+beforeEach(function (): void {
+    $this->loginPayload = [
+        'email' => fake()->safeEmail(),
+        'password' => TEST_USER_PASSWORD,
+    ];
+});
+
+test('user can login', function (): void {
     $response = $this->postJson('/api/login', [
         'email' => $this->superAdminUser->email,
         'password' => TEST_USER_PASSWORD,
@@ -20,8 +27,8 @@ test('user can login', function () {
     ]);
 });
 
-test('user cannot login with incorrect details', function () {
-    $response = $this->postJson('/api/login', loginPayload());
+test('user cannot login with incorrect details', function (): void {
+    $response = $this->postJson('/api/login', $this->loginPayload);
 
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['global']);
@@ -29,7 +36,7 @@ test('user cannot login with incorrect details', function () {
     $this->assertGuest();
 });
 
-test('login fails if email is missing', function () {
+test('login fails if email is missing', function (): void {
     $response = $this->postJson('/api/login', [
         'password' => TEST_USER_PASSWORD,
     ]);
@@ -38,7 +45,7 @@ test('login fails if email is missing', function () {
         ->assertJsonValidationErrors(['email']);
 });
 
-test('login fails if password is missing', function () {
+test('login fails if password is missing', function (): void {
     $user = $this->createUser(UserRolesEnum::SUPER_ADMIN);
 
     $response = $this->postJson('/api/login', [
@@ -48,11 +55,3 @@ test('login fails if password is missing', function () {
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['password']);
 });
-
-function loginPayload(): array
-{
-    return [
-        'email' => fake()->safeEmail(),
-        'password' => TEST_USER_PASSWORD,
-    ];
-}

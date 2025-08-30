@@ -11,6 +11,7 @@ class ServicesServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->bind(AuthServiceContract::class, AuthService::class);

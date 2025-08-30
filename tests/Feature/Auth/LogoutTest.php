@@ -1,6 +1,6 @@
 <?php
 
-test('user can logout successfully', function () {
+test('user can logout successfully', function (): void {
     $this->actingAs($this->salesRepUser, 'sanctum');
 
     $logoutResponse = $this->deleteJson('/api/logout');

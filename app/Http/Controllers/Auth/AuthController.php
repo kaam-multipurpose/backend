@@ -20,8 +20,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthController extends Controller
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
+    use HasAuthenticatedUser, HasLogger;
 
     public function __construct(protected AuthServiceContract $authService) {}
 

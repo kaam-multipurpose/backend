@@ -12,6 +12,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    #[\Override]
     public function register(): void {}
 
     /**
@@ -20,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::automaticallyEagerLoadRelationships();
-        Gate::before(fn($user) => $user->hasRole(UserRolesEnum::SUPER_ADMIN->value) ? true : null);
+        Gate::before(fn ($user) => $user->hasRole(UserRolesEnum::SUPER_ADMIN->value) ? true : null);
     }
 }

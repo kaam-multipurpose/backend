@@ -11,9 +11,7 @@ use Tests\Traits\CreateTestUser;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreateTestUser;
-    use RefreshDatabase;
-    use WithFaker;
+    use CreateTestUser,RefreshDatabase,withFaker;
 
     protected Authenticatable $superAdminUser;
 
@@ -21,6 +19,7 @@ abstract class TestCase extends BaseTestCase
 
     protected Authenticatable $salesRepUser;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

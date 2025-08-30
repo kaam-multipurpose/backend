@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Utils\Logger\Logger;
 use Rector\Config\RectorConfig;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 
@@ -18,13 +17,13 @@ try {
             __DIR__.'/tests',
         ])
         // uncomment to reach your current PHP version
-        ->withPhpSets(php82: true)
-        ->withTypeCoverageLevel(2)
-        ->withDeadCodeLevel(1)
-        ->withCodeQualityLevel(2);
+        ->withPhpSets(php83: true)
+        ->withTypeCoverageLevel(0)
+        ->withDeadCodeLevel(0)
+        ->withCodeQualityLevel(0);
 } catch (InvalidConfigurationException $e) {
-    Log::error("Unable to rector load configuration: {$e->getMessage()}",[
-        "trace" => $e->getTraceAsString(),
-        "file" => $e->getFile(),
+    Log::error("Unable to rector load configuration: {$e->getMessage()}", [
+        'trace' => $e->getTraceAsString(),
+        'file' => $e->getFile(),
     ]);
 }

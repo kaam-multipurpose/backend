@@ -26,12 +26,12 @@ final readonly class ApiResponse
 
     private static function build(bool $success, string $message, mixed $payload = null, int $statusCode = 200): JsonResponse
     {
-        return new self(
+        return (new self(
             success: $success,
             message: $message,
             payload: $payload,
             statusCode: self::validateStatusCode($statusCode),
-        )->response();
+        ))->response();
     }
 
     private static function validateStatusCode(int $code): int

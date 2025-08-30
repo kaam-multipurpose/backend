@@ -57,6 +57,6 @@ final readonly class LoggerContextDto
             'role' => $this->role,
             'exception' => $this->exceptionClass,
             'endpoint' => $this->endpoint,
-        ], $this->extra,[$this->trace]);
+        ], $this->extra, [$this->trace]);
     }
 }

@@ -18,8 +18,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthService implements AuthServiceContract
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
+    use HasAuthenticatedUser, HasLogger;
 
     public function __construct() {}
 

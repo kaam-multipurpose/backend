@@ -30,11 +30,11 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->renderable(fn(AccessDeniedHttpException $exception): JsonResponse => AccessDeniedExceptionHandler::handle($exception));
-        $exceptions->renderable(fn(ThrottleRequestsException $exception): JsonResponse => ThrottleRequestsExceptionHandler::handle($exception));
-        $exceptions->renderable(fn(AuthenticationException $exception): JsonResponse => AuthenticationExceptionHandler::handle($exception));
-        $exceptions->renderable(fn(ValidationException $exception): JsonResponse => ValidationExceptionHandler::handle($exception));
-        $exceptions->renderable(fn(NotFoundHttpException $exception): JsonResponse => NotFoundHttpExceptionHandler::handle($exception));
+        $exceptions->renderable(fn (AccessDeniedHttpException $exception): JsonResponse => AccessDeniedExceptionHandler::handle($exception));
+        $exceptions->renderable(fn (ThrottleRequestsException $exception): JsonResponse => ThrottleRequestsExceptionHandler::handle($exception));
+        $exceptions->renderable(fn (AuthenticationException $exception): JsonResponse => AuthenticationExceptionHandler::handle($exception));
+        $exceptions->renderable(fn (ValidationException $exception): JsonResponse => ValidationExceptionHandler::handle($exception));
+        $exceptions->renderable(fn (NotFoundHttpException $exception): JsonResponse => NotFoundHttpExceptionHandler::handle($exception));
         $exceptions->renderable(function (\Throwable $exception): JsonResponse {
             Logger::error('Unexpected Error', LoggerContextDto::fromException($exception));
 
