@@ -65,7 +65,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Africa/Lagos',
+    //    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -101,7 +102,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
+            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
 
@@ -123,4 +124,46 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default User Password for Testing/Seeding
+    |--------------------------------------------------------------------------
+    |
+    | This value defines the default password used for creating users in
+    | development, testing, or seeding environments. It's primarily used
+    | by the `TEST_USER_PASSWORD` constant in the test suite.
+    |
+    | It should be set via the `DEFAULT_USER_PASSWORD` environment variable.
+    | If the environment variable is not set, 'password' will be used as the default.
+    |
+    */
+
+    'default_user_password' => env('DEFAULT_USER_PASSWORD', 'password'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Super Admin User for Seeding
+    |--------------------------------------------------------------------------
+    |
+    | This configuration defines the default Super Admin user that will be
+    | created during database seeding. It is intended for development,
+    | testing, or initial setup environments.
+    |
+    | Each value can be overridden via environment variables:
+    | - SUPER_ADMIN_EMAIL
+    | - SUPER_ADMIN_FIRSTNAME
+    | - SUPER_ADMIN_LASTNAME
+    | - SUPER_ADMIN_PHONE_NUMBER
+    |
+    | These values are used by the SuperAdminSeederUtil to ensure a consistent
+    | and idempotent creation of the Super Admin account.
+    |
+    */
+
+    'super_admin' => [
+        'email' => env('SUPER_ADMIN_EMAIL', 'test@test.com'),
+        'first_name' => env('SUPER_ADMIN_FIRSTNAME', 'Test'),
+        'last_name' => env('SUPER_ADMIN_LASTNAME', 'Test'),
+        'phone_number' => env('SUPER_ADMIN_PHONE_NUMBER', '08123456789'),
+    ],
 ];

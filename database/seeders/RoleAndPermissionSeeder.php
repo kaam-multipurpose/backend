@@ -1,0 +1,17 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Utils\Seeders\RoleAndPermissionSeederUtil;
+use Illuminate\Database\Seeder;
+
+class RoleAndPermissionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        RoleAndPermissionSeederUtil::run();
+    }
+}
