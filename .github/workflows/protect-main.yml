@@ -1,0 +1,17 @@
+name: Protect Main Branch
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source branch
+        run: |
+          if [[ "${{ github.head_ref }}" != "test" ]]; then
+            echo "❌ Error: Only 'test' branch can merge into 'main'"
+            exit 1
+          fi

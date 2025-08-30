@@ -1,0 +1,17 @@
+name: Protect Test Branch
+
+on:
+  pull_request:
+    branches:
+      - test
+
+jobs:
+  check-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source branch
+        run: |
+          if [[ "${{ github.head_ref }}" != "dev" ]]; then
+            echo "❌ Error: Only 'dev' branch can merge into 'test'"
+            exit 1
+          fi
