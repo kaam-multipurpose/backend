@@ -16,11 +16,19 @@ enum PermissionsEnum: string implements EnumContract
     case VIEW_PRODUCT = 'view product';
     case EDIT_PRODUCT = 'edit product';
     case DELETE_PRODUCT = 'delete product';
+    case MOVE_PRODUCT = 'move product';
+
+    /**
+     * Category Permission
+     */
     case ADD_CATEGORY = 'add category';
     case VIEW_CATEGORY = 'view category';
     case EDIT_CATEGORY = 'edit category';
     case DELETE_CATEGORY = 'delete category';
-    case MOVE_PRODUCT = 'move product';
+
+    /**
+     * Price Permission
+     */
     case ADD_PRICE = 'add price';
     case VIEW_PRICE = 'view price';
     case EDIT_PRICE = 'edit price';

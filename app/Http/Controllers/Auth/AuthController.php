@@ -36,6 +36,7 @@ class AuthController extends Controller
         $data = [
             'user' => new UserResource($response->user),
             'expires_at' => $response->expiresAt,
+            'token' => $response->token,
         ];
 
         self::logInfo('Login Successful', [
@@ -45,7 +46,6 @@ class AuthController extends Controller
         ]);
 
         return ApiResponse::success($data, 'Logged in successfully.')
-            ->withHeaders($this->withAuthHeader($response->token))
             ->withCookie($this->rotateRefreshToken($response));
     }
 
@@ -67,8 +67,8 @@ class AuthController extends Controller
 
         return ApiResponse::success([
             'expires_at' => $response->expiresAt,
-        ])->withHeaders($this->withAuthHeader($response->token))
-            ->withCookie($this->rotateRefreshToken($response));
+            'token' => $response->token,
+        ])->withCookie($this->rotateRefreshToken($response));
     }
 
     public function logout(): JsonResponse
@@ -79,14 +79,6 @@ class AuthController extends Controller
 
         return ApiResponse::success(message: 'Logged out successfully.')
             ->withCookie(Cookie::forget('refresh_token'));
-    }
-
-    private function withAuthHeader(string $token): array
-    {
-        return [
-            'Authorization' => $token,
-            'Access-Control-Expose-Headers' => 'Authorization',
-        ];
     }
 
     private function rotateRefreshToken(LoginServiceResponseDto $dto): SymPyCookie
