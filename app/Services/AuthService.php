@@ -48,7 +48,7 @@ class AuthService implements AuthServiceContract
             return $this->generateTokens($user);
 
         } catch (\Throwable $e) {
-            self::logException($e, 'Unable to login', [
+            self::logException($e, 'Caught Exception during login', [
                 'email' => $loginDto->email,
             ]);
             throw ValidationException::withMessages([
@@ -83,7 +83,7 @@ class AuthService implements AuthServiceContract
             return $this->generateTokens($user);
 
         } catch (\Throwable $e) {
-            self::logException($e, 'Unable to refresh token');
+            self::logException($e, 'Caught Exception when refreshing token');
             throw ValidationException::withMessages([
                 'global' => ['Unable to refresh token'],
             ]);
@@ -106,7 +106,7 @@ class AuthService implements AuthServiceContract
                 'email' => $user->email,
             ];
         } catch (\Throwable $e) {
-            self::logException($e, 'Unable to logout');
+            self::logException($e, 'Caught Exception during logout');
             throw ValidationException::withMessages([
                 'global' => ['unable to logout'],
             ]);

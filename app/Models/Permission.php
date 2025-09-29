@@ -2,8 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Spatie\Permission\Models\Permission as SpatiePermission;
 
+/**
+ * @property int $id
+ * @property int $permission_category_id
+ * @property string $name
+ * @property string $guard_name
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ */
 class Permission extends SpatiePermission
 {
     protected $fillable = [

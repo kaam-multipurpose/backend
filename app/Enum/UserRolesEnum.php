@@ -37,7 +37,7 @@ enum UserRolesEnum: string implements EnumContract
                 PermissionsEnum::VIEW_SALES_REP,
                 PermissionsEnum::EDIT_SALES_REP,
                 PermissionsEnum::DELETE_SALES_REP,
-                PermissionsEnum::ASSIGN_PERMISSIONS,
+                PermissionsEnum::VIEW_PERMISSIONS,
             ],
 
             self::SALES_REP => [

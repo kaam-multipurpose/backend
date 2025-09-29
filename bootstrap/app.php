@@ -1,8 +1,12 @@
 <?php
 
+use App\Exceptions\AbstractServiceException;
+use App\Exceptions\ApplicationException;
 use App\Exceptions\Handlers\AccessDeniedExceptionHandler;
+use App\Exceptions\Handlers\ApplicationExceptionHandler;
 use App\Exceptions\Handlers\AuthenticationExceptionHandler;
 use App\Exceptions\Handlers\NotFoundHttpExceptionHandler;
+use App\Exceptions\Handlers\ServiceExceptionsHandler;
 use App\Exceptions\Handlers\ThrottleRequestsExceptionHandler;
 use App\Exceptions\Handlers\ValidationExceptionHandler;
 use App\Utils\Logger\Dto\LoggerContextDto;
@@ -35,6 +39,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->renderable(fn (AuthenticationException $exception): JsonResponse => AuthenticationExceptionHandler::handle($exception));
         $exceptions->renderable(fn (ValidationException $exception): JsonResponse => ValidationExceptionHandler::handle($exception));
         $exceptions->renderable(fn (NotFoundHttpException $exception): JsonResponse => NotFoundHttpExceptionHandler::handle($exception));
+        $exceptions->renderable(fn (ApplicationException $exception): JsonResponse => ApplicationExceptionHandler::handle($exception));
+        $exceptions->renderable(fn (AbstractServiceException $exception): JsonResponse => ServiceExceptionsHandler::handle($exception));
         $exceptions->renderable(function (\Throwable $exception): JsonResponse {
             Logger::error('Unexpected Error', LoggerContextDto::fromException($exception));
 
