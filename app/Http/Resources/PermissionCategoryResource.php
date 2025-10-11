@@ -20,7 +20,7 @@ class PermissionCategoryResource extends JsonResource
 
         return [
             'name' => $category->name,
-            'permissions' => PermissionResource::collection($category->permissions),
+            'permissions' => $category->permissions->pluck('name')->toArray(),
         ];
     }
 }

@@ -46,7 +46,6 @@ class AuthService implements AuthServiceContract
             $user->refreshToken()->delete();
 
             return $this->generateTokens($user);
-
         } catch (\Throwable $e) {
             self::logException($e, 'Caught Exception during login', [
                 'email' => $loginDto->email,
@@ -81,7 +80,6 @@ class AuthService implements AuthServiceContract
             $user->refreshToken()->delete();
 
             return $this->generateTokens($user);
-
         } catch (\Throwable $e) {
             self::logException($e, 'Caught Exception when refreshing token');
             throw ValidationException::withMessages([

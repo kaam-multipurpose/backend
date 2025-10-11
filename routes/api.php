@@ -8,4 +8,5 @@ Route::group([
     'middleware' => 'auth:sanctum',
 ], function (): void {
     require __DIR__.'/./permission/permission-routes.php';
+    require __DIR__.'/./permission/role-routes.php';
 });

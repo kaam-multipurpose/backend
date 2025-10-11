@@ -16,6 +16,6 @@ trait HasHandlerRender
     {
         self::logException($exception, $message);
 
-        return ApiResponse::error($exception->getMessage(), status: $status);
+        return ApiResponse::error($message, status: $status);
     }
 }

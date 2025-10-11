@@ -8,6 +8,6 @@ Route::group([
     'prefix' => '/permissions',
     'controller' => PermissionController::class,
 ], function () {
-    Route::get('/', [PermissionController::class, 'getAllPermissions'])
+    Route::get('/', 'getAllPermissions')
         ->middleware('can:'.PermissionsEnum::VIEW_PERMISSIONS->value);
 });

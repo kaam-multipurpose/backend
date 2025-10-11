@@ -6,10 +6,11 @@ use App\Enum\PermissionsEnum;
 use App\Enum\UserRolesEnum;
 use App\Models\Permission;
 use App\Models\PermissionCategory;
+use App\Models\Role;
 use App\Utils\Logger\Dto\LoggerContextDto;
 use App\Utils\Logger\Logger;
 use Exception;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class RoleAndPermissionSeederUtil
 {
@@ -122,7 +123,7 @@ class RoleAndPermissionSeederUtil
         $userCategoryNames = ['Admin', 'Rep'];
         $prefix = 'Permission';
 
-        $permissionNames = explode(' ', $name);
+        $permissionNames = explode('-', $name);
         $categoryName = ucfirst(array_pop($permissionNames));
 
         if (in_array($categoryName, $userCategoryNames)) {
@@ -157,7 +158,7 @@ class RoleAndPermissionSeederUtil
             $rows = collect($missing)->map(function ($value) use ($now, $modelClass, $permissionCategories) {
                 $data = [
                     'name' => $value,
-                    'guard_name' => 'web',
+                    'guard_name' => 'api',
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
@@ -166,6 +167,10 @@ class RoleAndPermissionSeederUtil
                     $categoryName = self::generatePermissionCategory($value);
                     $category = $permissionCategories->get($categoryName);
                     $data['permission_category_id'] = $category?->id;
+                }
+
+                if ($modelClass === Role::class) {
+                    $data['slug'] = Str::slug($value);
                 }
 
                 return $data;
