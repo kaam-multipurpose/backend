@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Permission;
 
 use App\Dto\AddRoleDto;
 use App\Enum\UserRolesEnum;

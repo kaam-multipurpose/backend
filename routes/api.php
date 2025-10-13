@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/./auth/auth-routes.php';
-
+require __DIR__.'/./password/password-routes.php';
 Route::group([
     'middleware' => 'auth:sanctum',
 ], function (): void {

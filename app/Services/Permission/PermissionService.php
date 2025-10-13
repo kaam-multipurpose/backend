@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Permission;
 
 use App\Exceptions\PermissionServiceException;
 use App\Models\PermissionCategory;

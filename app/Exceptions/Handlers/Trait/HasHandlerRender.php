@@ -14,6 +14,9 @@ trait HasHandlerRender
 
     public static function render(\Throwable $exception, string $message, int $status): JsonResponse
     {
+        self::logError($exception->getMessage(), [
+            'trace' => $exception->getTraceAsString(),
+        ]);
         self::logException($exception, $message);
 
         return ApiResponse::error($message, status: $status);

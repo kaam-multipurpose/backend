@@ -9,7 +9,7 @@ use App\Http\Requests\AddRoleRequest;
 use App\Http\Requests\EditRoleRequest;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
-use App\Services\RoleService;
+use App\Services\Contracts\RoleServiceContract;
 use App\Utils\Response\ApiResponse;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
@@ -22,7 +22,7 @@ class RoleController extends Controller
 {
     use HasAuthenticatedUser, HasLogger;
 
-    public function __construct(private readonly RoleService $roleService) {}
+    public function __construct(private readonly RoleServiceContract $roleService) {}
 
     /**
      * @throws Throwable

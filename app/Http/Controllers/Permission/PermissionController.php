@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Permission;
 use App\Exceptions\PermissionServiceException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PermissionCategoryResource;
-use App\Services\PermissionService;
+use App\Services\Contracts\PermissionServiceContract;
 use App\Utils\Response\ApiResponse;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
@@ -15,7 +15,7 @@ class PermissionController extends Controller
 {
     use HasAuthenticatedUser, HasLogger;
 
-    public function __construct(protected PermissionService $permissionService) {}
+    public function __construct(protected PermissionServiceContract $permissionService) {}
 
     /**
      * @throws PermissionServiceException

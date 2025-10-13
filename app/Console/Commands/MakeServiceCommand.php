@@ -28,12 +28,16 @@ class MakeServiceCommand extends Command
     {
         $name = ucfirst($this->argument('name'));
 
-        $servicePath = app_path("Services/{$name}Service.php");
+        $servicePath = app_path("Services/{$name}/{$name}Service.php");
         $contractPath = app_path("Services/Contracts/{$name}ServiceContract.php");
 
         // Create Contracts directory if not exists
         if (! File::exists(app_path('Services/Contracts'))) {
             File::makeDirectory(app_path('Services/Contracts'), 0755, true);
+        }
+
+        if (! FIle::exists(app_path("Services/{$name}"))) {
+            File::makeDirectory(app_path("Services/{$name}"), 0755, true);
         }
 
         // Create Interface file
@@ -72,7 +76,7 @@ class MakeServiceCommand extends Command
     {
         return <<<PHP
         <?php
-        namespace App\Services;
+        namespace App\Services\\{$name};
 
         use App\Services\Contracts\\{$name}ServiceContract;
         use App\Utils\Trait\HasAuthenticatedUser;

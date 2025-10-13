@@ -115,4 +115,20 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+  |--------------------------------------------------------------------------
+  | Global "Reply-To" Address
+  |--------------------------------------------------------------------------
+  |
+  | You may wish for all emails sent by your application to include the
+  | same reply-to address. Here you may specify a name and address that
+  | will be used globally as the reply-to for all emails sent by your app.
+  | This is useful for directing responses to a support or helpdesk inbox.
+  |
+  */
+    'reply_to' => [
+        'address' => env('MAIL_TO_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_TO_NAME', 'Example'),
+    ],
+
 ];

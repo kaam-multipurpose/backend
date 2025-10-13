@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Dto\LoginDto;
 use App\Dto\LoginServiceResponseDto;
