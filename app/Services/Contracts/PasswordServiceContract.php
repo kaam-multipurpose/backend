@@ -16,4 +16,8 @@ interface PasswordServiceContract
      * @throws PasswordServiceException
      */
     public function resetPassword(ResetPasswordDto $dto): bool;
+    /**
+     * @throws PasswordServiceException
+     */
+    public function changePassword(int $userId, string $currentPassword, string $newPassword): bool;
 }

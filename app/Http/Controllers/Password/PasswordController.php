@@ -51,10 +51,37 @@ class PasswordController extends Controller
 
         $this->passwordService->resetPassword(ResetPasswordDto::fromValidated($data));
 
-        self::logInfo('Password reset successfully for '.$data['email'], [
+        self::logInfo('Password reset successfully for ' . $data['email'], [
             'email' => $data['email'],
         ]);
 
         return ApiResponse::success(message: 'Password reset successfully.');
+    }
+
+    /**
+     * @throws PasswordServiceException
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        self::logInfo('Password Data ', [
+            'data' => $data,
+        ]);
+        $user = $this->getLoggedInUser();
+        if (!$user) {
+            return ApiResponse::error(message: 'User is not authenticated.', status: 401);
+        }
+
+        $this->passwordService->changePassword($user["id"], $data['current_password'], $data['new_password']);
+
+        self::logInfo('Password changed successfully for ' . $user->email, [
+            'email' => $user->email,
+        ]);
+
+        return ApiResponse::success(message: 'Password changed successfully.');
     }
 }

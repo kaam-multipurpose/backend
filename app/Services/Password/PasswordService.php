@@ -92,4 +92,31 @@ class PasswordService implements PasswordServiceContract
             throw new PasswordServiceException('Unable to reset the password');
         }
     }
+    public function changePassword(int $userId, string $currentPassword, string $newPassword): bool
+    {
+        try {
+            self::logInfo("Attempting to change the password for user ID {$userId}", [
+                'user_id' => $userId,
+            ]);
+
+            $user = User::query()->find($userId);
+
+            if (! $user || ! Hash::check($currentPassword, $user->password)) {
+                throw new PasswordServiceException('The current password is incorrect', code: Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $user->update([
+                'password' => Hash::make($newPassword),
+            ]);
+
+            return true;
+        } catch (Throwable $e) {
+            if ($e instanceof PasswordServiceException) {
+                throw $e;
+            }
+            self::logException($e, "Caught Exception when attempting to change the password for user ID {$userId}", ['user_id' => $userId]);
+
+            throw new PasswordServiceException('Unable to change the password');
+        }
+    }
 }
