@@ -68,14 +68,6 @@ class PasswordController extends Controller
             'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        self::logInfo('Password Data ', [
-            'data' => $data,
-        ]);
-        $user = $this->getLoggedInUser();
-        if (!$user) {
-            return ApiResponse::error(message: 'User is not authenticated.', status: 401);
-        }
-
         $this->passwordService->changePassword($user["id"], $data['current_password'], $data['new_password']);
 
         self::logInfo('Password changed successfully for ' . $user->email, [
