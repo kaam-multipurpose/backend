@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => '/roles',
     'controller' => RoleController::class,
-], function () {
+], function (): void {
     Route::post('/', 'addRole')
         ->middleware('can:'.PermissionsEnum::ADD_ROLE->value);
     Route::patch('/{role:slug}', 'editRolePermission')

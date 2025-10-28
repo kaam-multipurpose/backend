@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'password',
     'controller' => PasswordController::class,
-], function () {
+], function (): void {
     Route::post('/forgot', [PasswordController::class, 'forgetPassword'])
         ->middleware('throttle:3,10');
 

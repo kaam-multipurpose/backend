@@ -4,12 +4,12 @@ use App\Mail\ApplicationMail;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Response;
 
-describe('Forgot Password', function () {
+describe('Forgot Password', function (): void {
 
-    beforeEach(function () {
+    beforeEach(function (): void {
         Mail::fake();
     });
-    it('sends an OTP to admin user', function () {
+    it('sends an OTP to admin user', function (): void {
         $response = $this->postJson('/api/password/forgot', [
             'email' => $this->adminUser->email,
         ]);
@@ -28,13 +28,11 @@ describe('Forgot Password', function () {
 
         Mail::assertQueued(
             ApplicationMail::class,
-            function ($mail) {
-                return $mail->hasTo($this->adminUser->email);
-            }
+            fn ($mail) => $mail->hasTo($this->adminUser->email)
         );
     });
 
-    it('sends an OTP to sales rep user', function () {
+    it('sends an OTP to sales rep user', function (): void {
         $response = $this->postJson('/api/password/forgot', [
             'email' => $this->salesRepUser->email,
         ]);
@@ -53,13 +51,11 @@ describe('Forgot Password', function () {
 
         Mail::assertQueued(
             ApplicationMail::class,
-            function ($mail) {
-                return $mail->hasTo($this->salesRepUser->email);
-            }
+            fn ($mail) => $mail->hasTo($this->salesRepUser->email)
         );
     });
 
-    it('sends an OTP to super admin user', function () {
+    it('sends an OTP to super admin user', function (): void {
         $response = $this->postJson('/api/password/forgot', [
             'email' => $this->superAdminUser->email,
         ]);
@@ -78,13 +74,11 @@ describe('Forgot Password', function () {
 
         Mail::assertQueued(
             ApplicationMail::class,
-            function ($mail) {
-                return $mail->hasTo($this->superAdminUser->email);
-            }
+            fn ($mail) => $mail->hasTo($this->superAdminUser->email)
         );
     });
 
-    it('returns error for non-existent email', function () {
+    it('returns error for non-existent email', function (): void {
         $response = $this->postJson('/api/password/forgot', [
             'email' => 'nonexistent@example.com',
         ]);
@@ -99,7 +93,7 @@ describe('Forgot Password', function () {
         Mail::assertNothingQueued();
     });
 
-    it('validates email format', function () {
+    it('validates email format', function (): void {
         $response = $this->postJson('/api/password/forgot', [
             'email' => 'invalid-email',
         ]);
@@ -114,7 +108,7 @@ describe('Forgot Password', function () {
         Mail::assertNothingQueued();
     });
 
-    it('requires email field', function () {
+    it('requires email field', function (): void {
         $response = $this->postJson('/api/password/forgot', []);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);

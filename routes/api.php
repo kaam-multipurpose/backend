@@ -9,4 +9,5 @@ Route::group([
 ], function (): void {
     require __DIR__.'/./permission/permission-routes.php';
     require __DIR__.'/./permission/role-routes.php';
+    require __DIR__.'/./variant-type/variant-type-routes.php';
 });

@@ -29,6 +29,7 @@ class ResetPasswordRequest extends FormRequest
         ];
     }
 
+    #[\Override]
     public function messages(): array
     {
         return [

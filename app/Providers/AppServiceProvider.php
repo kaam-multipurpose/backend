@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Enum\UserRolesEnum;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,5 +23,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::automaticallyEagerLoadRelationships();
         Gate::before(fn ($user) => $user->hasRole(UserRolesEnum::SUPER_ADMIN->value) ? true : null);
+        JsonResource::withoutWrapping();
     }
 }

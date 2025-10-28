@@ -3,15 +3,23 @@
 namespace App\Utils\Response;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Response;
 
-final readonly class ApiResponse
+final class ApiResponse
 {
-    public function __construct(
-        public bool $success,
-        public string $message,
-        public mixed $payload,
-        public int $statusCode,
+    private function __construct(
+        public readonly bool $success,
+        public readonly string $message,
+        mixed $payload {
+            set(mixed $value) {
+                if ($value instanceof AnonymousResourceCollection) {
+                    $value = $value->toResponse(request())->getData(true);
+                }
+                $this->payload = $value;
+            }
+        },
+        public readonly int $statusCode,
     ) {}
 
     public static function success($data = null, string $message = 'Success', int $status = 200): JsonResponse
@@ -26,12 +34,13 @@ final readonly class ApiResponse
 
     private static function build(bool $success, string $message, mixed $payload = null, int $statusCode = 200): JsonResponse
     {
-        return (new self(
-            success: $success,
-            message: $message,
-            payload: $payload,
-            statusCode: self::validateStatusCode($statusCode),
-        ))->response();
+        return
+            new self(
+                success: $success,
+                message: $message,
+                payload: $payload,
+                statusCode: self::validateStatusCode($statusCode),
+            )->response();
     }
 
     private static function validateStatusCode(int $code): int

@@ -7,9 +7,11 @@ use App\Services\Contracts\AuthServiceContract;
 use App\Services\Contracts\PasswordServiceContract;
 use App\Services\Contracts\PermissionServiceContract;
 use App\Services\Contracts\RoleServiceContract;
+use App\Services\Contracts\VariantTypeServiceContract;
 use App\Services\Password\PasswordService;
 use App\Services\Permission\PermissionService;
 use App\Services\Permission\RoleService;
+use App\Services\VariantType\VariantTypeService;
 use Illuminate\Support\ServiceProvider;
 
 class ServicesServiceProvider extends ServiceProvider
@@ -24,6 +26,7 @@ class ServicesServiceProvider extends ServiceProvider
         $this->app->bind(PermissionServiceContract::class, PermissionService::class);
         $this->app->bind(RoleServiceContract::class, RoleService::class);
         $this->app->bind(PasswordServiceContract::class, PasswordService::class);
+        $this->app->bind(VariantTypeServiceContract::class, VariantTypeService::class);
     }
 
     /**

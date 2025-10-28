@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Models\PermissionCategory;
+use App\Models\VariantTypeValue;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PermissionCategoryResource extends JsonResource
+class VariantTypeValueResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +16,13 @@ class PermissionCategoryResource extends JsonResource
     #[\Override]
     public function toArray(Request $request): array
     {
-        /** @var PermissionCategory $category */
-        $category = $this->resource;
+        /** @var VariantTypeValue $variantTypeValue */
+        $variantTypeValue = $this->resource;
 
         return [
-            'name' => $category->name,
-            'permissions' => $category->permissions->pluck('name')->toArray(),
+            'id' => $variantTypeValue->id,
+            'name' => $variantTypeValue->name,
+            'slug' => $variantTypeValue->slug,
         ];
     }
 }

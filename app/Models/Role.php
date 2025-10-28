@@ -22,10 +22,11 @@ class Role extends SpatieRole
         'slug',
     ];
 
+    #[\Override]
     protected static function boot(): void
     {
         parent::boot();
-        static::creating(function ($role) {
+        static::creating(function ($role): void {
             $role->slug = Str::slug($role->name);
         });
     }

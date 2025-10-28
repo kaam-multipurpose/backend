@@ -4,8 +4,8 @@ use App\Models\PasswordResetToken;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
-describe('Reset Password', function () {
-    beforeEach(function () {
+describe('Reset Password', function (): void {
+    beforeEach(function (): void {
         $this->resetToken = Str::random(6);
 
         PasswordResetToken::factory()
@@ -17,7 +17,7 @@ describe('Reset Password', function () {
             ->create(['token' => $this->resetToken]);
     });
 
-    it('successfully resets password with valid token', function () {
+    it('successfully resets password with valid token', function (): void {
         $response = $this->postJson("/api/password/reset/{$this->adminUser->email}/{$this->resetToken}", [
             'password' => 'newPassword123',
             'password_confirmation' => 'newPassword123',
@@ -39,7 +39,7 @@ describe('Reset Password', function () {
             ->toBeFalse();
     });
 
-    it('successfully resets password for sales rep user', function () {
+    it('successfully resets password for sales rep user', function (): void {
 
         $response = $this->postJson("/api/password/reset/{$this->salesRepUser->email}/{$this->resetToken}", [
             'password' => 'newPassword123',
@@ -54,7 +54,7 @@ describe('Reset Password', function () {
         ]);
     });
 
-    it('fails with invalid token', function () {
+    it('fails with invalid token', function (): void {
         $response = $this->postJson("/api/password/reset/{$this->adminUser->email}/invalid-token", [
             'password' => 'newPassword123',
             'password_confirmation' => 'newPassword123',
@@ -67,7 +67,7 @@ describe('Reset Password', function () {
         ]);
     });
 
-    it('fails with expired token', function () {
+    it('fails with expired token', function (): void {
         // Update token to be expired
         PasswordResetToken::where('email', $this->adminUser->email)
             ->update(['expires_at' => now()->subMinutes(1)]);
@@ -84,7 +84,7 @@ describe('Reset Password', function () {
         ]);
     });
 
-    it('fails with non-existent email', function () {
+    it('fails with non-existent email', function (): void {
         $response = $this->postJson("/api/password/reset/nonexistent@example.com/{$this->resetToken}", [
             'password' => 'newPassword123',
             'password_confirmation' => 'newPassword123',
@@ -98,7 +98,7 @@ describe('Reset Password', function () {
         ]);
     });
 
-    it('validates password confirmation match', function () {
+    it('validates password confirmation match', function (): void {
         $response = $this->postJson("/api/password/reset/{$this->adminUser->email}/{$this->resetToken}", [
             'password' => 'newPassword123',
             'password_confirmation' => 'differentPassword123',
