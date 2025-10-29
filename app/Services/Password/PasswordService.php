@@ -2,6 +2,7 @@
 
 namespace App\Services\Password;
 
+use App\Dto\ChangePasswordDto;
 use App\Dto\Mail\ForgetPasswordMailDto;
 use App\Dto\ResetPasswordDto;
 use App\Exceptions\PasswordServiceException;
@@ -92,29 +93,30 @@ class PasswordService implements PasswordServiceContract
             throw new PasswordServiceException('Unable to reset the password');
         }
     }
-    public function changePassword(int $userId, string $currentPassword, string $newPassword): bool
+
+    public function changePassword(ChangePasswordDto $dto, User $attemptingUser): bool
     {
         try {
-            self::logInfo("Attempting to change the password for user ID {$userId}", [
-                'user_id' => $userId,
-            ]);
+            self::logInfo('Attempting to change password');
 
-            $user = User::query()->find($userId);
-
-            if (! $user || ! Hash::check($currentPassword, $user->password)) {
-                throw new PasswordServiceException('The current password is incorrect', code: Response::HTTP_UNPROCESSABLE_ENTITY);
+            if ($attemptingUser->id !== self::getLoggedInUser()->id) {
+                throw new PasswordServiceException("you aren't authorized to perform this action", Response::HTTP_FORBIDDEN);
             }
 
-            $user->update([
-                'password' => Hash::make($newPassword),
-            ]);
+            if (! Hash::check($dto->currentPassword, $attemptingUser->password)) {
+                throw new PasswordServiceException('current Password doesn\'t match provided password', Response::HTTP_FORBIDDEN);
+            }
+
+            $attemptingUser->update($dto->toArray());
+            $attemptingUser->tokens()->delete();
+            $attemptingUser->refreshToken()->delete();
 
             return true;
         } catch (Throwable $e) {
             if ($e instanceof PasswordServiceException) {
                 throw $e;
             }
-            self::logException($e, "Caught Exception when attempting to change the password for user ID {$userId}", ['user_id' => $userId]);
+            self::logException($e, 'Caught Exception when attempting to change the password');
 
             throw new PasswordServiceException('Unable to change the password');
         }

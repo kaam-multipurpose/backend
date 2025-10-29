@@ -11,7 +11,8 @@ Route::group([
         ->middleware('throttle:3,10');
 
     Route::post('/reset/{email}/{token}', [PasswordController::class, 'resetPassword']);
-    Route::post('/change', [PasswordController::class, 'changePassword'])
+
+    Route::patch('/change/{user}', [PasswordController::class, 'changePassword'])
         ->middleware('auth:sanctum')
-        ->middleware('throttle:3,10');
+        ->middleware('throttle:8,10');
 });

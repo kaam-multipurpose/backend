@@ -2,8 +2,10 @@
 
 namespace App\Services\Contracts;
 
+use App\Dto\ChangePasswordDto;
 use App\Dto\ResetPasswordDto;
 use App\Exceptions\PasswordServiceException;
+use App\Models\User;
 
 interface PasswordServiceContract
 {
@@ -16,8 +18,9 @@ interface PasswordServiceContract
      * @throws PasswordServiceException
      */
     public function resetPassword(ResetPasswordDto $dto): bool;
+
     /**
      * @throws PasswordServiceException
      */
-    public function changePassword(int $userId, string $currentPassword, string $newPassword): bool;
+    public function changePassword(ChangePasswordDto $dto, User $attemptingUser): bool;
 }
