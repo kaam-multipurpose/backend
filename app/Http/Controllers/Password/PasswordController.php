@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Password;
 
+use App\Dto\ChangePasswordDto;
 use App\Dto\ResetPasswordDto;
 use App\Exceptions\PasswordServiceException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Models\User;
 use App\Services\Contracts\PasswordServiceContract;
 use App\Utils\Response\ApiResponse;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class PasswordController extends Controller
 {
@@ -56,5 +59,26 @@ class PasswordController extends Controller
         ]);
 
         return ApiResponse::success(message: 'Password reset successfully.');
+    }
+
+    /**
+     * @throws PasswordServiceException
+     */
+    public function changePassword(Request $request, User $user): JsonResponse
+    {
+        $data = $request->validate([
+            'current_password' => ['required'],
+            'new_password' => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $this->passwordService->changePassword(
+            ChangePasswordDto::fromValidated($data),
+            $user
+        );
+
+        self::logInfo('Password changed successfully for');
+
+        return ApiResponse::success(message: 'Password changed successfully.')
+            ->withCookie(Cookie::forget('refresh_token'));
     }
 }
