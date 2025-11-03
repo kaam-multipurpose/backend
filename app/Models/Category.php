@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
  * @property int $parent_id
  * @property string $name
  * @property string $slug
+ * @property Attribute $allVariantTypes
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -55,12 +56,6 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
-    #[Scope]
-    public function categories(Builder $query): Builder
-    {
-        return $query->whereNull('parent_id');
-    }
-
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id');
@@ -69,6 +64,12 @@ class Category extends Model
     public function variantTypes(): BelongsToMany
     {
         return $this->belongsToMany(VariantType::class, 'category_variant_types');
+    }
+
+    #[Scope]
+    protected function categories(Builder $query): Builder
+    {
+        return $query->whereNull('parent_id');
     }
 
     protected function name(): Attribute

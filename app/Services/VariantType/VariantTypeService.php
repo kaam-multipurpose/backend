@@ -30,22 +30,20 @@ class VariantTypeService implements VariantTypeServiceContract
      */
     public function addVariantType(AddVariantTypeDto $dto): VariantType
     {
-        DB::beginTransaction();
         try {
             self::logInfo('Attempt to add variant type');
 
-            $variantType = VariantType::query()->create($dto->toArray());
+            return DB::transaction(function () use ($dto) {
+                $variantType = VariantType::query()->create($dto->toArray());
 
-            $variantTypeValues = $this->generateDBVariantTypeValue($dto->values);
+                $variantTypeValues = $this->generateDBVariantTypeValue($dto->values);
 
-            $variantType->variantTypeValues()->createMany($variantTypeValues);
+                $variantType->variantTypeValues()->createMany($variantTypeValues);
 
-            DB::commit();
+                return $variantType;
+            });
 
-            return $variantType;
         } catch (Throwable $e) {
-            DB::rollBack();
-
             self::logException($e, 'Caught Exception when adding variant type');
             throw new VariantTypeServiceException('Unable to add variant type');
         }
@@ -95,17 +93,17 @@ class VariantTypeService implements VariantTypeServiceContract
      */
     public function deleteVariantType(VariantType $variantType): void
     {
-        DB::beginTransaction();
+
         try {
             self::logInfo('Attempt to delete variant type', [
                 'variantTypeId' => $variantType->id,
             ]);
 
-            $variantType->delete();
+            DB::transaction(function () use ($variantType): void {
+                $variantType->delete();
+            });
 
-            DB::commit();
         } catch (Throwable $e) {
-            DB::rollBack();
             self::logException($e, 'Caught Exception when deleting variant type', [
                 'variantTypeId' => $variantType->id,
             ]);

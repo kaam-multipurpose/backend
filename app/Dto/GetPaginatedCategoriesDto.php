@@ -9,7 +9,6 @@ final readonly class GetPaginatedCategoriesDto extends AbstractPaginationDto imp
 {
     public function __construct(
         protected ?array $defaultPaginationProps = [],
-        public ?string $search = null,
     ) {
         parent::__construct($defaultPaginationProps);
     }
@@ -24,14 +23,11 @@ final readonly class GetPaginatedCategoriesDto extends AbstractPaginationDto imp
 
         return new self(
             defaultPaginationProps: $default,
-            search: $data['search'] ?? null
         );
     }
 
     public function toArray(): array
     {
-        return array_merge([
-            'search' => $this->search,
-        ], $this->defaultToArray());
+        return $this->defaultToArray();
     }
 }

@@ -26,22 +26,21 @@ class RoleService implements RoleServiceContract
      */
     public function addRole(AddRoleDto $dto): Role
     {
-        DB::beginTransaction();
         try {
             self::logInfo('Attempt to add role');
 
-            $role = Role::query()->create([
-                'name' => $dto->role,
-                'guard_name' => 'api',
-            ]);
+            return DB::transaction(function () use ($dto) {
+                $role = Role::query()->create([
+                    'name' => $dto->role,
+                    'guard_name' => 'api',
+                ]);
 
-            $role->syncPermissions($dto->permissions);
-            DB::commit();
+                $role->syncPermissions($dto->permissions);
 
-            return $role;
+                return $role;
+            });
+
         } catch (Throwable $e) {
-            DB::rollBack();
-
             self::logException($e, 'Caught Exception when adding role');
             throw new RoleServiceException('Unable to add role');
         }

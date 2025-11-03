@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Services\Auth\AuthService;
+use App\Services\Category\CategoryService;
 use App\Services\Contracts\AuthServiceContract;
+use App\Services\Contracts\CategoryServiceContract;
 use App\Services\Contracts\PasswordServiceContract;
 use App\Services\Contracts\PermissionServiceContract;
 use App\Services\Contracts\RoleServiceContract;
@@ -27,6 +29,7 @@ class ServicesServiceProvider extends ServiceProvider
         $this->app->bind(RoleServiceContract::class, RoleService::class);
         $this->app->bind(PasswordServiceContract::class, PasswordService::class);
         $this->app->bind(VariantTypeServiceContract::class, VariantTypeService::class);
+        $this->app->bind(CategoryServiceContract::class, CategoryService::class);
     }
 
     /**

@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddValuesToVariantTypeRequest;
 use App\Http\Requests\AddVariantTypeRequest;
 use App\Http\Requests\GetVariantTypesRequest;
-use App\Http\Resources\variantTypeResource;
+use App\Http\Resources\VariantTypeResource;
 use App\Http\Resources\VariantTypeValueResource;
 use App\Models\VariantType;
 use App\Models\VariantTypeValue;

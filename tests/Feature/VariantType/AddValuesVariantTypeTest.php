@@ -3,8 +3,8 @@
 use App\Models\VariantType;
 use Symfony\Component\HttpFoundation\Response;
 
-describe('Add Values To Variant Type', function () {
-    beforeEach(function () {
+describe('Add Values To Variant Type', function (): void {
+    beforeEach(function (): void {
         $this->variantType = VariantType::factory()->hasVariantTypeValues(2)->create();
         $this->newValues = ['New Value 1', 'New Value 2'];
     });
