@@ -2,6 +2,7 @@
 
 namespace App\Services\Password;
 
+use App\Dto\ChangePasswordDto;
 use App\Dto\Mail\ForgetPasswordMailDto;
 use App\Dto\ResetPasswordDto;
 use App\Exceptions\PasswordServiceException;
@@ -90,6 +91,34 @@ class PasswordService implements PasswordServiceContract
             self::logException($e, "Caught Exception when attempting to reset the password for {$dto->email}", ['email' => $dto->email]);
 
             throw new PasswordServiceException('Unable to reset the password');
+        }
+    }
+
+    public function changePassword(ChangePasswordDto $dto, User $attemptingUser): bool
+    {
+        try {
+            self::logInfo('Attempting to change password');
+
+            if ($attemptingUser->id !== self::getLoggedInUser()->id) {
+                throw new PasswordServiceException("you aren't authorized to perform this action", Response::HTTP_FORBIDDEN);
+            }
+
+            if (! Hash::check($dto->currentPassword, $attemptingUser->password)) {
+                throw new PasswordServiceException('current Password doesn\'t match provided password', Response::HTTP_FORBIDDEN);
+            }
+
+            $attemptingUser->update($dto->toArray());
+            $attemptingUser->tokens()->delete();
+            $attemptingUser->refreshToken()->delete();
+
+            return true;
+        } catch (Throwable $e) {
+            if ($e instanceof PasswordServiceException) {
+                throw $e;
+            }
+            self::logException($e, 'Caught Exception when attempting to change the password');
+
+            throw new PasswordServiceException('Unable to change the password');
         }
     }
 }
