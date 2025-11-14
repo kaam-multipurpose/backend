@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Category;
 
 use App\Dto\AddCategoryDto;
@@ -13,11 +15,10 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class CategoryService implements CategoryServiceContract
+final class CategoryService implements CategoryServiceContract
 {
-    use HasAuthenticatedUser, HasLogger;
-
-    public function __construct() {}
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     /**
      * @throws CategoryServiceException
@@ -44,11 +45,12 @@ class CategoryService implements CategoryServiceContract
                 return $category;
             });
 
-        } catch (Throwable $e) {
-            if ($e instanceof CategoryServiceException) {
-                throw $e;
+        } catch (Throwable $throwable) {
+            if ($throwable instanceof CategoryServiceException) {
+                throw $throwable;
             }
-            self::logException($e, 'Caught Exception when adding category');
+
+            self::logException($throwable, 'Caught Exception when adding category');
             throw new CategoryServiceException('Unable to add category');
         }
     }
@@ -66,8 +68,8 @@ class CategoryService implements CategoryServiceContract
                 page: $dto->page
             );
 
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when getting categories');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when getting categories');
             throw new CategoryServiceException('Unable to get categories');
         }
     }
@@ -82,8 +84,8 @@ class CategoryService implements CategoryServiceContract
 
             return $category;
 
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when getting category');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when getting category');
             throw new CategoryServiceException('Unable to get category');
         }
     }
@@ -96,9 +98,10 @@ class CategoryService implements CategoryServiceContract
             $parentVariantIds = $category->category?->variantTypes->pluck('id')->toArray();
             $variantTypeIds = array_filter(
                 $variantTypeIds,
-                fn ($variantTypeId) => ! in_array($variantTypeId, $parentVariantIds)
+                fn ($variantTypeId): bool => ! in_array($variantTypeId, $parentVariantIds)
             );
         }
+
         $category->variantTypes()->sync($variantTypeIds);
     }
 }

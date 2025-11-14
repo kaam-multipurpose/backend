@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\VariantType;
 use App\Models\VariantTypeValue;
 use Symfony\Component\HttpFoundation\Response;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\VariantType;
 
 use App\Dto\AddValuesToVariantTypeDto;
@@ -18,11 +20,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class VariantTypeService implements VariantTypeServiceContract
+final class VariantTypeService implements VariantTypeServiceContract
 {
-    use HasAuthenticatedUser, HasLogger, HasVariantTypeValue;
-
-    public function __construct() {}
+    use HasAuthenticatedUser;
+    use HasLogger;
+    use HasVariantTypeValue;
 
     /**
      * @throws VariantTypeServiceException
@@ -43,8 +45,8 @@ class VariantTypeService implements VariantTypeServiceContract
                 return $variantType;
             });
 
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when adding variant type');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when adding variant type');
             throw new VariantTypeServiceException('Unable to add variant type');
         }
     }
@@ -62,8 +64,8 @@ class VariantTypeService implements VariantTypeServiceContract
                 page: $dto->page
             );
 
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when getting variant types');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when getting variant types');
             throw new VariantTypeServiceException('Unable to get variant types');
         }
     }
@@ -80,8 +82,8 @@ class VariantTypeService implements VariantTypeServiceContract
 
             return $dto->variantType->variantTypeValues()->createMany($variantTypeValues);
 
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when adding values to variant types');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when adding values to variant types');
             throw new VariantTypeServiceException('Unable to add values to variant types');
         }
 
@@ -103,8 +105,8 @@ class VariantTypeService implements VariantTypeServiceContract
                 $variantType->delete();
             });
 
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when deleting variant type', [
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when deleting variant type', [
                 'variantTypeId' => $variantType->id,
             ]);
             throw new VariantTypeServiceException('Unable to delete variant type');
@@ -118,11 +120,11 @@ class VariantTypeService implements VariantTypeServiceContract
      */
     private function generateDBVariantTypeValue(array $array): array
     {
-        if (! collect($array)->every(fn ($value) => $value instanceof AddVariantTypeValueDto)) {
+        if (! collect($array)->every(fn ($value): true => $value instanceof AddVariantTypeValueDto)) {
             throw new ApplicationException('Expected an array of AddVariantTypeValueDto, found invalid item.');
         }
 
         return collect($array)
-            ->map(fn (AddVariantTypeValueDto $value) => $value->toArray())->toArray();
+            ->map(fn (AddVariantTypeValueDto $value): array => $value->toArray())->toArray();
     }
 }

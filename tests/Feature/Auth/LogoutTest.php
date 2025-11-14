@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 test('user can logout successfully', function (): void {
     $this->actingAs($this->salesRepUser, 'sanctum');
 

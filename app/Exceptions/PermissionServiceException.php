@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions;
 
-class PermissionServiceException extends AbstractServiceException
+final class PermissionServiceException extends AbstractServiceException
 {
     //
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Dto\LoginDto;
@@ -18,11 +20,12 @@ use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\HttpFoundation\Cookie as SymPyCookie;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class AuthController extends Controller
+final class AuthController extends Controller
 {
-    use HasAuthenticatedUser, HasLogger;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
-    public function __construct(protected AuthServiceContract $authService) {}
+    public function __construct(private AuthServiceContract $authService) {}
 
     /**
      * @throws AuthenticationException

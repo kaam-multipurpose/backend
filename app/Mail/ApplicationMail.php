@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -9,9 +11,10 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ApplicationMail extends Mailable implements ShouldQueue
+final class ApplicationMail extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new message instance.
@@ -37,9 +40,9 @@ class ApplicationMail extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
-        return (new Content(
+        return new Content(
             markdown: 'emails.'.$this->localView,
-        ))->with([
+        )->with([
             'data' => $this->data,
         ]);
     }

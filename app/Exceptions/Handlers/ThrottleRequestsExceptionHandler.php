@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions\Handlers;
 
 use App\Exceptions\Handlers\Trait\HasHandlerRender;
@@ -7,7 +9,7 @@ use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class ThrottleRequestsExceptionHandler
+final class ThrottleRequestsExceptionHandler
 {
     use HasHandlerRender;
 

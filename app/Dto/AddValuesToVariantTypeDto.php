@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto;
 
 use App\Models\VariantType;
@@ -13,7 +15,7 @@ final class AddValuesToVariantTypeDto
         private(set) array $values {
             set(array $values) {
                 $this->values = array_map(
-                    fn ($value) => $value instanceof AddVariantTypeValueDto
+                    fn (AddVariantTypeValueDto|array|string $value): AddVariantTypeValueDto => $value instanceof AddVariantTypeValueDto
                         ? $value
                         : new AddVariantTypeValueDto(
                             name: is_array($value) ?
@@ -35,11 +37,10 @@ final class AddValuesToVariantTypeDto
         );
     }
 
-
     public function toArray(): array
     {
         return [
-            'values' => array_map(fn ($value) => $value->toArray(), $this->values),
+            'values' => array_map(fn (AddVariantTypeValueDto $value): array => $value->toArray(), $this->values),
             'variant_type' => $this->variantType,
         ];
     }

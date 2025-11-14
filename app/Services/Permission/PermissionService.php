@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Permission;
 
 use App\Exceptions\PermissionServiceException;
@@ -10,11 +12,10 @@ use App\Utils\Trait\HasLogger;
 use Illuminate\Database\Eloquent\Collection;
 use Throwable;
 
-class PermissionService implements PermissionServiceContract
+final class PermissionService implements PermissionServiceContract
 {
-    use HasAuthenticatedUser, HasLogger;
-
-    public function __construct() {}
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     // Your service logic goes here
 
@@ -28,8 +29,8 @@ class PermissionService implements PermissionServiceContract
             self::logInfo('Attempt to get all permissions');
 
             return PermissionCategory::query()->with('permissions')->get();
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when getting permissions');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when getting permissions');
             throw new PermissionServiceException('Unable to get all permissions');
         }
     }

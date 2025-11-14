@@ -23,8 +23,9 @@
     "laravel/sail": "^1.41",
     "mockery/mockery": "^1.6",
     "nunomaduro/collision": "^8.6",
+    "nunomaduro/essentials": "^0.1.0",
     "pestphp/pest": "^4.0",
-    "pestphp/pest-plugin-drift": "^4.0",
+    "pestphp/pest-plugin-type-coverage": "^4.0",
     "phpstan/phpstan": "^2.1",
     "rector/rector": "^2.1"
   },
@@ -48,12 +49,7 @@
     "post-update-cmd": [
       "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
     ],
-    "pint": "pint",
-    "phpstan": "phpstan analyse --memory-limit=512M",
     "pest": "pest",
-    "rector": "rector",
-    "rector:process": "@rector process",
-    "rector:dry": "@rector --dry-run",
     "post-root-package-install": [
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
     ],
@@ -69,6 +65,16 @@
     "test": [
       "@php artisan config:clear --ansi",
       "@php artisan test"
+    ],
+    "refactor": "rector",
+    "lint": "pint",
+    "test:refactor": "rector --dry-run",
+    "test:lint": "pint --test",
+    "test:types": "phpstan analyse --ansi",
+    "essential:test": [
+      "@test:refactor",
+      "@test:lint",
+      "@test:unit"
     ]
   },
   "extra": {

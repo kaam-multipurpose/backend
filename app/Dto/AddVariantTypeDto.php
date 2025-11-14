@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto;
 
 use App\Dto\Contract\DtoContract;
@@ -14,7 +16,7 @@ final class AddVariantTypeDto implements DtoContract
         private(set) array $values {
             set(array $values) {
                 $this->values = array_map(
-                    fn ($value) => $value instanceof AddVariantTypeValueDto
+                    fn (AddVariantTypeValueDto|array|string $value): AddVariantTypeValueDto => $value instanceof AddVariantTypeValueDto
                         ? $value
                         : new AddVariantTypeValueDto(
                             name: is_array($value) ?

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto;
 
 use App\Dto\Contract\DtoContract;
 
-class AddVariantTypeValueDto implements DtoContract
+final class AddVariantTypeValueDto implements DtoContract
 {
     public function __construct(
         public string $name

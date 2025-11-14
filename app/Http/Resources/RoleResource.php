@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use App\Enum\PermissionsEnum;
@@ -7,10 +9,11 @@ use App\Enum\UserRolesEnum;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Override;
 
-class RoleResource extends JsonResource
+final class RoleResource extends JsonResource
 {
-    public function __construct(Role $resource, protected bool $full = false)
+    public function __construct(Role $resource, private readonly bool $full = false)
     {
         parent::__construct($resource);
     }
@@ -20,7 +23,7 @@ class RoleResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function toArray(Request $request): array
     {
         /** @var Role $role */
@@ -32,7 +35,7 @@ class RoleResource extends JsonResource
         ];
 
         if ($this->full) {
-            $data['permissions'] = ($role->name == UserRolesEnum::SUPER_ADMIN->value) ?
+            $data['permissions'] = ($role->name === UserRolesEnum::SUPER_ADMIN->value) ?
                 collect(PermissionsEnum::values())->toArray() : $role->getPermissionNames()->toArray();
         }
 

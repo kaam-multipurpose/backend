@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enum\PermissionsEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddCategoryRequest extends FormRequest
+final class AddCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

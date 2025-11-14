@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Utils\Seeders;
 
 use App\Enum\UserRolesEnum;
 use App\Models\User;
 use App\Utils\Logger\Dto\LoggerContextDto;
 use App\Utils\Logger\Logger;
+use Throwable;
 
-class SuperAdminSeederUtil
+final class SuperAdminSeederUtil
 {
     public static function run(): void
     {
@@ -28,8 +31,8 @@ class SuperAdminSeederUtil
                 ]
             );
             $createUser->syncRoles(UserRolesEnum::SUPER_ADMIN->value);
-        } catch (\Throwable $e) {
-            Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
+        } catch (Throwable $throwable) {
+            Logger::error($throwable->getMessage(), LoggerContextDto::fromException($throwable, extra: [
                 'info' => 'When seeding super admin',
             ]));
         }

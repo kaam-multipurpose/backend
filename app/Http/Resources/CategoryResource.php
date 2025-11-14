@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Override;
 
-class CategoryResource extends JsonResource
+final class CategoryResource extends JsonResource
 {
     private bool $expanded = false;
 
@@ -22,7 +25,7 @@ class CategoryResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function toArray(Request $request): array
     {
         /**
@@ -49,7 +52,7 @@ class CategoryResource extends JsonResource
             ),
             'sub_categories' => $this->when(
                 is_null($category->parent_id) && $this->expanded,
-                CategoryResource::collection($category->subCategories)
+                self::collection($category->subCategories)
             ),
         ];
     }

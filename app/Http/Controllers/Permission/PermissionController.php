@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Permission;
 
 use App\Exceptions\PermissionServiceException;
@@ -11,11 +13,12 @@ use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
 use Illuminate\Http\JsonResponse;
 
-class PermissionController extends Controller
+final class PermissionController extends Controller
 {
-    use HasAuthenticatedUser, HasLogger;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
-    public function __construct(protected PermissionServiceContract $permissionService) {}
+    public function __construct(private PermissionServiceContract $permissionService) {}
 
     /**
      * @throws PermissionServiceException

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use App\Enum\PermissionsEnum;
@@ -7,15 +9,16 @@ use App\Enum\UserRolesEnum;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Override;
 
-class UserResource extends JsonResource
+final class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function toArray(Request $request): array
     {
 
@@ -30,7 +33,7 @@ class UserResource extends JsonResource
             'last_name' => $user->last_name,
             'email' => $user->email,
             'phone_number' => $user->phone_number,
-            'permissions' => ($role->name == UserRolesEnum::SUPER_ADMIN->value) ? PermissionsEnum::values() : $role->permissions?->pluck('name')->toArray(),
+            'permissions' => ($role->name === UserRolesEnum::SUPER_ADMIN->value) ? PermissionsEnum::values() : $role->permissions?->pluck('name')->toArray(),
         ];
     }
 }

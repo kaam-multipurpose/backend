@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class MakeServiceCommand extends Command
+final class MakeServiceCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -28,37 +30,37 @@ class MakeServiceCommand extends Command
     {
         $name = ucfirst($this->argument('name'));
 
-        $servicePath = app_path("Services/{$name}/{$name}Service.php");
-        $contractPath = app_path("Services/Contracts/{$name}ServiceContract.php");
+        $servicePath = app_path(sprintf('Services/%s/%sService.php', $name, $name));
+        $contractPath = app_path(sprintf('Services/Contracts/%sServiceContract.php', $name));
 
         // Create Contracts directory if not exists
         if (! File::exists(app_path('Services/Contracts'))) {
             File::makeDirectory(app_path('Services/Contracts'), 0755, true);
         }
 
-        if (! FIle::exists(app_path("Services/{$name}"))) {
-            File::makeDirectory(app_path("Services/{$name}"), 0755, true);
+        if (! File::exists(app_path('Services/'.$name))) {
+            File::makeDirectory(app_path('Services/'.$name), 0755, true);
         }
 
         // Create Interface file
         if (! File::exists($contractPath)) {
             File::put($contractPath, $this->contractStub($name));
-            $this->info("Created: {$contractPath}");
+            $this->info('Created: '.$contractPath);
         } else {
-            $this->warn("Contract already exists: {$contractPath}");
+            $this->warn('Contract already exists: '.$contractPath);
         }
 
         // Create Service file
         if (! File::exists($servicePath)) {
             File::put($servicePath, $this->serviceStub($name));
-            $this->info("Created: {$servicePath}");
+            $this->info('Created: '.$servicePath);
         } else {
-            $this->warn("Service already exists: {$servicePath}");
+            $this->warn('Service already exists: '.$servicePath);
         }
 
     }
 
-    protected function contractStub($name): string
+    private function contractStub(string $name): string
     {
         return <<<PHP
         <?php
@@ -72,7 +74,7 @@ class MakeServiceCommand extends Command
         PHP;
     }
 
-    protected function serviceStub($name): string
+    private function serviceStub(string $name): string
     {
         return <<<PHP
         <?php

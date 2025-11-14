@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Auth;
 
 use App\Dto\LoginDto;
@@ -15,12 +17,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Throwable;
 
-class AuthService implements AuthServiceContract
+final class AuthService implements AuthServiceContract
 {
-    use HasAuthenticatedUser, HasLogger;
-
-    public function __construct() {}
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     public function login(LoginDto $loginDto): LoginServiceResponseDto
     {
@@ -46,8 +48,8 @@ class AuthService implements AuthServiceContract
             $user->refreshToken()->delete();
 
             return $this->generateTokens($user);
-        } catch (\Throwable $e) {
-            self::logException($e, 'Caught Exception during login', [
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception during login', [
                 'email' => $loginDto->email,
             ]);
             throw ValidationException::withMessages([
@@ -80,8 +82,8 @@ class AuthService implements AuthServiceContract
             $user->refreshToken()->delete();
 
             return $this->generateTokens($user);
-        } catch (\Throwable $e) {
-            self::logException($e, 'Caught Exception when refreshing token');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when refreshing token');
             throw ValidationException::withMessages([
                 'global' => ['Unable to refresh token'],
             ]);
@@ -103,8 +105,8 @@ class AuthService implements AuthServiceContract
             return [
                 'email' => $user->email,
             ];
-        } catch (\Throwable $e) {
-            self::logException($e, 'Caught Exception during logout');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception during logout');
             throw ValidationException::withMessages([
                 'global' => ['unable to logout'],
             ]);

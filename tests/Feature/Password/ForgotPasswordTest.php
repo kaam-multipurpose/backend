@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Mail\ApplicationMail;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Response;

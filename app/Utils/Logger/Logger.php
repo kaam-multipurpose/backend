@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Utils\Logger;
 
 use App\Utils\Logger\Dto\LoggerContextDto;
 use Illuminate\Support\Facades\Log;
 
-class Logger
+final class Logger
 {
     public static function info(string $message, ?LoggerContextDto $extraDto = null): void
     {
@@ -22,8 +24,8 @@ class Logger
         Log::warning($message, self::buildContext($extraDto));
     }
 
-    protected static function buildContext(?LoggerContextDto $contextDto): array
+    private static function buildContext(?LoggerContextDto $contextDto): array
     {
-        return $contextDto ? $contextDto->toArray() : ['user' => 'system'];
+        return $contextDto instanceof LoggerContextDto ? $contextDto->toArray() : ['user' => 'system'];
     }
 }

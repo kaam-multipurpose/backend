@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Password;
 
 use App\Dto\ChangePasswordDto;
@@ -16,11 +18,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
-class PasswordController extends Controller
+final class PasswordController extends Controller
 {
-    use HasAuthenticatedUser, HasLogger;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
-    public function __construct(protected PasswordServiceContract $passwordService) {}
+    public function __construct(private PasswordServiceContract $passwordService) {}
 
     /**
      * @throws PasswordServiceException
@@ -31,14 +34,14 @@ class PasswordController extends Controller
         $email = $request->validate(['email' => 'required|email|exists:users,email'])['email'];
 
         if ($this->passwordService->forgetPassword(email: $email)) {
-            self::logInfo("Reset password otp sent to $email", [
+            self::logInfo('Reset password otp sent to '.$email, [
                 'email' => $email,
             ]);
 
             return ApiResponse::success(message: 'An Otp has been sent to your email.');
         }
 
-        self::logInfo("Reset password otp not sent to $email", [
+        self::logInfo('Reset password otp not sent to '.$email, [
             'email' => $email,
         ]);
 
@@ -48,7 +51,7 @@ class PasswordController extends Controller
     /**
      * @throws PasswordServiceException
      */
-    public function resetPassword(ResetPasswordRequest $request)
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $data = $request->validated();
 

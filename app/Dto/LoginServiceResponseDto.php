@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto;
 
-use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 final readonly class LoginServiceResponseDto
@@ -13,9 +15,9 @@ final readonly class LoginServiceResponseDto
     public function __construct(
         public ?Authenticatable $user = null,
         public ?string $token = null,
-        public ?Carbon $expiresAt = null,
+        public ?CarbonInterface $expiresAt = null,
         public ?string $refreshToken = null,
-        public ?Carbon $refreshTokenExpiresAt = null,
+        public ?CarbonInterface $refreshTokenExpiresAt = null,
     ) {
         //
     }
@@ -30,15 +32,6 @@ final readonly class LoginServiceResponseDto
         );
     }
 
-    /**
-     * @return array{
-     *     user: Authenticatable|null,
-     *     token: string|null,
-     *     expiresAt: Carbon|null,
-     *     refreshToken: string|null,
-     *     refreshTokenExpiresAt: Carbon|null
-     * }
-     */
     public function toArray(): array
     {
         return [
@@ -50,7 +43,7 @@ final readonly class LoginServiceResponseDto
         ];
     }
 
-    public function withToken(string $token, Carbon $expiresAt): self
+    public function withToken(string $token, CarbonInterface $expiresAt): self
     {
         $currentData = $this->toArray();
         $currentData['token'] = $token;
@@ -61,7 +54,7 @@ final readonly class LoginServiceResponseDto
         );
     }
 
-    public function withRefreshToken(string $refreshToken, Carbon $expiresAt): self
+    public function withRefreshToken(string $refreshToken, CarbonInterface $expiresAt): self
     {
         $currentData = $this->toArray();
         $currentData['refreshToken'] = $refreshToken;

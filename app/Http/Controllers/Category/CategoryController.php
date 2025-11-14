@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Category;
 
 use App\Dto\AddCategoryDto;
@@ -18,18 +20,19 @@ use App\Utils\Trait\HasLogger;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CategoryController extends Controller
+final class CategoryController extends Controller
 {
-    use HasAuthenticatedUser, HasLogger;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     public function __construct(
-        protected CategoryServiceContract $categoryService,
+        private CategoryServiceContract $categoryService,
     ) {}
 
     /**
      * @throws CategoryServiceException
      */
-    public function addCategory(AddCategoryRequest $request)
+    public function addCategory(AddCategoryRequest $request): \Illuminate\Http\JsonResponse
     {
         $newCategory = $this->categoryService->addCategory(
             AddCategoryDto::fromValidated($request->validated()),
@@ -47,7 +50,7 @@ class CategoryController extends Controller
     /**
      * @throws CategoryServiceException
      */
-    public function addSubCategory(AddSubCategoryRequest $request, Category $category)
+    public function addSubCategory(AddSubCategoryRequest $request, Category $category): \Illuminate\Http\JsonResponse
     {
         $newCategory = $this->categoryService->addCategory(
             AddCategoryDto::fromValidated($request->validated())->isSubCategory(),
@@ -63,7 +66,7 @@ class CategoryController extends Controller
         );
     }
 
-    public function getCategory(Request $request, Category $category)
+    public function getCategory(Request $request, Category $category): \Illuminate\Http\JsonResponse
     {
         $category = $this->categoryService->getCategory($category);
         $data = new CategoryResource($category)->isExpanded();
@@ -76,7 +79,7 @@ class CategoryController extends Controller
         );
     }
 
-    public function getCategories(GetCategoriesRequest $request)
+    public function getCategories(GetCategoriesRequest $request): \Illuminate\Http\JsonResponse
     {
         $categories = $this->categoryService->getCategories(
             GetPaginatedCategoriesDto::fromValidated($request->validated()),

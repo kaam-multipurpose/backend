@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Dto\GetPaginatedCategoriesDto;
 
 test('default values are set when none provided', function (): void {

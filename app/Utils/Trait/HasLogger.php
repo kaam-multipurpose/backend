@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Utils\Trait;
 
 use App\Utils\Logger\Dto\LoggerContextDto;
 use App\Utils\Logger\Logger;
+use Throwable;
 
 trait HasLogger
 {
-    protected static function logException(\Throwable $exception, string $message, $extra = []): void
+    protected static function logException(Throwable $exception, string $message, array $extra = []): void
     {
         Logger::error($message, LoggerContextDto::fromException($exception, self::getLoggedInUser(), $extra));
     }

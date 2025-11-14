@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Password;
 
 use App\Dto\ChangePasswordDto;
@@ -18,16 +20,15 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class PasswordService implements PasswordServiceContract
+final class PasswordService implements PasswordServiceContract
 {
-    use HasAuthenticatedUser, HasLogger;
-
-    public function __construct() {}
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     public function forgetPassword(string $email): bool
     {
         try {
-            self::logInfo("Attempting to forget the password for {$email}", [
+            self::logInfo('Attempting to forget the password for '.$email, [
                 'email' => $email,
             ]);
 
@@ -51,8 +52,8 @@ class PasswordService implements PasswordServiceContract
             ));
 
             return true;
-        } catch (Throwable $e) {
-            self::logException($e, "Caught Exception when attempting to forget the password for {$email}", ['email' => $email]);
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when attempting to forget the password for '.$email, ['email' => $email]);
 
             throw new PasswordServiceException('Unable to forget the password');
         }
@@ -64,7 +65,7 @@ class PasswordService implements PasswordServiceContract
     public function resetPassword(ResetPasswordDto $dto): bool
     {
         try {
-            self::logInfo("Attempting to reset the password for {$dto->email}", [
+            self::logInfo('Attempting to reset the password for '.$dto->email, [
                 'email' => $dto->email,
             ]);
 
@@ -84,11 +85,12 @@ class PasswordService implements PasswordServiceContract
             $resetPassword->delete();
 
             return true;
-        } catch (Throwable $e) {
-            if ($e instanceof PasswordServiceException) {
-                throw $e;
+        } catch (Throwable $throwable) {
+            if ($throwable instanceof PasswordServiceException) {
+                throw $throwable;
             }
-            self::logException($e, "Caught Exception when attempting to reset the password for {$dto->email}", ['email' => $dto->email]);
+
+            self::logException($throwable, 'Caught Exception when attempting to reset the password for '.$dto->email, ['email' => $dto->email]);
 
             throw new PasswordServiceException('Unable to reset the password');
         }
@@ -104,7 +106,7 @@ class PasswordService implements PasswordServiceContract
             }
 
             if (! Hash::check($dto->currentPassword, $attemptingUser->password)) {
-                throw new PasswordServiceException('current Password doesn\'t match provided password', Response::HTTP_FORBIDDEN);
+                throw new PasswordServiceException("current Password doesn't match provided password", Response::HTTP_FORBIDDEN);
             }
 
             $attemptingUser->update($dto->toArray());
@@ -112,11 +114,12 @@ class PasswordService implements PasswordServiceContract
             $attemptingUser->refreshToken()->delete();
 
             return true;
-        } catch (Throwable $e) {
-            if ($e instanceof PasswordServiceException) {
-                throw $e;
+        } catch (Throwable $throwable) {
+            if ($throwable instanceof PasswordServiceException) {
+                throw $throwable;
             }
-            self::logException($e, 'Caught Exception when attempting to change the password');
+
+            self::logException($throwable, 'Caught Exception when attempting to change the password');
 
             throw new PasswordServiceException('Unable to change the password');
         }

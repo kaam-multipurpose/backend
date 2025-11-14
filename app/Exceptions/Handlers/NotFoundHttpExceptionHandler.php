@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions\Handlers;
 
 use App\Exceptions\Handlers\Trait\HasHandlerRender;
@@ -8,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class NotFoundHttpExceptionHandler
+final class NotFoundHttpExceptionHandler
 {
     use HasHandlerRender;
 
@@ -19,7 +21,7 @@ class NotFoundHttpExceptionHandler
         if ($original instanceof ModelNotFoundException) {
             $model = class_basename($original->getModel());
 
-            return self::render($exception, "{$model} model not found", Response::HTTP_NOT_FOUND);
+            return self::render($exception, $model.' model not found', Response::HTTP_NOT_FOUND);
         }
 
         return self::render($exception, 'Unknown resource', Response::HTTP_NOT_FOUND);

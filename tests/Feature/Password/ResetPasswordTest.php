@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\PasswordResetToken;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;

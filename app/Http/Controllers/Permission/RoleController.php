@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Permission;
 
 use App\Dto\AddRoleDto;
@@ -18,9 +20,10 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class RoleController extends Controller
+final class RoleController extends Controller
 {
-    use HasAuthenticatedUser, HasLogger;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     public function __construct(private readonly RoleServiceContract $roleService) {}
 

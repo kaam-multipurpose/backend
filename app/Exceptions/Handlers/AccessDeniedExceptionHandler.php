@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions\Handlers;
 
 use App\Exceptions\Handlers\Trait\HasHandlerRender;
@@ -7,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class AccessDeniedExceptionHandler
+final class AccessDeniedExceptionHandler
 {
     use HasHandlerRender;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Utils\Seeders;
 
 use App\Enum\PermissionsEnum;
@@ -11,8 +13,9 @@ use App\Utils\Logger\Dto\LoggerContextDto;
 use App\Utils\Logger\Logger;
 use Exception;
 use Illuminate\Support\Str;
+use Throwable;
 
-class RoleAndPermissionSeederUtil
+final class RoleAndPermissionSeederUtil
 {
     /**
      * @throws Exception
@@ -49,7 +52,7 @@ class RoleAndPermissionSeederUtil
         try {
             $definedRoles = array_filter(
                 UserRolesEnum::cases(),
-                fn (UserRolesEnum $role) => $role !== UserRolesEnum::SUPER_ADMIN
+                fn (UserRolesEnum $role): bool => $role !== UserRolesEnum::SUPER_ADMIN
             );
 
             $roleNames = collect($definedRoles)->pluck('value')->toArray();
@@ -59,7 +62,7 @@ class RoleAndPermissionSeederUtil
                 $role = $roles->get($roleEnum->value);
 
                 if (! $role) {
-                    Logger::warning("Role not found: {$roleEnum->value}");
+                    Logger::warning('Role not found: '.$roleEnum->value);
 
                     return;
                 }
@@ -68,11 +71,11 @@ class RoleAndPermissionSeederUtil
                 $role->syncPermissions($permissions);
             });
 
-        } catch (\Throwable $e) {
-            Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
+        } catch (Throwable $throwable) {
+            Logger::error($throwable->getMessage(), LoggerContextDto::fromException($throwable, extra: [
                 'info' => 'When assigning permissions to roles',
             ]));
-            throw new Exception('Unable to sync permission to role');
+            throw new Exception('Unable to sync permission to role', $throwable->getCode(), $throwable);
         }
     }
 
@@ -86,9 +89,9 @@ class RoleAndPermissionSeederUtil
             $allCategories = self::generatePermissionsCategories(PermissionsEnum::values());
             $missingCategories = array_diff($allCategories, $existingCategories);
 
-            if (! empty($missingCategories)) {
+            if ($missingCategories !== []) {
                 $now = now();
-                $data = collect($missingCategories)->map(fn ($category) => [
+                $data = collect($missingCategories)->map(fn ($category): array => [
                     'name' => $category,
                     'created_at' => $now,
                     'updated_at' => $now,
@@ -96,15 +99,15 @@ class RoleAndPermissionSeederUtil
 
                 PermissionCategory::query()->insert($data);
             }
-        } catch (\Throwable $e) {
-            Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
+        } catch (Throwable $throwable) {
+            Logger::error($throwable->getMessage(), LoggerContextDto::fromException($throwable, extra: [
                 'info' => 'When inserting permission categories',
             ]));
-            throw new Exception('Unable to insert permission categories');
+            throw new Exception('Unable to insert permission categories', $throwable->getCode(), $throwable);
         }
     }
 
-    protected static function generatePermissionsCategories(array $enumValues): array
+    private static function generatePermissionsCategories(array $enumValues): array
     {
         $permissionCategories = [];
 
@@ -118,7 +121,7 @@ class RoleAndPermissionSeederUtil
         return $permissionCategories;
     }
 
-    protected static function generatePermissionCategory(string $name): string
+    private static function generatePermissionCategory(string $name): string
     {
         $userCategoryNames = ['Admin', 'Rep'];
         $prefix = 'Permission';
@@ -136,13 +139,13 @@ class RoleAndPermissionSeederUtil
     /**
      * @throws Exception
      */
-    protected static function syncEnumToModel(array $enumValues, string $modelClass): void
+    private static function syncEnumToModel(array $enumValues, string $modelClass): void
     {
         try {
             $existingNames = $modelClass::pluck('name')->toArray();
             $missing = array_diff($enumValues, $existingNames);
 
-            if (empty($missing)) {
+            if ($missing === []) {
                 return;
             }
 
@@ -155,7 +158,7 @@ class RoleAndPermissionSeederUtil
             }
 
             $now = now();
-            $rows = collect($missing)->map(function ($value) use ($now, $modelClass, $permissionCategories) {
+            $rows = collect($missing)->map(function ($value) use ($now, $modelClass, $permissionCategories): array {
                 $data = [
                     'name' => $value,
                     'guard_name' => 'api',
@@ -178,11 +181,11 @@ class RoleAndPermissionSeederUtil
 
             $modelClass::insert($rows);
 
-        } catch (\Throwable $e) {
-            Logger::error($e->getMessage(), LoggerContextDto::fromException($e, extra: [
-                'info' => "When syncing enum to model {$modelClass}",
+        } catch (Throwable $throwable) {
+            Logger::error($throwable->getMessage(), LoggerContextDto::fromException($throwable, extra: [
+                'info' => 'When syncing enum to model '.$modelClass,
             ]));
-            throw new Exception("Unable to sync enum to model {$modelClass}");
+            throw new Exception('Unable to sync enum to model '.$modelClass, $throwable->getCode(), $throwable);
         }
     }
 }

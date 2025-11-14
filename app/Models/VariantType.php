@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -10,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Override;
 
 /**
  * @property int $id
@@ -19,10 +22,10 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-class VariantType extends Model
+final class VariantType extends Model
 {
-    /** @use HasFactory<\Database\Factories\VariantTypeFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -32,19 +35,6 @@ class VariantType extends Model
     protected $hidden = [
         'parent_id',
     ];
-
-    #[\Override]
-    protected static function boot(): void
-    {
-        parent::boot();
-        static::creating(function (VariantType $variantType): void {
-            $variantType->slug = Str::slug($variantType->name);
-        });
-
-        static::deleting(function (VariantType $variantType): void {
-            $variantType->variantTypeValues()->delete();
-        });
-    }
 
     public function variantTypeValues(): HasMany
     {
@@ -56,10 +46,23 @@ class VariantType extends Model
         return $this->belongsToMany(Category::class, 'category_variant_types');
     }
 
+    #[Override]
+    protected static function boot(): void
+    {
+        parent::boot();
+        self::creating(function (VariantType $variantType): void {
+            $variantType->slug = Str::slug($variantType->name);
+        });
+
+        self::deleting(function (VariantType $variantType): void {
+            $variantType->variantTypeValues()->delete();
+        });
+    }
+
     protected function name(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => ucwords($value),
+            set: fn (string $value): string => ucwords($value),
         );
     }
 }

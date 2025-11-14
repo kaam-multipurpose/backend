@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Override;
 
-class ResetPasswordRequest extends FormRequest
+final class ResetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +32,7 @@ class ResetPasswordRequest extends FormRequest
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function messages(): array
     {
         return [
@@ -38,7 +41,7 @@ class ResetPasswordRequest extends FormRequest
         ];
     }
 
-    public function prepareForValidation(): void
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'email' => $this->route('email'),

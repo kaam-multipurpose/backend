@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions\Handlers;
 
 use App\Utils\Response\ApiResponse;
@@ -9,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidationExceptionHandler
+final class ValidationExceptionHandler
 {
     use HasAuthenticatedUser;
     use HasLogger;

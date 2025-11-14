@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enum\PermissionsEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Override;
 
-class AddRoleRequest extends FormRequest
+final class AddRoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +32,7 @@ class AddRoleRequest extends FormRequest
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function messages(): array
     {
         return [

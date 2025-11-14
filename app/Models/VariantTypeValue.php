@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -9,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Override;
 
 /**
  * @property int $id
@@ -19,10 +22,10 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-class VariantTypeValue extends Model
+final class VariantTypeValue extends Model
 {
-    /** @use HasFactory<\Database\Factories\VariantTypeValueFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'variant_type_id',
@@ -30,12 +33,17 @@ class VariantTypeValue extends Model
         'slug',
     ];
 
-    #[\Override]
+    public function variantType(): BelongsTo
+    {
+        return $this->belongsTo(VariantType::class);
+    }
+
+    #[Override]
     protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($variantValue): void {
+        self::creating(function ($variantValue): void {
             $variantType = $variantValue->variantType()->first();
             if ($variantType) {
                 $combined = $variantType->name.' '.$variantValue->name;
@@ -46,15 +54,10 @@ class VariantTypeValue extends Model
         });
     }
 
-    public function variantType(): BelongsTo
-    {
-        return $this->belongsTo(VariantType::class);
-    }
-
     protected function name(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => ucwords($value),
+            set: fn (string $value): string => ucwords($value),
         );
     }
 }

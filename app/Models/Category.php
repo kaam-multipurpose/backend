@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Override;
 
 /**
  * @property int $id
@@ -24,10 +27,10 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-class Category extends Model
+final class Category extends Model
 {
-    /** @use HasFactory<\Database\Factories\CategoryFactory> */
-    use HasFactory, softDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -35,12 +38,27 @@ class Category extends Model
         'parent_id',
     ];
 
-    #[\Override]
+    public function subCategories(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function variantTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(VariantType::class, 'category_variant_types');
+    }
+
+    #[Override]
     protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($category): void {
+        self::creating(function ($category): void {
             $parentCategory = $category->category()->first();
             if ($parentCategory) {
                 $combined = $parentCategory->name.' '.$category->name;
@@ -49,21 +67,6 @@ class Category extends Model
                 $category->slug = Str::slug($category->name);
             }
         });
-    }
-
-    public function subCategories(): HasMany
-    {
-        return $this->hasMany(Category::class, 'parent_id');
-    }
-
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'parent_id');
-    }
-
-    public function variantTypes(): BelongsToMany
-    {
-        return $this->belongsToMany(VariantType::class, 'category_variant_types');
     }
 
     #[Scope]
@@ -75,7 +78,7 @@ class Category extends Model
     protected function name(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => ucwords($value),
+            set: fn (string $value): string => ucwords($value),
         );
     }
 

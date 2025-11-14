@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enum\PermissionsEnum;
 use App\Http\Controllers\Permission\RoleController;
 use Illuminate\Support\Facades\Route;

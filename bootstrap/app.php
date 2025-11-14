@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Exceptions\AbstractServiceException;
 use App\Exceptions\ApplicationException;
 use App\Exceptions\Handlers\AccessDeniedExceptionHandler;
@@ -44,7 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->renderable(fn (MethodNotAllowedHttpException $exception): JsonResponse => MethodNotAllowedHttpExceptionHandler::handle($exception));
         $exceptions->renderable(fn (ApplicationException $exception): JsonResponse => ApplicationExceptionHandler::handle($exception));
         $exceptions->renderable(fn (AbstractServiceException $exception): JsonResponse => ServiceExceptionsHandler::handle($exception));
-        $exceptions->renderable(function (\Throwable $exception): JsonResponse {
+        $exceptions->renderable(function (Throwable $exception): JsonResponse {
             Logger::error('Unexpected Error', LoggerContextDto::fromException($exception));
 
             return ApiResponse::error(

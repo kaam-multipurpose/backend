@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\VariantType;
 
 use App\Dto\AddValuesToVariantTypeDto;
@@ -22,9 +24,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class VariantTypeController extends Controller
+final class VariantTypeController extends Controller
 {
-    use HasAuthenticatedUser, HasLogger;
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     public function __construct(
         private readonly VariantTypeServiceContract $variantTypeService

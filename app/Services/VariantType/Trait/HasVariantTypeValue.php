@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\VariantType\Trait;
 
 use App\Exceptions\VariantTypeServiceException;
 use App\Models\VariantType;
 use App\Models\VariantTypeValue;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 trait HasVariantTypeValue
 {
@@ -28,14 +31,15 @@ trait HasVariantTypeValue
 
             $variantTypeValue->forceDelete();
 
-        } catch (\Throwable $e) {
-            self::logException($e, 'Caught Exception when deleting variant type value', [
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when deleting variant type value', [
                 'variantTypeId' => $variantType->id,
                 'variantTypeValueId' => $variantTypeValue->id,
             ]);
-            if ($e instanceof VariantTypeServiceException) {
-                throw $e;
+            if ($throwable instanceof VariantTypeServiceException) {
+                throw $throwable;
             }
+
             throw new VariantTypeServiceException('Unable to delete variant type');
         }
     }

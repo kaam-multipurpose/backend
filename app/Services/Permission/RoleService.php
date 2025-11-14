@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Permission;
 
 use App\Dto\AddRoleDto;
@@ -14,11 +16,10 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class RoleService implements RoleServiceContract
+final class RoleService implements RoleServiceContract
 {
-    use HasAuthenticatedUser, HasLogger;
-
-    public function __construct() {}
+    use HasAuthenticatedUser;
+    use HasLogger;
 
     /**
      * @throws RoleServiceException
@@ -40,8 +41,8 @@ class RoleService implements RoleServiceContract
                 return $role;
             });
 
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when adding role');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when adding role');
             throw new RoleServiceException('Unable to add role');
         }
     }
@@ -59,8 +60,8 @@ class RoleService implements RoleServiceContract
             $role->syncPermissions($permissions);
 
             return true;
-        } catch (Throwable $e) {
-            self::logException($e, 'Caught Exception when editing role');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when editing role');
             throw new RoleServiceException('Unable to edit role');
         }
     }
@@ -83,11 +84,12 @@ class RoleService implements RoleServiceContract
             $role->delete();
 
             return true;
-        } catch (\Throwable $e) {
-            self::logException($e, 'Caught Exception when deleting role');
-            if ($e instanceof RoleServiceException) {
-                throw $e;
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when deleting role');
+            if ($throwable instanceof RoleServiceException) {
+                throw $throwable;
             }
+
             throw new RoleServiceException('Unable to delete role');
         }
     }
@@ -96,8 +98,8 @@ class RoleService implements RoleServiceContract
     {
         try {
             return Role::all();
-        } catch (\Throwable $e) {
-            self::logException($e, 'Caught Exception when getting all roles');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when getting all roles');
 
             throw new RoleServiceException('Unable to all roles');
         }
@@ -107,8 +109,8 @@ class RoleService implements RoleServiceContract
     {
         try {
             return $role;
-        } catch (\Throwable $e) {
-            self::logException($e, 'Caught Exception when getting a role');
+        } catch (Throwable $throwable) {
+            self::logException($throwable, 'Caught Exception when getting a role');
 
             throw new RoleServiceException('Unable to a role');
         }

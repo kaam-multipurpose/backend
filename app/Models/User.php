@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -27,11 +29,15 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class User extends Authenticatable
+final class User extends Authenticatable
 {
-    use HasApiTokens,HasFactory,HasRoles,Notifiable,softDeletes;
+    use HasApiTokens;
+    use HasFactory;
+    use HasRoles;
+    use Notifiable;
+    use SoftDeletes;
 
-    protected $guard_name = 'api';
+    private string $guard_name = 'api';
 
     /**
      * The attributes that are mass assignable.

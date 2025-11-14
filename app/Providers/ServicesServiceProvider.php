@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Services\Auth\AuthService;
@@ -15,13 +17,14 @@ use App\Services\Permission\PermissionService;
 use App\Services\Permission\RoleService;
 use App\Services\VariantType\VariantTypeService;
 use Illuminate\Support\ServiceProvider;
+use Override;
 
-class ServicesServiceProvider extends ServiceProvider
+final class ServicesServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
      */
-    #[\Override]
+    #[Override]
     public function register(): void
     {
         $this->app->bind(AuthServiceContract::class, AuthService::class);

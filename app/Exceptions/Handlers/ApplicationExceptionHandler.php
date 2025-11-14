@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exceptions\Handlers;
 
 use App\Exceptions\ApplicationException;
 use App\Exceptions\Handlers\Trait\HasHandlerRender;
 use Illuminate\Http\JsonResponse;
 
-class ApplicationExceptionHandler
+final class ApplicationExceptionHandler
 {
     use HasHandlerRender;
 

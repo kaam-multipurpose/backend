@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Override;
 use Spatie\Permission\Models\Role as SpatieRole;
 
 /**
@@ -14,7 +17,7 @@ use Spatie\Permission\Models\Role as SpatieRole;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class Role extends SpatieRole
+final class Role extends SpatieRole
 {
     protected $fillable = [
         'name',
@@ -22,11 +25,11 @@ class Role extends SpatieRole
         'slug',
     ];
 
-    #[\Override]
+    #[Override]
     protected static function boot(): void
     {
         parent::boot();
-        static::creating(function ($role): void {
+        self::creating(function ($role): void {
             $role->slug = Str::slug($role->name);
         });
     }

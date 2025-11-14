@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enum\PaginationEnum;
 use App\Enum\PermissionsEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetVariantTypesRequest extends FormRequest
+final class GetVariantTypesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
