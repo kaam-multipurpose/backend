@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Enum\PaginationEnum;
-use App\Enum\PermissionsEnum;
+use App\Enums\PaginationEnum;
+use App\Enums\PermissionsEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class GetVariantTypesRequest extends FormRequest

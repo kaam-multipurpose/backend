@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Contracts;
 
-use App\Dto\AddRoleDto;
+use App\Dtos\AddRoleDto;
 use App\Exceptions\RoleServiceException;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Collection;

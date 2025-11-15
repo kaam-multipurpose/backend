@@ -1,5 +1,5 @@
 @php
-    /** @var \App\Dto\Mail\ForgetPasswordMailDto $data */
+    /** @var \App\Dtos\Mail\ForgetPasswordMailDto $data */
 @endphp
 
 <x-mail::message>

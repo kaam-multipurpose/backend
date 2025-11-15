@@ -37,8 +37,6 @@ final class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
-    private string $guard_name = 'api';
-
     /**
      * The attributes that are mass assignable.
      *
@@ -61,6 +59,8 @@ final class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected string $guard_name = 'api';
 
     public function refreshToken(): HasOne
     {

@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
-use App\Enum\UserRolesEnum;
+use App\Enums\UserRolesEnum;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Override;
 use Tests\Traits\CreateTestUser;
 
 abstract class TestCase extends BaseTestCase
@@ -19,7 +22,7 @@ abstract class TestCase extends BaseTestCase
 
     protected Authenticatable $salesRepUser;
 
-    #[\Override]
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

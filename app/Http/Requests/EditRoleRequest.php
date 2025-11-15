@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Enum\PermissionsEnum;
+use App\Enums\PermissionsEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Override;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Permission;
 
-use App\Dto\AddRoleDto;
+use App\Dtos\AddRoleDto;
 use App\Exceptions\RoleServiceException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddRoleRequest;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enum\UserRolesEnum;
+use App\Enums\UserRolesEnum;
 
 beforeEach(function (): void {
     $this->loginPayload = [

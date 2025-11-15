@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\VariantType;
 
-use App\Dto\AddValuesToVariantTypeDto;
-use App\Dto\AddVariantTypeDto;
-use App\Dto\GetPaginatedVariantTypesDto;
+use App\Dtos\AddValuesToVariantTypeDto;
+use App\Dtos\AddVariantTypeDto;
+use App\Dtos\GetPaginatedVariantTypesDto;
 use App\Exceptions\VariantTypeServiceException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddValuesToVariantTypeRequest;
@@ -74,7 +74,7 @@ final class VariantTypeController extends Controller
     public function addValuesToVariantType(AddValuesToVariantTypeRequest $request, VariantType $variantType): JsonResponse
     {
         $addedValues = $this->variantTypeService->addValuesToVariantType(
-            AddValuesToVariantTypeDto::fromValidated($request->validated(), $variantType),
+            AddValuesToVariantTypeDto::fromValidatedWithVariantType($request->validated(), $variantType),
         );
 
         self::logInfo('Values added to Variant Type added successfully');

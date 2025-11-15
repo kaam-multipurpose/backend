@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Password;
 
-use App\Dto\ChangePasswordDto;
-use App\Dto\Mail\ForgetPasswordMailDto;
-use App\Dto\ResetPasswordDto;
+use App\Dtos\ChangePasswordDto;
+use App\Dtos\Mail\ForgetPasswordMailDto;
+use App\Dtos\ResetPasswordDto;
 use App\Exceptions\PasswordServiceException;
 use App\Mail\ApplicationMail;
 use App\Models\PasswordResetToken;

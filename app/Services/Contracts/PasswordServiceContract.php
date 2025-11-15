@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\Contracts;
 
-use App\Dto\ChangePasswordDto;
-use App\Dto\ResetPasswordDto;
+use App\Dtos\ChangePasswordDto;
+use App\Dtos\ResetPasswordDto;
 use App\Exceptions\PasswordServiceException;
 use App\Models\User;
 

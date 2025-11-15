@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Contracts;
 
-use App\Dto\AddValuesToVariantTypeDto;
-use App\Dto\AddVariantTypeDto;
-use App\Dto\GetPaginatedVariantTypesDto;
+use App\Dtos\AddValuesToVariantTypeDto;
+use App\Dtos\AddVariantTypeDto;
+use App\Dtos\GetPaginatedVariantTypesDto;
 use App\Exceptions\VariantTypeServiceException;
 use App\Models\VariantType;
 use App\Models\VariantTypeValue;

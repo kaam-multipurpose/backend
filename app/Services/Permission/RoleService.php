@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\Permission;
 
-use App\Dto\AddRoleDto;
-use App\Enum\UserRolesEnum;
+use App\Dtos\AddRoleDto;
+use App\Enums\UserRolesEnum;
 use App\Exceptions\RoleServiceException;
 use App\Models\Role;
 use App\Services\Contracts\RoleServiceContract;

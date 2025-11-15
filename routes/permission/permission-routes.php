@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enum\PermissionsEnum;
+use App\Enums\PermissionsEnum;
 use App\Http\Controllers\Permission\PermissionController;
 use Illuminate\Support\Facades\Route;
 

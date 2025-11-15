@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Utils\Seeders;
 
-use App\Enum\PermissionsEnum;
-use App\Enum\UserRolesEnum;
+use App\Enums\PermissionsEnum;
+use App\Enums\UserRolesEnum;
 use App\Models\Permission;
 use App\Models\PermissionCategory;
 use App\Models\Role;

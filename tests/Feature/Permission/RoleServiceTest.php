@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enum\PermissionsEnum;
+use App\Enums\PermissionsEnum;
 use App\Models\Role;
 
 describe('Role Service', function (): void {

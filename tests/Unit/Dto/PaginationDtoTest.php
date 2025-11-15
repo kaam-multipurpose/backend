@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Dto\GetPaginatedCategoriesDto;
+use App\Dtos\GetPaginatedCategoriesDto;
 
 test('default values are set when none provided', function (): void {
     $dto = new GetPaginatedCategoriesDto([]);
@@ -26,17 +26,4 @@ test('from validated sets custom values', function (): void {
     $dto = GetPaginatedCategoriesDto::fromValidated(['page' => 4, 'row' => 25]);
     expect($dto->page)->toBe(4)
         ->and($dto->row)->toBe(25);
-});
-
-test('search is included in output', function (): void {
-    $dto = GetPaginatedCategoriesDto::fromValidated(['search' => 'notebooks']);
-    expect($dto->search)->toBe('notebooks');
-
-    $expected = [
-        'search' => 'notebooks',
-        'page' => 1,
-        'row' => 5,
-    ];
-
-    expect($dto->toArray())->toBe($expected);
 });

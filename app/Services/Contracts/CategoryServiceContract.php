@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\Contracts;
 
-use App\Dto\AddCategoryDto;
-use App\Dto\GetPaginatedCategoriesDto;
+use App\Dtos\AddCategoryDto;
+use App\Dtos\GetPaginatedCategoriesDto;
 use App\Exceptions\CategoryServiceException;
 use App\Models\Category;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

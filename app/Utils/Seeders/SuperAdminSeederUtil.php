@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Utils\Seeders;
 
-use App\Enum\UserRolesEnum;
+use App\Enums\UserRolesEnum;
 use App\Models\User;
 use App\Utils\Logger\Dto\LoggerContextDto;
 use App\Utils\Logger\Logger;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Traits;
 
-use App\Enum\UserRolesEnum;
+use App\Enums\UserRolesEnum;
 use App\Models\User;
 
 trait CreateTestUser

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\Contracts;
 
-use App\Dto\LoginDto;
-use App\Dto\LoginServiceResponseDto;
+use App\Dtos\LoginDto;
+use App\Dtos\LoginServiceResponseDto;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 

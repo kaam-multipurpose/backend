@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Dto\LoginDto;
-use App\Dto\LoginServiceResponseDto;
+use App\Dtos\LoginDto;
+use App\Dtos\LoginServiceResponseDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;

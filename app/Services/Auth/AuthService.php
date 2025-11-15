@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\Auth;
 
-use App\Dto\LoginDto;
-use App\Dto\LoginServiceResponseDto;
+use App\Dtos\LoginDto;
+use App\Dtos\LoginServiceResponseDto;
 use App\Models\RefreshToken;
 use App\Models\User;
 use App\Services\Contracts\AuthServiceContract;
