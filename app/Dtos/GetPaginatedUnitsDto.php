@@ -6,4 +6,4 @@ namespace App\Dtos;
 
 use App\Dtos\Abstract\AbstractPaginationDto;
 
-final readonly class GetPaginatedVariantTypesDto extends AbstractPaginationDto {}
+final readonly class GetPaginatedUnitsDto extends AbstractPaginationDto {}

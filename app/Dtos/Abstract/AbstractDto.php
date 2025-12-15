@@ -15,6 +15,11 @@ abstract readonly class AbstractDto implements DtoContract
         return new static(...$data);
     }
 
+    final public function toFilledArray(): array
+    {
+        return array_filter($this->toArray());
+    }
+
     public function toArray(): array
     {
         $reflection = new ReflectionClass($this);
@@ -31,7 +36,7 @@ abstract readonly class AbstractDto implements DtoContract
 
             if (is_array($value)) {
                 $value = array_map(
-                    fn ($item) => $item instanceof DtoContract ? $item->toArray() : $item,
+                    fn($item) => $item instanceof DtoContract ? $item->toArray() : $item,
                     $value
                 );
             }

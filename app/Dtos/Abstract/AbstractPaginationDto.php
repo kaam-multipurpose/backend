@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Dtos\Abstract;
 
-use App\Dtos\Contract\DtoContract;
 use App\Enums\PaginationEnum;
 
-abstract readonly class AbstractPaginationDto extends AbstractDto implements DtoContract
+abstract readonly class AbstractPaginationDto extends AbstractDto
 {
     public int $page;
 
@@ -24,22 +23,25 @@ abstract readonly class AbstractPaginationDto extends AbstractDto implements Dto
         return PaginationEnum::values();
     }
 
-    public static function fromValidated(array $data): static
+    final public static function fromValidated(array $data): static
     {
-        $default = array_filter(
-            $data,
-            fn ($item): bool => in_array($item, self::defaultKeys()),
-            ARRAY_FILTER_USE_KEY
-        );
-
-        return new static($default);
+        return new static(self::extractDefault($data));
     }
 
-    public function toArray(): array
+    final public function toArray(): array
     {
         return [
             'page' => $this->page,
             'row' => $this->row,
         ];
+    }
+
+    protected static function extractDefault($data): array
+    {
+        return array_filter(
+            $data,
+            fn ($item): bool => in_array($item, self::defaultKeys()),
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }

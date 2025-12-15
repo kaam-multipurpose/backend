@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Enums\PaginationEnum;
 use App\Enums\PermissionsEnum;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Abstract\AbstractGetPaginatedRequest;
 
-final class GetVariantTypesRequest extends FormRequest
+final class GetVariantTypesRequest extends AbstractGetPaginatedRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,15 +15,5 @@ final class GetVariantTypesRequest extends FormRequest
     public function authorize(): bool
     {
         return $this->user()->can(PermissionsEnum::ADD_PRODUCT);
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        return PaginationEnum::rules();
     }
 }

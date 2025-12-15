@@ -27,24 +27,19 @@ final class RoleService implements RoleServiceContract
      */
     public function addRole(AddRoleDto $dto): Role
     {
-        try {
-            self::logInfo('Attempt to add role');
+        self::logInfo('Attempt to add role');
 
-            return DB::transaction(function () use ($dto) {
-                $role = Role::query()->create([
-                    'name' => $dto->role,
-                    'guard_name' => 'api',
-                ]);
+        return DB::transaction(function () use ($dto) {
+            $role = Role::query()->create([
+                'name' => $dto->role,
+                'guard_name' => 'api',
+            ]);
 
-                $role->syncPermissions($dto->permissions);
+            $role->syncPermissions($dto->permissions);
 
-                return $role;
-            });
+            return $role;
+        });
 
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when adding role');
-            throw new RoleServiceException('Unable to add role');
-        }
     }
 
     /**
@@ -54,16 +49,11 @@ final class RoleService implements RoleServiceContract
      */
     public function editRolePermission(Role $role, array $permissions): bool
     {
-        try {
-            self::logInfo('Attempt to edit role');
+        self::logInfo('Attempt to edit role');
 
-            $role->syncPermissions($permissions);
+        $role->syncPermissions($permissions);
 
-            return true;
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when editing role');
-            throw new RoleServiceException('Unable to edit role');
-        }
+        return true;
     }
 
     /**
@@ -71,48 +61,27 @@ final class RoleService implements RoleServiceContract
      */
     public function deleteRole(Role $role): bool
     {
-        try {
-            self::logInfo('Attempt to delete role');
-            $definedRole = UserRolesEnum::values();
-            if (in_array($role->name, $definedRole)) {
-                throw new RoleServiceException(
-                    'Cannot delete predefined roles',
-                    Response::HTTP_FORBIDDEN
-                );
-            }
-
-            $role->delete();
-
-            return true;
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when deleting role');
-            if ($throwable instanceof RoleServiceException) {
-                throw $throwable;
-            }
-
-            throw new RoleServiceException('Unable to delete role');
+        self::logInfo('Attempt to delete role');
+        $definedRole = UserRolesEnum::values();
+        if (in_array($role->name, $definedRole)) {
+            throw new RoleServiceException(
+                'Cannot delete predefined roles',
+                Response::HTTP_FORBIDDEN
+            );
         }
+
+        $role->delete();
+
+        return true;
     }
 
     public function getRoles(): Collection
     {
-        try {
-            return Role::all();
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when getting all roles');
-
-            throw new RoleServiceException('Unable to all roles');
-        }
+        return Role::all();
     }
 
     public function getRole(Role $role): Role
     {
-        try {
-            return $role;
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when getting a role');
-
-            throw new RoleServiceException('Unable to a role');
-        }
+        return $role;
     }
 }

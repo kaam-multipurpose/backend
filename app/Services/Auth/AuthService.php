@@ -14,6 +14,7 @@ use App\Utils\Trait\HasLogger;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -30,7 +31,7 @@ final class AuthService implements AuthServiceContract
             'email' => $loginDto->email,
         ]);
 
-        if (! Auth::Attempt($loginDto->toArray())) {
+        if (!Auth::Attempt($loginDto->toArray())) {
 
             self::logWarning('Login attempt failed', [
                 'email' => $loginDto->email,
@@ -41,21 +42,14 @@ final class AuthService implements AuthServiceContract
             ]);
         }
 
-        try {
+        return DB::transaction(function () {
             $user = Auth::user();
 
             $user->tokens()->delete();
             $user->refreshToken()->delete();
 
             return $this->generateTokens($user);
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception during login', [
-                'email' => $loginDto->email,
-            ]);
-            throw ValidationException::withMessages([
-                'global' => ['Unable to login'],
-            ]);
-        }
+        });
     }
 
     /**
@@ -63,18 +57,19 @@ final class AuthService implements AuthServiceContract
      */
     public function refreshToken(string $refreshToken): LoginServiceResponseDto
     {
-        try {
-            self::logInfo('Attempt to refresh token');
 
-            $refreshRecord = RefreshToken::where('token', $refreshToken)
-                ->where('expires_at', '>', now())
-                ->with('user')
-                ->first();
+        self::logInfo('Attempt to refresh token');
 
-            if (! $refreshRecord || ! $refreshRecord->user) {
-                throw new AccessDeniedHttpException('Invalid refresh token');
-            }
+        $refreshRecord = RefreshToken::where('token', $refreshToken)
+            ->where('expires_at', '>', now())
+            ->with('user')
+            ->first();
 
+        if (!$refreshRecord || !$refreshRecord->user) {
+            throw new AccessDeniedHttpException('Invalid refresh token');
+        }
+
+        return DB::transaction(function () use ($refreshRecord) {
             /** @var User $user */
             $user = $refreshRecord->user;
 
@@ -82,35 +77,7 @@ final class AuthService implements AuthServiceContract
             $user->refreshToken()->delete();
 
             return $this->generateTokens($user);
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when refreshing token');
-            throw ValidationException::withMessages([
-                'global' => ['Unable to refresh token'],
-            ]);
-        }
-    }
-
-    public function logout(): array
-    {
-
-        try {
-            self::logInfo('Attempt to logout');
-
-            /** @var User $user */
-            $user = self::getLoggedInUser();
-
-            $user->tokens()->delete();
-            $user->refreshToken()->delete();
-
-            return [
-                'email' => $user->email,
-            ];
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception during logout');
-            throw ValidationException::withMessages([
-                'global' => ['unable to logout'],
-            ]);
-        }
+        });
     }
 
     private function generateTokens(Authenticatable|User $user): LoginServiceResponseDto
@@ -130,5 +97,23 @@ final class AuthService implements AuthServiceContract
             ->withUser($user)
             ->withToken($token, $expiresAt)
             ->withRefreshToken($refreshToken, $refreshTokenExpiresAt);
+    }
+
+    public function logout(): array
+    {
+
+        self::logInfo('Attempt to logout');
+
+        return DB::transaction(function () {
+            /** @var User $user */
+            $user = self::getLoggedInUser();
+
+            $user->tokens()->delete();
+            $user->refreshToken()->delete();
+
+            return [
+                'email' => $user->email,
+            ];
+        });
     }
 }

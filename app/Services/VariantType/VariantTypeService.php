@@ -32,85 +32,17 @@ final class VariantTypeService implements VariantTypeServiceContract
      */
     public function addVariantType(AddVariantTypeDto $dto): VariantType
     {
-        try {
-            self::logInfo('Attempt to add variant type');
+        self::logInfo('Attempt to add variant type');
 
-            return DB::transaction(function () use ($dto) {
-                $variantType = VariantType::query()->create($dto->toArray());
-
-                $variantTypeValues = $this->generateDBVariantTypeValue($dto->values);
-
-                $variantType->variantTypeValues()->createMany($variantTypeValues);
-
-                return $variantType;
-            });
-
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when adding variant type');
-            throw new VariantTypeServiceException('Unable to add variant type');
-        }
-    }
-
-    /**
-     * @throws VariantTypeServiceException
-     */
-    public function getVariantTypes(GetPaginatedVariantTypesDto $dto): LengthAwarePaginator
-    {
-        try {
-            self::logInfo('Attempt to get variant types');
-
-            return VariantType::query()->with('variantTypeValues')->paginate(
-                perPage: $dto->row,
-                page: $dto->page
-            );
-
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when getting variant types');
-            throw new VariantTypeServiceException('Unable to get variant types');
-        }
-    }
-
-    /**
-     * @throws VariantTypeServiceException
-     */
-    public function addValuesToVariantType(AddValuesToVariantTypeDto $dto): Collection
-    {
-        try {
-            self::logInfo('Attempt to add values variant types');
+        return DB::transaction(function () use ($dto) {
+            $variantType = VariantType::query()->create($dto->toArray());
 
             $variantTypeValues = $this->generateDBVariantTypeValue($dto->values);
 
-            return $dto->variantType->variantTypeValues()->createMany($variantTypeValues);
+            $variantType->variantTypeValues()->createMany($variantTypeValues);
 
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when adding values to variant types');
-            throw new VariantTypeServiceException('Unable to add values to variant types');
-        }
-
-    }
-
-    /**
-     * @throws VariantTypeServiceException
-     * @throws Throwable
-     */
-    public function deleteVariantType(VariantType $variantType): void
-    {
-
-        try {
-            self::logInfo('Attempt to delete variant type', [
-                'variantTypeId' => $variantType->id,
-            ]);
-
-            DB::transaction(function () use ($variantType): void {
-                $variantType->delete();
-            });
-
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when deleting variant type', [
-                'variantTypeId' => $variantType->id,
-            ]);
-            throw new VariantTypeServiceException('Unable to delete variant type');
-        }
+            return $variantType;
+        });
     }
 
     /**
@@ -120,11 +52,51 @@ final class VariantTypeService implements VariantTypeServiceContract
      */
     private function generateDBVariantTypeValue(array $array): array
     {
-        if (! collect($array)->every(fn ($value): true => $value instanceof AddVariantTypeValueDto)) {
+        if (!collect($array)->every(fn($value): true => $value instanceof AddVariantTypeValueDto)) {
             throw new ApplicationException('Expected an array of AddVariantTypeValueDto, found invalid item.');
         }
 
         return collect($array)
-            ->map(fn (AddVariantTypeValueDto $value): array => $value->toArray())->toArray();
+            ->map(fn(AddVariantTypeValueDto $value): array => $value->toArray())->toArray();
+    }
+
+    /**
+     * @throws VariantTypeServiceException
+     */
+    public function getVariantTypes(GetPaginatedVariantTypesDto $dto): LengthAwarePaginator
+    {
+        self::logInfo('Attempt to get variant types');
+
+        return VariantType::query()->with('variantTypeValues')->paginate(
+            perPage: $dto->row,
+            page: $dto->page
+        );
+    }
+
+    /**
+     * @throws VariantTypeServiceException
+     */
+    public function addValuesToVariantType(AddValuesToVariantTypeDto $dto): Collection
+    {
+        self::logInfo('Attempt to add values variant types');
+
+        $variantTypeValues = $this->generateDBVariantTypeValue($dto->values);
+
+        return $dto->variantType->variantTypeValues()->createMany($variantTypeValues);
+    }
+
+    /**
+     * @throws VariantTypeServiceException
+     * @throws Throwable
+     */
+    public function deleteVariantType(VariantType $variantType): void
+    {
+        self::logInfo('Attempt to delete variant type', [
+            'variantTypeId' => $variantType->id,
+        ]);
+
+        DB::transaction(function () use ($variantType): void {
+            $variantType->delete();
+        });
     }
 }

@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\Contracts\PasswordServiceContract;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -27,36 +28,33 @@ final class PasswordService implements PasswordServiceContract
 
     public function forgetPassword(string $email): bool
     {
-        try {
-            self::logInfo('Attempting to forget the password for '.$email, [
-                'email' => $email,
-            ]);
 
-            $token = Str::random(6);
-            PasswordResetToken::query()->updateOrCreate([
-                'email' => $email,
-            ], [
-                'token' => $token,
-                'expires_at' => now()->addHours(3),
-            ]);
+        self::logInfo('Attempting to forget the password for '.$email, [
+            'email' => $email,
+        ]);
 
-            $mailData = new ForgetPasswordMailDto(
-                token: $token,
-                email: $email,
-            );
+        $token = Str::random(6);
 
-            Mail::to($email)->queue(new ApplicationMail(
-                localView: 'forgetPassword',
-                localSubject: 'Reset your Password',
-                data: $mailData,
-            ));
+        PasswordResetToken::query()->updateOrCreate([
+            'email' => $email,
+        ], [
+            'token' => $token,
+            'expires_at' => now()->addHours(3),
+        ]);
 
-            return true;
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when attempting to forget the password for '.$email, ['email' => $email]);
+        $mailData = new ForgetPasswordMailDto(
+            token: $token,
+            email: $email,
+        );
 
-            throw new PasswordServiceException('Unable to forget the password');
-        }
+        Mail::to($email)->queue(new ApplicationMail(
+            localView: 'forgetPassword',
+            localSubject: 'Reset your Password',
+            data: $mailData,
+        ));
+
+        return true;
+
     }
 
     /**
@@ -64,64 +62,53 @@ final class PasswordService implements PasswordServiceContract
      */
     public function resetPassword(ResetPasswordDto $dto): bool
     {
-        try {
-            self::logInfo('Attempting to reset the password for '.$dto->email, [
-                'email' => $dto->email,
-            ]);
 
-            $resetPassword = PasswordResetToken::query()->where('email', $dto->email)->first();
+        self::logInfo('Attempting to reset the password for '.$dto->email, [
+            'email' => $dto->email,
+        ]);
 
-            if ($resetPassword->expires_at < now()) {
-                throw new PasswordServiceException('The password reset token has expired', code: Response::HTTP_FORBIDDEN);
-            }
+        $resetPassword = PasswordResetToken::query()->where('email', $dto->email)->first();
 
-            if (! Hash::check($dto->token, $resetPassword->token)) {
-                throw new PasswordServiceException('The password reset token is invalid', code: Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
+        if ($resetPassword->expires_at < now()) {
+            throw new PasswordServiceException('The password reset token has expired',
+                code: Response::HTTP_FORBIDDEN);
+        }
 
+        if (!Hash::check($dto->token, $resetPassword->token)) {
+            throw new PasswordServiceException('The password reset token is invalid',
+                code: Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return DB::transaction(function () use ($dto, $resetPassword) {
             User::query()->where('email', $dto->email)
                 ->update($dto->toArray());
 
             $resetPassword->delete();
 
             return true;
-        } catch (Throwable $throwable) {
-            if ($throwable instanceof PasswordServiceException) {
-                throw $throwable;
-            }
-
-            self::logException($throwable, 'Caught Exception when attempting to reset the password for '.$dto->email, ['email' => $dto->email]);
-
-            throw new PasswordServiceException('Unable to reset the password');
-        }
+        });
     }
 
     public function changePassword(ChangePasswordDto $dto, User $attemptingUser): bool
     {
-        try {
-            self::logInfo('Attempting to change password');
+        self::logInfo('Attempting to change password');
 
-            if ($attemptingUser->id !== self::getLoggedInUser()->id) {
-                throw new PasswordServiceException("you aren't authorized to perform this action", Response::HTTP_FORBIDDEN);
-            }
+        if ($attemptingUser->id !== self::getLoggedInUser()->id) {
+            throw new PasswordServiceException("you aren't authorized to perform this action",
+                Response::HTTP_FORBIDDEN);
+        }
 
-            if (! Hash::check($dto->currentPassword, $attemptingUser->password)) {
-                throw new PasswordServiceException("current Password doesn't match provided password", Response::HTTP_FORBIDDEN);
-            }
+        if (!Hash::check($dto->currentPassword, $attemptingUser->password)) {
+            throw new PasswordServiceException("current Password doesn't match provided password",
+                Response::HTTP_FORBIDDEN);
+        }
 
+        return DB::transaction(function () use ($dto, $attemptingUser) {
             $attemptingUser->update($dto->toArray());
             $attemptingUser->tokens()->delete();
             $attemptingUser->refreshToken()->delete();
 
             return true;
-        } catch (Throwable $throwable) {
-            if ($throwable instanceof PasswordServiceException) {
-                throw $throwable;
-            }
-
-            self::logException($throwable, 'Caught Exception when attempting to change the password');
-
-            throw new PasswordServiceException('Unable to change the password');
-        }
+        });
     }
 }

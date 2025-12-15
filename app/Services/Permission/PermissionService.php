@@ -24,14 +24,8 @@ final class PermissionService implements PermissionServiceContract
      */
     public function getAllPermissions(): Collection
     {
+        self::logInfo('Attempt to get all permissions');
 
-        try {
-            self::logInfo('Attempt to get all permissions');
-
-            return PermissionCategory::query()->with('permissions')->get();
-        } catch (Throwable $throwable) {
-            self::logException($throwable, 'Caught Exception when getting permissions');
-            throw new PermissionServiceException('Unable to get all permissions');
-        }
+        return PermissionCategory::query()->with('permissions')->get();
     }
 }
