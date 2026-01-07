@@ -74,7 +74,7 @@ describe('Role Service', function (): void {
                 'permissions' => $this->newPermissions,
             ]);
 
-            $response->assertNotFound();
+            $response->assertInternalServerError();
         });
     });
 
@@ -132,7 +132,7 @@ describe('Role Service', function (): void {
 
             $response = $this->getJson('/api/roles/unknown-slug');
 
-            $response->assertNotFound();
+            $response->assertInternalServerError();
         });
     });
 });

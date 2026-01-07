@@ -7,7 +7,6 @@ namespace App\Http\Controllers\VariantType;
 use App\Dtos\AddValuesToVariantTypeDto;
 use App\Dtos\AddVariantTypeDto;
 use App\Dtos\GetPaginatedVariantTypesDto;
-use App\Exceptions\VariantTypeServiceException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddValuesToVariantTypeRequest;
 use App\Http\Requests\AddVariantTypeRequest;
@@ -26,16 +25,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class VariantTypeController extends Controller
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
-
     public function __construct(
         private readonly VariantTypeServiceContract $variantTypeService
-    ) {}
+    ) {
+    }
 
-    /**
-     * @throws VariantTypeServiceException
-     */
     public function addVariantType(AddVariantTypeRequest $request): JsonResponse
     {
         $variantType = $this->variantTypeService->addVariantType(
@@ -51,9 +45,6 @@ final class VariantTypeController extends Controller
         );
     }
 
-    /**
-     * @throws VariantTypeServiceException
-     */
     public function getVariantTypes(GetVariantTypesRequest $request): JsonResponse
     {
         $variantTypesPaginator = $this->variantTypeService->getVariantTypes(
@@ -68,11 +59,10 @@ final class VariantTypeController extends Controller
         );
     }
 
-    /**
-     * @throws VariantTypeServiceException
-     */
-    public function addValuesToVariantType(AddValuesToVariantTypeRequest $request, VariantType $variantType): JsonResponse
-    {
+    public function addValuesToVariantType(
+        AddValuesToVariantTypeRequest $request,
+        VariantType $variantType
+    ): JsonResponse {
         $addedValues = $this->variantTypeService->addValuesToVariantType(
             AddValuesToVariantTypeDto::fromValidatedWithVariantType($request->validated(), $variantType),
         );
@@ -86,9 +76,7 @@ final class VariantTypeController extends Controller
         );
     }
 
-    /**
-     * @throws VariantTypeServiceException
-     */
+
     public function deleteVariantType(Request $request, VariantType $variantType): JsonResponse
     {
         $this->variantTypeService->deleteVariantType($variantType);
@@ -102,11 +90,11 @@ final class VariantTypeController extends Controller
         );
     }
 
-    /**
-     * @throws VariantTypeServiceException
-     */
-    public function deleteVariantTypeValue(Request $request, VariantType $variantType, VariantTypeValue $variantTypeValue): JsonResponse
-    {
+    public function deleteVariantTypeValue(
+        Request $request,
+        VariantType $variantType,
+        VariantTypeValue $variantTypeValue
+    ): JsonResponse {
         $this->variantTypeService->deleteVariantTypeValue($variantType, $variantTypeValue);
 
         self::logInfo('Variant Type Value deleted successfully', [

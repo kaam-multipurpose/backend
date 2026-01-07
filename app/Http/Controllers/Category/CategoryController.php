@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Category;
 
 use App\Dtos\AddCategoryDto;
 use App\Dtos\GetPaginatedCategoriesDto;
-use App\Exceptions\CategoryServiceException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddCategoryRequest;
 use App\Http\Requests\AddSubCategoryRequest;
@@ -22,20 +21,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class CategoryController extends Controller
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
-
     public function __construct(
         private CategoryServiceContract $categoryService,
-    ) {}
+    ) {
+    }
 
-    /**
-     * @throws CategoryServiceException
-     */
-    public function addCategory(AddCategoryRequest $request): \Illuminate\Http\JsonResponse
+    public function addSubCategory(AddSubCategoryRequest $request, Category $category): \Illuminate\Http\JsonResponse
     {
         $newCategory = $this->categoryService->addCategory(
-            AddCategoryDto::fromValidated($request->validated()),
+            AddCategoryDto::fromValidated($request->validated())->isSubCategory(),
+            $category
         );
 
         self::logInfo('Category added successfully');
@@ -47,14 +42,11 @@ final class CategoryController extends Controller
         );
     }
 
-    /**
-     * @throws CategoryServiceException
-     */
-    public function addSubCategory(AddSubCategoryRequest $request, Category $category): \Illuminate\Http\JsonResponse
+
+    public function addCategory(AddCategoryRequest $request): \Illuminate\Http\JsonResponse
     {
         $newCategory = $this->categoryService->addCategory(
-            AddCategoryDto::fromValidated($request->validated())->isSubCategory(),
-            $category
+            AddCategoryDto::fromValidated($request->validated()),
         );
 
         self::logInfo('Category added successfully');

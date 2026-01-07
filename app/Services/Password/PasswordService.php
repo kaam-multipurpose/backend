@@ -7,10 +7,12 @@ namespace App\Services\Password;
 use App\Dtos\ChangePasswordDto;
 use App\Dtos\Mail\ForgetPasswordMailDto;
 use App\Dtos\ResetPasswordDto;
+use App\Exceptions\ApplicationException;
 use App\Exceptions\PasswordServiceException;
 use App\Mail\ApplicationMail;
 use App\Models\PasswordResetToken;
 use App\Models\User;
+use App\Services\AbstractService;
 use App\Services\Contracts\PasswordServiceContract;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
@@ -21,11 +23,8 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-final class PasswordService implements PasswordServiceContract
+final class PasswordService extends AbstractService implements PasswordServiceContract
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
-
     public function forgetPassword(string $email): bool
     {
 
@@ -70,12 +69,12 @@ final class PasswordService implements PasswordServiceContract
         $resetPassword = PasswordResetToken::query()->where('email', $dto->email)->first();
 
         if ($resetPassword->expires_at < now()) {
-            throw new PasswordServiceException('The password reset token has expired',
+            throw new ApplicationException('The password reset token has expired',
                 code: Response::HTTP_FORBIDDEN);
         }
 
         if (!Hash::check($dto->token, $resetPassword->token)) {
-            throw new PasswordServiceException('The password reset token is invalid',
+            throw new ApplicationException('The password reset token is invalid',
                 code: Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -94,12 +93,12 @@ final class PasswordService implements PasswordServiceContract
         self::logInfo('Attempting to change password');
 
         if ($attemptingUser->id !== self::getLoggedInUser()->id) {
-            throw new PasswordServiceException("you aren't authorized to perform this action",
+            throw new ApplicationException("you aren't authorized to perform this action",
                 Response::HTTP_FORBIDDEN);
         }
 
         if (!Hash::check($dto->currentPassword, $attemptingUser->password)) {
-            throw new PasswordServiceException("current Password doesn't match provided password",
+            throw new ApplicationException("current Password doesn't match provided password",
                 Response::HTTP_FORBIDDEN);
         }
 

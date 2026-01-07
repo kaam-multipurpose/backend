@@ -7,18 +7,14 @@ namespace App\Services\Unit;
 use App\Dtos\AddUnitDto;
 use App\Dtos\GetPaginatedUnitsDto;
 use App\Dtos\UpdateUnitDto;
-use App\Exceptions\UnitServiceException;
 use App\Models\Unit;
 use App\Repositories\UnitRepository;
+use App\Services\AbstractService;
 use App\Services\Contracts\UnitServiceContract;
-use App\Utils\Trait\HasAuthenticatedUser;
-use App\Utils\Trait\HasLogger;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-final class UnitService implements UnitServiceContract
+final class UnitService extends AbstractService implements UnitServiceContract
 {
-    use HasAuthenticatedUser, HasLogger;
-
     public function __construct(
         private readonly UnitRepository $unitRepository,
     ) {
@@ -42,7 +38,13 @@ final class UnitService implements UnitServiceContract
     {
         self::logInfo('Attempt to update unit');
 
-        return $this->unitRepository->updateUnit($dto, $unit);
+        $filledArray = $dto->toFilledArray();
+
+        if (empty($filledArray)) {
+            return $unit;
+        }
+
+        return $this->unitRepository->updateUnit($filledArray, $unit);
     }
 
     public function deleteUnit(Unit $unit): bool

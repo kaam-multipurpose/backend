@@ -10,6 +10,7 @@ Route::group([
     'controller' => CategoryController::class,
     'prefix' => 'categories',
 ], function (): void {
+
     Route::post('/', 'addCategory')
         ->can(PermissionsEnum::ADD_CATEGORY);
     Route::get('/', 'getCategories')

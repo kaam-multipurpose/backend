@@ -25,6 +25,7 @@ class AddUnitRequest extends FormRequest
         return [
             "name" => ["required", "string", "min:3", "max:30"],
             "symbol" => ["required", "string", "min:2", "max:5"],
+            "quantity" => ["nullable", "integer", "min:3"],
         ];
     }
 }

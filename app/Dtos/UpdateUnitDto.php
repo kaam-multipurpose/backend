@@ -9,7 +9,16 @@ use App\Dtos\Abstract\AbstractDto;
 final readonly class UpdateUnitDto extends AbstractDto
 {
     public function __construct(
-        ?string $name = null,
-        ?string $symbol = null,
-    ) {}
+        public ?string $name = null,
+        public ?string $symbol = null,
+    ) {
+    }
+
+    public static function fromValidated(array $data): static
+    {
+        return new self(
+            name: $data['name'] ?? null,
+            symbol: $data['symbol'] ?? null,
+        );
+    }
 }

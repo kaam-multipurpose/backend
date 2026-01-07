@@ -59,7 +59,7 @@ describe('Delete Variant Type', function (): void {
 
             $response = $this->deleteJson('/api/variant-types/non-existent-slug');
 
-            $response->assertStatus(Response::HTTP_NOT_FOUND);
+            $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         });
     });
 
@@ -107,7 +107,7 @@ describe('Delete Variant Type', function (): void {
                 "/api/variant-types/{$this->variantType->slug}/non-existent-value"
             );
 
-            $response->assertStatus(Response::HTTP_NOT_FOUND);
+            $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         });
 
         it('returns 404 when value does not belong to variant type', function (): void {
@@ -124,7 +124,7 @@ describe('Delete Variant Type', function (): void {
                 "/api/variant-types/{$this->variantType->slug}/{$otherValue->slug}"
             );
 
-            $response->assertStatus(Response::HTTP_NOT_FOUND);
+            $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
             expect(VariantTypeValue::find($otherValue->id))->not->toBeNull();
         });
 

@@ -2,30 +2,17 @@
 
 declare(strict_types=1);
 
-use App\Exceptions\AbstractServiceException;
-use App\Exceptions\ApplicationException;
-use App\Exceptions\Handlers\AccessDeniedExceptionHandler;
-use App\Exceptions\Handlers\ApplicationExceptionHandler;
-use App\Exceptions\Handlers\AuthenticationExceptionHandler;
-use App\Exceptions\Handlers\MethodNotAllowedHttpExceptionHandler;
-use App\Exceptions\Handlers\NotFoundHttpExceptionHandler;
-use App\Exceptions\Handlers\ServiceExceptionsHandler;
-use App\Exceptions\Handlers\ThrottleRequestsExceptionHandler;
-use App\Exceptions\Handlers\ValidationExceptionHandler;
+
+use App\Exceptions\Handler\ExceptionsHandler;
 use App\Utils\Logger\Dto\LoggerContextDto;
 use App\Utils\Logger\Logger;
 use App\Utils\Response\ApiResponse;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -38,20 +25,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->renderable(fn (AccessDeniedHttpException $exception): JsonResponse => AccessDeniedExceptionHandler::handle($exception));
-        $exceptions->renderable(fn (ThrottleRequestsException $exception): JsonResponse => ThrottleRequestsExceptionHandler::handle($exception));
-        $exceptions->renderable(fn (AuthenticationException $exception): JsonResponse => AuthenticationExceptionHandler::handle($exception));
-        $exceptions->renderable(fn (ValidationException $exception): JsonResponse => ValidationExceptionHandler::handle($exception));
-        $exceptions->renderable(fn (NotFoundHttpException $exception): JsonResponse => NotFoundHttpExceptionHandler::handle($exception));
-        $exceptions->renderable(fn (MethodNotAllowedHttpException $exception): JsonResponse => MethodNotAllowedHttpExceptionHandler::handle($exception));
-        $exceptions->renderable(fn (ApplicationException $exception): JsonResponse => ApplicationExceptionHandler::handle($exception));
-        $exceptions->renderable(fn (AbstractServiceException $exception): JsonResponse => ServiceExceptionsHandler::handle($exception));
-        $exceptions->renderable(function (Throwable $exception): JsonResponse {
-            Logger::error('Unexpected Error', LoggerContextDto::fromException($exception));
-
-            return ApiResponse::error(
-                'Something went wrong',
-                status: Response::HTTP_INTERNAL_SERVER_ERROR,
-            );
-        });
+        $exceptions->renderable(fn(Throwable $exception, Request $request) => ExceptionsHandler::handle($exception,
+            $request));
     })->create();

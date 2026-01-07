@@ -30,15 +30,10 @@ final class UnitRepository
         return $unit->delete();
     }
 
-    public function updateUnit(UpdateUnitDto $dto, Unit $unit): Unit
+    public function updateUnit(array $data, Unit $unit): Unit
     {
-        $filledArray = $dto->toFilledArray();
-        if (empty($filledArray)) {
-            throw new Exception('Attempt to update unit with empty records.');
-        }
+        $unit->update($data);
 
-        $unit->update($filledArray);
-
-        return $unit;
+        return $unit->refresh();
     }
 }

@@ -22,15 +22,10 @@ use Throwable;
 
 final class RoleController extends Controller
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
+    public function __construct(private readonly RoleServiceContract $roleService)
+    {
+    }
 
-    public function __construct(private readonly RoleServiceContract $roleService) {}
-
-    /**
-     * @throws Throwable
-     * @throws RoleServiceException
-     */
     public function addRole(AddRoleRequest $request): JsonResponse
     {
         $newRole = $this->roleService->addRole(
@@ -47,9 +42,6 @@ final class RoleController extends Controller
 
     }
 
-    /**
-     * @throws RoleServiceException
-     */
     public function editRolePermission(EditRoleRequest $request, Role $role): JsonResponse
     {
 
@@ -66,9 +58,6 @@ final class RoleController extends Controller
         );
     }
 
-    /**
-     * @throws RoleServiceException
-     */
     public function deleteRole(Request $request, Role $role): JsonResponse
     {
         $this->roleService->deleteRole($role);
@@ -81,9 +70,6 @@ final class RoleController extends Controller
         );
     }
 
-    /**
-     * @throws RoleServiceException
-     */
     public function getRoles(): JsonResponse
     {
         $roles = $this->roleService->getRoles();
@@ -94,9 +80,6 @@ final class RoleController extends Controller
         );
     }
 
-    /**
-     * @throws RoleServiceException
-     */
     public function getRole(Request $request, Role $role): JsonResponse
     {
         $role = $this->roleService->getRole($role);

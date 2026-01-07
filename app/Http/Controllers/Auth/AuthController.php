@@ -22,10 +22,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class AuthController extends Controller
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
-
-    public function __construct(private AuthServiceContract $authService) {}
+    public function __construct(private AuthServiceContract $authService)
+    {
+    }
 
     /**
      * @throws AuthenticationException
@@ -52,6 +51,15 @@ final class AuthController extends Controller
             ->withCookie($this->rotateRefreshToken($response));
     }
 
+    private function rotateRefreshToken(LoginServiceResponseDto $dto): SymPyCookie
+    {
+        return Cookie::make(
+            'refresh_token',
+            value: $dto->refreshToken,
+            minutes: (int) now()->diffInMinutes($dto->refreshTokenExpiresAt),
+        );
+    }
+
     /**
      * @throws AuthenticationException
      */
@@ -59,7 +67,7 @@ final class AuthController extends Controller
     {
         $refreshToken = $request->cookie('refresh_token');
 
-        if (! $refreshToken) {
+        if (!$refreshToken) {
             throw new NotFoundHttpException('Refresh token not found');
         }
 
@@ -82,14 +90,5 @@ final class AuthController extends Controller
 
         return ApiResponse::success(message: 'Logged out successfully.')
             ->withCookie(Cookie::forget('refresh_token'));
-    }
-
-    private function rotateRefreshToken(LoginServiceResponseDto $dto): SymPyCookie
-    {
-        return Cookie::make(
-            'refresh_token',
-            value: $dto->refreshToken,
-            minutes: (int) now()->diffInMinutes($dto->refreshTokenExpiresAt),
-        );
     }
 }

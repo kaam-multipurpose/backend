@@ -6,8 +6,10 @@ namespace App\Services\Permission;
 
 use App\Dtos\AddRoleDto;
 use App\Enums\UserRolesEnum;
+use App\Exceptions\ApplicationException;
 use App\Exceptions\RoleServiceException;
 use App\Models\Role;
+use App\Services\AbstractService;
 use App\Services\Contracts\RoleServiceContract;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
@@ -16,15 +18,9 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-final class RoleService implements RoleServiceContract
+final class RoleService extends AbstractService implements RoleServiceContract
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
 
-    /**
-     * @throws RoleServiceException
-     * @throws Throwable
-     */
     public function addRole(AddRoleDto $dto): Role
     {
         self::logInfo('Attempt to add role');
@@ -42,11 +38,6 @@ final class RoleService implements RoleServiceContract
 
     }
 
-    /**
-     * @param  string[]  $permissions
-     *
-     * @throws RoleServiceException
-     */
     public function editRolePermission(Role $role, array $permissions): bool
     {
         self::logInfo('Attempt to edit role');
@@ -56,22 +47,17 @@ final class RoleService implements RoleServiceContract
         return true;
     }
 
-    /**
-     * @throws RoleServiceException
-     */
     public function deleteRole(Role $role): bool
     {
         self::logInfo('Attempt to delete role');
         $definedRole = UserRolesEnum::values();
         if (in_array($role->name, $definedRole)) {
-            throw new RoleServiceException(
+            throw new ApplicationException(
                 'Cannot delete predefined roles',
                 Response::HTTP_FORBIDDEN
             );
         }
-
         $role->delete();
-
         return true;
     }
 

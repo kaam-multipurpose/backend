@@ -11,15 +11,8 @@ use Illuminate\Validation\ValidationException;
 
 interface AuthServiceContract
 {
-    /**
-     * @throws ValidationException
-     * @throws AuthenticationException
-     */
     public function login(LoginDto $loginDto): LoginServiceResponseDto;
 
-    /**
-     * @throws AuthenticationException
-     */
     public function refreshToken(string $refreshToken): LoginServiceResponseDto;
 
     public function logout(): array;

@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Password;
 
 use App\Dtos\ChangePasswordDto;
 use App\Dtos\ResetPasswordDto;
-use App\Exceptions\PasswordServiceException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
@@ -20,14 +19,10 @@ use Illuminate\Support\Facades\Cookie;
 
 final class PasswordController extends Controller
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
+    public function __construct(private PasswordServiceContract $passwordService)
+    {
+    }
 
-    public function __construct(private PasswordServiceContract $passwordService) {}
-
-    /**
-     * @throws PasswordServiceException
-     */
     public function forgetPassword(Request $request): JsonResponse
     {
 
@@ -48,9 +43,6 @@ final class PasswordController extends Controller
         return ApiResponse::error(message: 'An error occurred while sending your Otp.');
     }
 
-    /**
-     * @throws PasswordServiceException
-     */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -64,9 +56,6 @@ final class PasswordController extends Controller
         return ApiResponse::success(message: 'Password reset successfully.');
     }
 
-    /**
-     * @throws PasswordServiceException
-     */
     public function changePassword(Request $request, User $user): JsonResponse
     {
         $data = $request->validate([

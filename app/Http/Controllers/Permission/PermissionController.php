@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Permission;
 
-use App\Exceptions\PermissionServiceException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PermissionCategoryResource;
 use App\Services\Contracts\PermissionServiceContract;
@@ -15,14 +14,10 @@ use Illuminate\Http\JsonResponse;
 
 final class PermissionController extends Controller
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
+    public function __construct(private PermissionServiceContract $permissionService)
+    {
+    }
 
-    public function __construct(private PermissionServiceContract $permissionService) {}
-
-    /**
-     * @throws PermissionServiceException
-     */
     public function getAllPermissions(): JsonResponse
     {
         $permissions = $this->permissionService->getAllPermissions();

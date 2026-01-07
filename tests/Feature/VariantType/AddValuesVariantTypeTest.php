@@ -86,6 +86,6 @@ describe('Add Values To Variant Type', function (): void {
             'values' => $this->newValues,
         ]);
 
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
     });
 });

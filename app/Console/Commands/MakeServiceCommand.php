@@ -34,16 +34,16 @@ final class MakeServiceCommand extends Command
         $contractPath = app_path(sprintf('Services/Contracts/%sServiceContract.php', $name));
 
         // Create Contracts directory if not exists
-        if (! File::exists(app_path('Services/Contracts'))) {
+        if (!File::exists(app_path('Services/Contracts'))) {
             File::makeDirectory(app_path('Services/Contracts'), 0755, true);
         }
 
-        if (! File::exists(app_path('Services/'.$name))) {
+        if (!File::exists(app_path('Services/'.$name))) {
             File::makeDirectory(app_path('Services/'.$name), 0755, true);
         }
 
         // Create Interface file
-        if (! File::exists($contractPath)) {
+        if (!File::exists($contractPath)) {
             File::put($contractPath, $this->contractStub($name));
             $this->info('Created: '.$contractPath);
         } else {
@@ -51,7 +51,7 @@ final class MakeServiceCommand extends Command
         }
 
         // Create Service file
-        if (! File::exists($servicePath)) {
+        if (!File::exists($servicePath)) {
             File::put($servicePath, $this->serviceStub($name));
             $this->info('Created: '.$servicePath);
         } else {
@@ -80,14 +80,11 @@ final class MakeServiceCommand extends Command
         <?php
         namespace App\Services\\{$name};
 
+        use App\Services\AbstractService;
         use App\Services\Contracts\\{$name}ServiceContract;
-        use App\Utils\Trait\HasAuthenticatedUser;
-        use App\Utils\Trait\HasLogger;
 
-        class {$name}Service implements {$name}ServiceContract
+        class {$name}Service extends AbstractService implements {$name}ServiceContract
         {
-            use HasAuthenticatedUser, HasLogger;
-
             public function __construct(){}
 
              // Your service logic goes here

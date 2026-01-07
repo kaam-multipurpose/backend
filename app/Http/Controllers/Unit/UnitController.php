@@ -20,8 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UnitController extends Controller
 {
-    use HasAuthenticatedUser, HasLogger;
-
     public function __construct(
         private readonly UnitServiceContract $unitService,
     ) {

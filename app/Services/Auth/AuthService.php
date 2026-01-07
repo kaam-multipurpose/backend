@@ -8,6 +8,7 @@ use App\Dtos\LoginDto;
 use App\Dtos\LoginServiceResponseDto;
 use App\Models\RefreshToken;
 use App\Models\User;
+use App\Services\AbstractService;
 use App\Services\Contracts\AuthServiceContract;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
@@ -20,11 +21,8 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
-final class AuthService implements AuthServiceContract
+final class AuthService extends AbstractService implements AuthServiceContract
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
-
     public function login(LoginDto $loginDto): LoginServiceResponseDto
     {
         self::logInfo('Attempt to login', [
@@ -51,10 +49,7 @@ final class AuthService implements AuthServiceContract
             return $this->generateTokens($user);
         });
     }
-
-    /**
-     * @throws AuthenticationException
-     */
+    
     public function refreshToken(string $refreshToken): LoginServiceResponseDto
     {
 

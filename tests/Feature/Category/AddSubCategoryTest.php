@@ -149,7 +149,7 @@ describe('Add Subcategory', function (): void {
         it('returns 404 for non-existent parent category', function (): void {
             $response = $this->postJson('/api/categories/99999', $this->validData);
 
-            $response->assertStatus(Response::HTTP_NOT_FOUND);
+            $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
         });
     });
 

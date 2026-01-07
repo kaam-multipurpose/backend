@@ -27,6 +27,7 @@ final class Unit extends Model
     protected $fillable = [
         'name',
         'symbol',
+        'quantity'
     ];
 
     #[Override]

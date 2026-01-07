@@ -11,25 +11,18 @@ use App\Dtos\GetPaginatedVariantTypesDto;
 use App\Exceptions\ApplicationException;
 use App\Exceptions\VariantTypeServiceException;
 use App\Models\VariantType;
+use App\Services\AbstractService;
 use App\Services\Contracts\VariantTypeServiceContract;
 use App\Services\VariantType\Trait\HasVariantTypeValue;
-use App\Utils\Trait\HasAuthenticatedUser;
-use App\Utils\Trait\HasLogger;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-final class VariantTypeService implements VariantTypeServiceContract
+final class VariantTypeService extends AbstractService implements VariantTypeServiceContract
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
     use HasVariantTypeValue;
 
-    /**
-     * @throws VariantTypeServiceException
-     * @throws Throwable
-     */
     public function addVariantType(AddVariantTypeDto $dto): VariantType
     {
         self::logInfo('Attempt to add variant type');
@@ -45,11 +38,6 @@ final class VariantTypeService implements VariantTypeServiceContract
         });
     }
 
-    /**
-     * @param  AddVariantTypeValueDto[]  $array
-     *
-     * @throws ApplicationException
-     */
     private function generateDBVariantTypeValue(array $array): array
     {
         if (!collect($array)->every(fn($value): true => $value instanceof AddVariantTypeValueDto)) {
@@ -60,9 +48,6 @@ final class VariantTypeService implements VariantTypeServiceContract
             ->map(fn(AddVariantTypeValueDto $value): array => $value->toArray())->toArray();
     }
 
-    /**
-     * @throws VariantTypeServiceException
-     */
     public function getVariantTypes(GetPaginatedVariantTypesDto $dto): LengthAwarePaginator
     {
         self::logInfo('Attempt to get variant types');
@@ -73,9 +58,6 @@ final class VariantTypeService implements VariantTypeServiceContract
         );
     }
 
-    /**
-     * @throws VariantTypeServiceException
-     */
     public function addValuesToVariantType(AddValuesToVariantTypeDto $dto): Collection
     {
         self::logInfo('Attempt to add values variant types');
@@ -84,11 +66,7 @@ final class VariantTypeService implements VariantTypeServiceContract
 
         return $dto->variantType->variantTypeValues()->createMany($variantTypeValues);
     }
-
-    /**
-     * @throws VariantTypeServiceException
-     * @throws Throwable
-     */
+    
     public function deleteVariantType(VariantType $variantType): void
     {
         self::logInfo('Attempt to delete variant type', [

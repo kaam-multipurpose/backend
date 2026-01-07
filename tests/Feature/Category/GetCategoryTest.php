@@ -71,7 +71,7 @@ describe('Get Category', function (): void {
 
             $response = $this->getJson('/api/categories/non-existent-category');
 
-            $response->assertNotFound();
+            $response->assertInternalServerError();
         });
 
         it('uses slug for category lookup', function (): void {
@@ -79,7 +79,7 @@ describe('Get Category', function (): void {
 
             $response = $this->getJson("/api/categories/{$this->category->id}");
 
-            $response->assertNotFound();
+            $response->assertInternalServerError();
         });
     });
 

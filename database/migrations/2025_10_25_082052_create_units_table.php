@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('name', 30)->unique();
             $table->string('slug', 32)->unique();
             $table->string('symbol', 5)->unique();
+            $table->integer('quantity')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

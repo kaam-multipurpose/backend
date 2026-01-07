@@ -6,8 +6,9 @@ namespace App\Services\Category;
 
 use App\Dtos\AddCategoryDto;
 use App\Dtos\GetPaginatedCategoriesDto;
-use App\Exceptions\CategoryServiceException;
+use App\Exceptions\ApplicationException;
 use App\Models\Category;
+use App\Services\AbstractService;
 use App\Services\Contracts\CategoryServiceContract;
 use App\Utils\Trait\HasAuthenticatedUser;
 use App\Utils\Trait\HasLogger;
@@ -15,22 +16,16 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-final class CategoryService implements CategoryServiceContract
+final class CategoryService extends AbstractService implements CategoryServiceContract
 {
-    use HasAuthenticatedUser;
-    use HasLogger;
 
-    /**
-     * @throws CategoryServiceException
-     * @throws Throwable
-     */
     public function addCategory(AddCategoryDto $dto, ?Category $parentCategory = null): Category
     {
 
         self::logInfo('Attempt to add category');
 
         if ($dto->isSubcategory && !$parentCategory) {
-            throw new CategoryServiceException('Subcategory creation requires a parent category.');
+            throw new ApplicationException('Subcategory creation requires a parent category.');
         }
 
         return DB::transaction(function () use ($dto, $parentCategory) {
@@ -61,9 +56,7 @@ final class CategoryService implements CategoryServiceContract
         $category->variantTypes()->sync($variantTypeIds);
     }
 
-    /**
-     * @throws CategoryServiceException
-     */
+
     public function getCategories(GetPaginatedCategoriesDto $dto): LengthAwarePaginator
     {
         self::logInfo('Attempt to get categories');
@@ -74,9 +67,6 @@ final class CategoryService implements CategoryServiceContract
         );
     }
 
-    /**
-     * @throws CategoryServiceException
-     */
     public function getCategory(Category $category): Category
     {
         self::logInfo('Attempt to get category');
