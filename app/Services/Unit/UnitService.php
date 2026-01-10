@@ -12,6 +12,7 @@ use App\Repositories\UnitRepository;
 use App\Services\AbstractService;
 use App\Services\Contracts\UnitServiceContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 final class UnitService extends AbstractService implements UnitServiceContract
 {
@@ -27,11 +28,11 @@ final class UnitService extends AbstractService implements UnitServiceContract
         return $this->unitRepository->addUnit($dto->toArray());
     }
 
-    public function getUnits(GetPaginatedUnitsDto $dto): LengthAwarePaginator
+    public function getUnits(): Collection
     {
         self::logInfo('Attempt to get units');
 
-        return $this->unitRepository->getPaginatedUnits($dto);
+        return $this->unitRepository->getPaginatedUnits();
     }
 
     public function updateUnit(UpdateUnitDto $dto, Unit $unit): Unit

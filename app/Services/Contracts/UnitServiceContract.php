@@ -8,13 +8,13 @@ use App\Dtos\AddUnitDto;
 use App\Dtos\GetPaginatedUnitsDto;
 use App\Dtos\UpdateUnitDto;
 use App\Models\Unit;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 interface UnitServiceContract
 {
     public function addUnit(AddUnitDto $dto): Unit;
 
-    public function getUnits(GetPaginatedUnitsDto $dto): LengthAwarePaginator;
+    public function getUnits(): Collection;
 
     public function updateUnit(UpdateUnitDto $dto, Unit $unit): Unit;
 

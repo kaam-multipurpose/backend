@@ -53,9 +53,7 @@ class UnitController extends Controller
 
     public function getUnits(GetUnitsRequest $request): JsonResponse
     {
-        $units = $this->unitService->getUnits(
-            GetPaginatedUnitsDto::fromValidated($request->validated()),
-        );
+        $units = $this->unitService->getUnits();
         self::logInfo("Unit Listed Successfully");
         return ApiResponse::success(
             data: UnitResource::collection($units),

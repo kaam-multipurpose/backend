@@ -21,6 +21,7 @@ final class UnitFactory extends Factory
         return [
             'name' => fake()->unique()->word(),
             'symbol' => mb_substr(fake()->unique()->lexify('??'), 0, 3),
+            'quantity' => $this->faker->numberBetween(1, 100),
         ];
     }
 }

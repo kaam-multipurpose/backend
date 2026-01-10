@@ -11,6 +11,7 @@ final readonly class UpdateUnitDto extends AbstractDto
     public function __construct(
         public ?string $name = null,
         public ?string $symbol = null,
+        public ?string $quantity = null,
     ) {
     }
 
@@ -19,6 +20,7 @@ final readonly class UpdateUnitDto extends AbstractDto
         return new self(
             name: $data['name'] ?? null,
             symbol: $data['symbol'] ?? null,
+            quantity: $data['quantity'] ?? null,
         );
     }
 }

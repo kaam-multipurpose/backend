@@ -24,6 +24,7 @@ final class UnitResource extends JsonResource
             'id' => $resource->id,
             'name' => $resource->name,
             'symbol' => $resource->symbol,
+            "quantity" => $resource->quantity
         ];
     }
 }

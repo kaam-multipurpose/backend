@@ -16,6 +16,7 @@ use Override;
  * @property string $name
  * @property string $symbol
  * @property string $slug
+ * @property string $quantity
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

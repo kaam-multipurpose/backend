@@ -23,8 +23,8 @@ class AddUnitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ["required", "string", "min:3", "max:30"],
-            "symbol" => ["required", "string", "min:2", "max:5"],
+            "name" => ["required", "string", "min:3", "max:30", "unique:units,name"],
+            "symbol" => ["required", "string", "min:2", "max:5", "unique:units,symbol"],
             "quantity" => ["nullable", "integer", "min:3"],
         ];
     }

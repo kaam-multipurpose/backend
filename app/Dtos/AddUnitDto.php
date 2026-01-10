@@ -20,7 +20,7 @@ final readonly class AddUnitDto extends AbstractDto
         return new self(
             name: $data['name'],
             symbol: $data['symbol'],
-            quantity: $data['quantity'] ?? null,
+            quantity: $data['quantity'] ? (int) $data['quantity'] : null,
         );
     }
 }

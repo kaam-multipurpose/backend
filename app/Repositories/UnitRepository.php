@@ -9,6 +9,7 @@ use App\Dtos\UpdateUnitDto;
 use App\Models\Unit;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 final class UnitRepository
 {
@@ -17,12 +18,9 @@ final class UnitRepository
         return Unit::query()->create($data);
     }
 
-    public function getPaginatedUnits(GetPaginatedUnitsDto $dto): LengthAwarePaginator
+    public function getPaginatedUnits(): Collection
     {
-        return Unit::query()->paginate(
-            perPage: $dto->row,
-            page: $dto->page,
-        );
+        return Unit::all();
     }
 
     public function deleteUnit(Unit $unit): bool

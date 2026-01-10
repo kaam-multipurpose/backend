@@ -25,6 +25,7 @@ class UpdateUnitRequest extends FormRequest
         return [
             "name" => ["nullable", "string", "min:3", "max:30"],
             "symbol" => ["nullable", "string", "min:2", "max:5"],
+            "quantity" => ["nullable", "integer", "min:2"],
         ];
     }
 }
